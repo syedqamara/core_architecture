@@ -4,8 +4,9 @@ Welcome to the Core Architecture documentation. This document serves as an overv
 
 ## UIModel
 The `UIModel` protocol represents a data model for views in the user interface. It defines an associated type `DataModelType` and a required initializer `init(dataModel:)` for populating the UI model based on the provided data model.
-[Click here for more detail](Documentation/UIModel.md)
 
+[Click here for more detail](Documentation/UIModel.md)
+--- 
 ## Modules
 
 ### Moduling
@@ -13,17 +14,19 @@ The `Moduling` protocol represents a modular component that can be instantiated 
 
 [Click here for more detail](Documentation/Module.md)
 
+--- 
 ### ViewModule
 The `ViewModule` protocol represents a view module conforming to `Moduling` and specifying an associated type for the SwiftUI view it manages. This allows for modular and reusable view components.
 
 [Click here for more detail](Documentation/ViewModule.md)
 
+--- 
 ## ViewProtocol
 The `ViewProtocol` defines a generic interface for views that require a view model conforming to the `ViewModeling` protocol. It enables seamless integration of view models for data presentation and manipulation in SwiftUI views.
 
 [Click here for more detail](Documentation/View.md)
 
-
+--- 
 ## ViewModeling
 The `ViewModeling` protocol represents a view model conforming to `ObservableObject` and specifying associated types for data source and UI model. It serves as a foundation for SwiftUI view models, enabling reactive UI updates when the underlying data changes.
 

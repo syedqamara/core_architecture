@@ -34,7 +34,7 @@ struct UserProfileView: ViewProtocol {
 // MARK: - ViewProtocol
 /// The `ViewProtocol` defines a generic interface for views that require a view model conforming to the `ViewModeling` protocol.
 /// This protocol is intended for use in SwiftUI views to enable seamless integration of view models for data presentation and manipulation.
-
+// sourcery: AutoMockable
 protocol ViewProtocol {
     /// The associated type representing the view model conforming to the `ViewModeling` protocol.
     associatedtype ViewModelType: ViewModeling

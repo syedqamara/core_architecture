@@ -10,7 +10,7 @@ import Foundation
 // MARK: - Moduling
 /// The `Moduling` protocol represents a modular component that can be instantiated with a specific input, denoted by the associated type `ModuleInput`.
 /// This protocol is designed to facilitate the creation of modular components that can encapsulate functionality and be configured with input data as needed.
-
+// sourcery: AutoMockable
 protocol Moduling {
     /// The associated type representing the input data required to configure the module.
     ///

@@ -40,7 +40,7 @@ class UserProfileViewModel: ViewModeling {
 // MARK: - ViewModeling
 /// The `ViewModeling` protocol represents a view model that conforms to the `ObservableObject` protocol and specifies associated types for data source and UI model.
 /// This protocol is designed to be used as a foundation for SwiftUI view models, enabling reactive UI updates when the underlying data changes.
-
+// sourcery: AutoMockable
 protocol ViewModeling: AnyObject, ObservableObject {
     /// The associated type representing the data source used by the view model.
     ///
@@ -62,7 +62,7 @@ protocol ViewModeling: AnyObject, ObservableObject {
     ///
     /// In the above example, we define a `UserData` struct conforming to the `DataSourcing` protocol, which provides the underlying data for the view model. Then, we create a `UserProfileViewModel` class conforming to the `ViewModeling` protocol, specifying `UserData` as the associated data source type. The view model can now use the `UserData` type to fetch and update data for the SwiftUI views.
     ///
-    associatedtype DataSourceType
+    associatedtype DataSourceType: DataSourcing
 
     /// The associated type representing the UI model used by the view model.
     ///

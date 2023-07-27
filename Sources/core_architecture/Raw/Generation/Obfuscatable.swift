@@ -1,0 +1,112 @@
+//
+//  File.swift
+//  
+//
+//  Created by Apple on 27/07/2023.
+//
+
+import Foundation
+
+
+struct ObfuscationKey {
+    var key: String
+    var name: String
+}
+
+extension ObfuscationKey {
+    static func property(_ name: String) -> Self { .init(key: "property_", name: name) }
+    static func type(_ name: String) -> Self { .init(key: "type_", name: name) }
+    static func function(_ name: String) -> Self { .init(key: "function_", name: name) }
+    static func `struct`(_ name: String) -> Self { .init(key: "struct_", name: name) }
+    static func `class`(_ name: String) -> Self { .init(key: "class_", name: name) }
+    static func `protocol`(_ name: String) -> Self { .init(key: "protocol_", name: name) }
+}
+
+class Obfuscation: Obfuscatable {
+    static let shared = Obfuscation()
+    private var counter: Int = 1
+    private var cache: [String: String] = [:]
+    private var noneObfuscationKeys: [String: Bool] = [:]
+    private let counterQueue = DispatchQueue(label: "com.example.obfuscation.counterQueue", attributes: .concurrent)
+    private init() {
+        
+    }
+    func excludeKeys(_ keys: [String]) {
+        _ = keys.forEach { noneObfuscationKeys[$0] = true }
+    }
+    func findMatchingKey(for searchText: String) -> String? {
+        // First, check for an exact match in the dictionary
+        if let exactMatch = noneObfuscationKeys[searchText], exactMatch {
+            return searchText
+        }
+
+        // If no exact match is found, search for partial matches
+        let partialMatches = noneObfuscationKeys.keys.filter { key in
+            key.range(of: searchText, options: .caseInsensitive) != nil
+        }
+
+        return partialMatches.first
+    }
+    func generate(input: ObfuscationKey) -> String {
+        if let noneObfuscationValue = findMatchingKey(for: input.name), noneObfuscationValue.isNotEmpty {
+            return noneObfuscationValue
+        }
+        if let cacheValue = cache[input.name] {
+            return cacheValue
+        }
+        var result: String = ""
+
+        // Synchronously increment the counter using a concurrent queue
+        counterQueue.sync(flags: .barrier) {
+            // Append prefix.key and the current counter value to form the result
+            result = input.key + "\(counter)"
+            // Increment the counter
+            counter += 1
+            cache[input.name] = result
+        }
+
+        return result
+    }
+}
+
+extension Obfuscation {
+    class var defaultDataTypes: [String] {
+        [
+            "Int",
+            "Bool",
+            "Float",
+            "CGFloat",
+            "String",
+            "Double",
+            "Array<Int>",
+            "Array<Bool>",
+            "Array<Float>",
+            "Array<CGFloat>",
+            "Array<String>",
+            "Array<Double>",
+            "Dictionary<Int, Int>",
+            "Dictionary<Bool, Bool>",
+            "Dictionary<Float, Float>",
+            "Dictionary<CGFloat, CGFloat>",
+            "Dictionary<String, String>",
+            "Dictionary<Double, Double>",
+            "Dictionary<String, Any>"
+        ]
+    }
+}
+// sourcery: AutoMockable
+protocol Obfuscatable: Generatable where Input == ObfuscationKey, Output == String {
+    
+}
+
+@propertyWrapper
+struct Obfuscate {
+    private let key: ObfuscationKey
+    var wrappedValue: String {
+        Obfuscation.shared.generate(input: key)
+    }
+    init(_ key: ObfuscationKey) {
+        self.key = key
+    }
+}
+

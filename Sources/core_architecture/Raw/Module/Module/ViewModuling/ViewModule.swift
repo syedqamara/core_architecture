@@ -10,7 +10,7 @@ import Foundation
 // MARK: - ViewModule
 /// The `ViewModule` protocol represents a view module that conforms to the `Moduling` protocol and specifies an associated type for the view it manages, denoted by `ViewType`.
 /// This protocol is designed to encapsulate the logic and configuration of a specific SwiftUI view, allowing for modular and reusable view components.
-
+// sourcery: AutoMockable
 protocol ViewModule: Moduling {
     /// The associated type representing the SwiftUI view managed by the view module.
     ///

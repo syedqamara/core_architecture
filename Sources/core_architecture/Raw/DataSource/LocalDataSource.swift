@@ -10,7 +10,7 @@ import Foundation
 // MARK: - LocalDataSourcing
 /// The `LocalDataSourcing` protocol represents a data source for locally stored data that conforms to the `DataSourcing` protocol.
 /// It provides an interface to fetch data from local storage, such as JSON files, and map it to model objects that conform to `LocalJSONMappable`.
-
+// sourcery: AutoMockable
 protocol LocalDataSourcing: DataSourcing {
     /// Fetches and returns the locally stored data and maps it to the specified model type asynchronously.
     ///

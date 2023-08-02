@@ -32,7 +32,7 @@ class Obfuscation: Obfuscatable {
         
     }
     func excludeKeys(_ keys: [String]) {
-        _ = keys.forEach { noneObfuscationKeys[$0] = true }
+        keys.forEach { noneObfuscationKeys[$0] = true }
     }
     func findMatchingKey(for searchText: String) -> String? {
         // First, check for an exact match in the dictionary
@@ -47,7 +47,7 @@ class Obfuscation: Obfuscatable {
 
         return partialMatches.first
     }
-    func generate(input: ObfuscationKey) -> String {
+    func ofuscate(input: ObfuscationKey) -> String {
         if let noneObfuscationValue = findMatchingKey(for: input.name), noneObfuscationValue.isNotEmpty {
             return noneObfuscationValue
         }
@@ -90,20 +90,45 @@ extension Obfuscation {
             "Dictionary<CGFloat, CGFloat>",
             "Dictionary<String, String>",
             "Dictionary<Double, Double>",
-            "Dictionary<String, Any>"
+            "Dictionary<String, Any>",
+            // Add more types here
+            "Set<Int>",
+            "Set<Bool>",
+            "Set<Float>",
+            "Set<CGFloat>",
+            "Set<String>",
+            "Set<Double>",
+            "Character",
+            "UUID",
+            "Optional<Int>",
+            "Optional<Bool>",
+            "Optional<Float>",
+            "Optional<CGFloat>",
+            "Optional<String>",
+            "Optional<Double>",
+            "Result<Int, Error>",
+            "Result<Bool, Error>",
+            "Result<Float, Error>",
+            "Result<CGFloat, Error>",
+            "Result<String, Error>",
+            "Result<Double, Error>",
+            "Tuple2<Int, Bool>",
+            "Tuple3<Float, String, Double>",
+            "Tuple4<CGFloat, Int, Bool, String>",
+            "Tuple5<Double, CGFloat, Int, Bool, String>"
         ]
     }
 }
 // sourcery: AutoMockable
-protocol Obfuscatable: Generatable where Input == ObfuscationKey, Output == String {
-    
+protocol Obfuscatable: IOProtocol where Input == ObfuscationKey, Output == String {
+    func ofuscate(input: ObfuscationKey) -> String
 }
 
 @propertyWrapper
 struct Obfuscate {
     private let key: ObfuscationKey
     var wrappedValue: String {
-        Obfuscation.shared.generate(input: key)
+        Obfuscation.shared.ofuscate(input: key)
     }
     init(_ key: ObfuscationKey) {
         self.key = key

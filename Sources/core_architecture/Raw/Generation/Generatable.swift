@@ -9,9 +9,12 @@ import Foundation
 import Dependencies
 
 // sourcery: AutoMockable
-protocol Generatable {
+protocol IOProtocol {
     associatedtype Input
     associatedtype Output
-    func generate(input: Input) -> Output
+}
+// sourcery: AutoMockable
+protocol Parsable: IOProtocol {
+    func parse() -> Result<Output, Error>
 }
 

@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum Failures: ErrorProvider {
+public enum Failures: ErrorProvider {
     case local(LocalFileErrorCode), network(NetworkErrorCode)
     
-    var error: Erroring {
+    public var error: Erroring {
         switch self {
         case .local(let localFileErrorCode):
             return localFileErrorCode

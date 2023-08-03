@@ -9,12 +9,12 @@ import Foundation
 import Dependencies
 
 // sourcery: AutoMockable
-protocol IOProtocol {
+public protocol IOProtocol {
     associatedtype Input
     associatedtype Output
 }
 // sourcery: AutoMockable
-protocol Parsable: IOProtocol {
+public protocol Parsable: IOProtocol {
     func parse() -> Result<Output, Error>
 }
 

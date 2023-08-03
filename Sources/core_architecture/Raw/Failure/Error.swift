@@ -7,13 +7,13 @@
 
 import Foundation
 
-protocol Erroring: Error {
+public protocol Erroring: Error {
     var code: Int { get }
     var identifier: String { get }
     var message: String { get }
 }
 
-protocol ErrorProvider {
+public protocol ErrorProvider {
     var error: Erroring { get }
 }
 

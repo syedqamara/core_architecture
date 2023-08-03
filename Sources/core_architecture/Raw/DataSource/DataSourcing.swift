@@ -7,11 +7,11 @@
 
 import Foundation
 // MARK: - DataSourcing
-/// The `DataSourcing` protocol represents a generic interface for data sources.
-/// It serves as a base protocol for other data source protocols, allowing for a clear separation of concerns in the architecture.
+/// The `DataSourcing` public protocol represents a generic interface for data sources.
+/// It serves as a base public protocol for other data source public protocols, allowing for a clear separation of concerns in the architecture.
 // sourcery: AutoMockable
-protocol DataSourcing {
-    // This protocol currently does not define any requirements.
-    // It acts as a marker protocol to identify data sources in the architecture.
-    // Conforming types can extend this protocol with specific data source requirements.
+public protocol DataSourcing {
+    // This public protocol currently does not define any requirements.
+    // It acts as a marker public protocol to identify data sources in the architecture.
+    // Conforming types can extend this public protocol with specific data source requirements.
 }

@@ -8,4 +8,4 @@
 import Foundation
 
 // MARK: - Data Model
-protocol DataModel: Codable {}
+public protocol DataModel: Codable {}

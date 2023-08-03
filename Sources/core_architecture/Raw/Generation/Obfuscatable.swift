@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct ObfuscationKey {
+public struct ObfuscationKey {
     var key: String
     var name: String
 }
@@ -22,8 +22,8 @@ extension ObfuscationKey {
     static func `protocol`(_ name: String) -> Self { .init(key: "protocol_", name: name) }
 }
 
-class Obfuscation: Obfuscatable {
-    static let shared = Obfuscation()
+public class Obfuscation: Obfuscatable {
+    public static let shared = Obfuscation()
     private var counter: Int = 1
     private var cache: [String: String] = [:]
     private var noneObfuscationKeys: [String: Bool] = [:]
@@ -47,7 +47,7 @@ class Obfuscation: Obfuscatable {
 
         return partialMatches.first
     }
-    func ofuscate(input: ObfuscationKey) -> String {
+    public func ofuscate(input: ObfuscationKey) -> String {
         if let noneObfuscationValue = findMatchingKey(for: input.name), noneObfuscationValue.isNotEmpty {
             return noneObfuscationValue
         }
@@ -120,14 +120,14 @@ extension Obfuscation {
     }
 }
 // sourcery: AutoMockable
-protocol Obfuscatable: IOProtocol where Input == ObfuscationKey, Output == String {
+public protocol Obfuscatable: IOProtocol where Input == ObfuscationKey, Output == String {
     func ofuscate(input: ObfuscationKey) -> String
 }
 
 @propertyWrapper
-struct Obfuscate {
+public struct Obfuscate {
     private let key: ObfuscationKey
-    var wrappedValue: String {
+    public var wrappedValue: String {
         Obfuscation.shared.ofuscate(input: key)
     }
     init(_ key: ObfuscationKey) {

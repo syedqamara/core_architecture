@@ -8,10 +8,10 @@
 import Foundation
 
 // MARK: - ViewModule
-/// The `ViewModule` protocol represents a view module that conforms to the `Moduling` protocol and specifies an associated type for the view it manages, denoted by `ViewType`.
-/// This protocol is designed to encapsulate the logic and configuration of a specific SwiftUI view, allowing for modular and reusable view components.
+/// The `ViewModule` public protocol represents a view module that conforms to the `Moduling` public protocol and specifies an associated type for the view it manages, denoted by `ViewType`.
+/// This public protocol is designed to encapsulate the logic and configuration of a specific SwiftUI view, allowing for modular and reusable view components.
 // sourcery: AutoMockable
-protocol ViewModule: Moduling {
+public protocol ViewModule: Moduling {
     /// The associated type representing the SwiftUI view managed by the view module.
     ///
     /// The `ViewType` should conform to the `ViewProtocol`, enabling the seamless integration of view models with SwiftUI views.
@@ -27,10 +27,10 @@ protocol ViewModule: Moduling {
     ///     class UserProfileModule: ViewModule {
     ///         typealias ViewType = UserProfileView
     ///
-    ///         // ViewModule protocol implementation using UserProfileView as the view type
+    ///         // ViewModule public protocol implementation using UserProfileView as the view type
     ///     }
     ///
-    /// In the above example, we define a `UserProfileView` struct conforming to the `ViewProtocol`, which represents a SwiftUI view that can be managed by a view module. Then, we create a `UserProfileModule` class conforming to the `ViewModule` protocol, specifying `UserProfileView` as the associated view type. The view module can now encapsulate the logic and configuration of the `UserProfileView`, providing a reusable and modular SwiftUI view component.
+    /// In the above example, we define a `UserProfileView` struct conforming to the `ViewProtocol`, which represents a SwiftUI view that can be managed by a view module. Then, we create a `UserProfileModule` class conforming to the `ViewModule` public protocol, specifying `UserProfileView` as the associated view type. The view module can now encapsulate the logic and configuration of the `UserProfileView`, providing a reusable and modular SwiftUI view component.
     ///
     associatedtype ViewType: ViewProtocol
 
@@ -53,12 +53,12 @@ protocol ViewModule: Moduling {
     ///
     ///         func view() -> UserProfileView {
     ///             // Configure and return an instance of UserProfileView
-    ///             let viewModel = UserProfileViewModel() // Assuming UserProfileViewModel is a view model conforming to ViewModeling protocol
+    ///             let viewModel = UserProfileViewModel() // Assuming UserProfileViewModel is a view model conforming to ViewModeling public protocol
     ///             return UserProfileView(viewModel: viewModel)
     ///         }
     ///     }
     ///
-    /// In the above example, we create a `UserProfileModule` class conforming to the `ViewModule` protocol. The `view()` method is implemented to configure and return an instance of `UserProfileView`, ensuring that it is properly initialized with its corresponding view model. The method enables the view module to manage the creation and configuration of the SwiftUI view, facilitating reusability and separation of concerns.
+    /// In the above example, we create a `UserProfileModule` class conforming to the `ViewModule` public protocol. The `view()` method is implemented to configure and return an instance of `UserProfileView`, ensuring that it is properly initialized with its corresponding view model. The method enables the view module to manage the creation and configuration of the SwiftUI view, facilitating reusability and separation of concerns.
     ///
     func view() -> ViewType
 }

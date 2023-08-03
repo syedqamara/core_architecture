@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SourceCodable {
+public protocol SourceCodable {
     var url: URL { get }
 }
 
@@ -21,10 +21,10 @@ extension SourceCodable {
     }
 }
 // sourcery: AutoMockable
-protocol SourceCodeGeneratable: IOProtocol where Input == SourceCodable, Output == String {
+public protocol SourceCodeGeneratable: IOProtocol where Input == SourceCodable, Output == String {
     
 }
-protocol SourceCodeParsable: IOProtocol {
+public protocol SourceCodeParsable: IOProtocol {
     init?(syntax: Input, url: URL)
     var url: URL { get }
     var syntax: Input { get set }

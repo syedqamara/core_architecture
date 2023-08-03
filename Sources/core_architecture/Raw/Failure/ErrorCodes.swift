@@ -7,11 +7,11 @@
 
 import Foundation
 
-enum LocalFileErrorCode: Int {
+public enum LocalFileErrorCode: Int {
     case fileNotFound = 404
 }
 
-enum NetworkErrorCode: Int {
+public enum NetworkErrorCode: Int {
     // Client-side errors
     case badRequest = 400
     case unauthorized = 401
@@ -50,16 +50,16 @@ enum NetworkErrorCode: Int {
 
 
 extension LocalFileErrorCode: Erroring {
-    var code: Int { rawValue }
+    public var code: Int { rawValue }
     private func snakeCase(_ input: String) -> String {
         let parts = input.split(separator: " ").map { $0.lowercased() }
         return parts.joined(separator: "_")
     }
     
-    var identifier: String {
+    public var identifier: String {
         return snakeCase(message)
     }
-    var message: String {
+    public var message: String {
         switch self {
         case .fileNotFound:
             return "File not found"
@@ -68,16 +68,16 @@ extension LocalFileErrorCode: Erroring {
 }
 
 extension NetworkErrorCode: Erroring {
-    var code: Int { rawValue }
+    public var code: Int { rawValue }
     private func snakeCase(_ input: String) -> String {
         let parts = input.split(separator: " ").map { $0.lowercased() }
         return parts.joined(separator: "_")
     }
     
-    var identifier: String {
+    public var identifier: String {
         return snakeCase(message)
     }
-    var message: String {
+    public var message: String {
         switch self {
         case .badRequest:
             return "Bad Request"

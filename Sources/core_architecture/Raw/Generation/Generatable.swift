@@ -20,7 +20,7 @@ public protocol Savable: SourceCodable {
 }
 // sourcery: AutoMockable
 public protocol Saving: IOProtocol where Input == Savable {
-    func save() -> Output
+    func save() async -> Output
 }
 // sourcery: AutoMockable
 public protocol Parsable: IOProtocol {

@@ -14,11 +14,11 @@ public protocol IOProtocol {
     associatedtype Output
 }
 // sourcery: AutoMockable
-protocol Savable {
+public protocol Savable {
     var data: Data { get }
 }
 // sourcery: AutoMockable
-protocol Saving: IOProtocol where Input == Savable {
+public protocol Saving: IOProtocol where Input == Savable {
     func save() -> Output
 }
 // sourcery: AutoMockable

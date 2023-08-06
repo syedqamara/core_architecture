@@ -6,13 +6,15 @@
 //
 
 import Foundation
-
-public protocol SourceCodable {
+// For Other file types.
+public protocol Resourcable {
     var url: URL { get }
 }
+// For Codes
+public protocol SourceCodable: Resourcable {}
 
 
-extension SourceCodable {
+extension Resourcable {
     var fileName: String? {
         url.lastPathComponent.components(separatedBy: .init(charactersIn: ".")).first
     }

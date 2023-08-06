@@ -14,7 +14,8 @@ public protocol IOProtocol {
     associatedtype Output
 }
 // sourcery: AutoMockable
-public protocol Savable {
+public protocol Savable: SourceCodable {
+    var shouldReplace: Bool { get }
     var data: Data { get }
 }
 // sourcery: AutoMockable

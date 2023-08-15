@@ -48,7 +48,7 @@ public protocol ViewModule: Moduling {
     ///     }
     ///
     ///     // Conform to the ViewModule using UserProfileView as the associated view type
-    ///     class UserProfileModule: ViewModule {
+    ///     struct UserProfileModule: ViewModule {
     ///         typealias ViewType = UserProfileView
     ///
     ///         func view() -> UserProfileView {

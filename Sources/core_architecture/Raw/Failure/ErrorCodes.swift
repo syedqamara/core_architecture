@@ -6,11 +6,11 @@
 //
 
 import Foundation
-
+// TODO: Add Custom Error Option `LocalFileErrorCode`
 public enum LocalFileErrorCode: Int {
     case fileNotFound = 404
 }
-
+// TODO: Add Custom Error Option for `NetworkErrorCode`
 public enum NetworkErrorCode: Int {
     // Client-side errors
     case badRequest = 400

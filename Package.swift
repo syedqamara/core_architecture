@@ -11,6 +11,9 @@ let package = Package(
         .library(
             name: "core_architecture",
             targets: ["core_architecture"]),
+        .library(
+            name: "Network",
+            targets: ["Network"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -28,5 +31,15 @@ let package = Package(
         .testTarget(
             name: "core_architectureTests",
             dependencies: ["core_architecture"]),
+        
+        .target(
+            name: "Network",
+            dependencies: [
+                "core_architecture",
+                .product(name: "Dependencies", package: "swift-dependencies")
+            ]),
+        .testTarget(
+            name: "NetworkTests",
+            dependencies: ["Network"]),
     ]
 )

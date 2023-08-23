@@ -6,10 +6,20 @@
 //
 
 import Foundation
+import ManagedAppConfigLib
+
 
 public protocol Debugable {
-    
+    var id: String { get }
 }
+
+extension Debugable {
+    func register<D: Debug>(type: D.Type) {
+        @AppConfig(self.id) var config: D = D(result: .console)
+    }
+}
+
+
 public enum DebugResult {
     case console, ignore
 }
@@ -18,40 +28,15 @@ public protocol DebuggingAction {
 }
 public protocol Debugging {
     func action<B: DebuggingAction>(actionType: B.Type) -> DebugAction<B>?
-    func debug<D: Debugable>(debug: D) -> DebugResult
+    func debug<D: Debugable, F: Debug>(debug: D, feature: F.Type) -> DebugResult
 }
-public protocol ConsoleDebugging {
-    func console<D: Debugable>(debug: D) -> DebugResult
-}
-public protocol IsEnable {
-    var isEnabled: Bool { get }
-}
-public protocol EnableBreakpointable: IsEnable {}
-public protocol EnableDebugConsolable: IsEnable {}
-
-// Apply this to request or response object
-
-
-public struct EnableBreakPoint: EnableBreakpointable {
-    public var isEnabled: Bool
-    public init(isEnabled: Bool) {
-        self.isEnabled = isEnabled
-    }
-}
-public struct EnableDebugConsole: EnableDebugConsolable {
-    public var isEnabled: Bool
-    public init(isEnabled: Bool) {
-        self.isEnabled = isEnabled
+public class Debug {
+    public var result: DebugResult
+    public required init(result: DebugResult) {
+        self.result = result
     }
 }
 
-public struct AsyncAction<A> {
-    public typealias ActionCompletion = (A) -> ()
-    public var action: ActionCompletion
-    public init(action: @escaping ActionCompletion) {
-        self.action = action
-    }
-}
 
 public struct DebugAction<A> {
     public typealias ActionCompletion = (A, (A) -> ()) -> ()
@@ -61,8 +46,6 @@ public struct DebugAction<A> {
     }
 }
 open class Debugger<A: DebuggingAction>: Debugging {
-    
-    
     public var action: DebugAction<A>
     public init(action: DebugAction<A>) {
         self.action = action
@@ -73,24 +56,11 @@ open class Debugger<A: DebuggingAction>: Debugging {
         }
         return nil
     }
-    public func debug<D>(debug: D) -> DebugResult where D : Debugable {
-//        @ConfigStore<EnableBreakPoint>(debug) var breakPointConfig
-//        guard let config = breakPointConfig else {
-//            fatalError("No Debug Breakpoint Configuration Found")
-//        }
-//        if config.isEnabled {
-//            return console(debug: debug)
-//        }
-        return .ignore
-    }
-    public func console<D>(debug: D) -> DebugResult where D : Debugable {
-//        @ConfigStore<EnableDebugConsole>(debug) var debugConsoleConfig
-//        guard let config = debugConsoleConfig else {
-//            fatalError("No Debug Console Configuration Found")
-//        }
-//        if config.isEnabled {
-//            return .console
-//        }
-        return .ignore
+    public func debug<D, F>(debug: D, feature: F.Type) -> DebugResult where D : Debugable, F : Debug {
+        @AppConfig(debug.id) var featureConfig: F?
+        guard let config = featureConfig else {
+            fatalError("No Debug Console Configuration Found")
+        }
+        return config.result
     }
 }

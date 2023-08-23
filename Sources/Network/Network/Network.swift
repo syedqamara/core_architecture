@@ -8,7 +8,7 @@
 import Foundation
 import core_architecture
 
-protocol Pointable: Debugable {
+protocol Pointable: NetworkDebugable {
     var pointing: String { get }
 }
 extension Pointable {
@@ -113,7 +113,7 @@ class Network: Networking {
         return try await sendRequest(request: request, to: to)
     }
     private func sendRequest(request: URLRequest, to: Pointable) async throws -> Data {
-        let requestDebuggingResult = debugger.debug(debug: to)
+        let requestDebuggingResult = debugger.debug(debug: to, feature: to.networkRequestDebugType)
         return try await withCheckedThrowingContinuation({
             [weak self]
             (continuation: CheckedContinuation<Data, Error>) in
@@ -152,14 +152,57 @@ class Network: Networking {
         }
     }
     private func processResponse(to: Pointable, data: Data?, error: Error?, continuation: CheckedContinuation<Data, Error>) {
-        let action = self.debugger.action(actionType: NetworkDebuggerActions.self)
         if let data {
-            continuation.resume(returning: data)
+            debugData(to: to, data: data, continuation: continuation)
         }
         else if let error {
-            continuation.resume(throwing: error)
+            debugError(to: to, error: error, continuation: continuation)
         }else {
             continuation.resume(throwing: NetworkErrorCode.notFound)
         }
     }
+    private func debugData(to: Pointable, data: Data, continuation: CheckedContinuation<Data, Error>) {
+        let debugResult = self.debugger.debug(debug: to, feature: to.networkDataDebugType)
+        switch debugResult {
+        case .console:
+            if let action = self.debugger.action(actionType: NetworkDebuggerActions.self)?.action {
+                action(.data(NetworkDataModel(debugData: data), NetworkDataModel.self)) { actionback in
+                    if case .data(let dataModel, _) = actionback, let freshDataModel = dataModel as? NetworkDataModel {
+                        continuation.resume(returning: freshDataModel.debugData)
+                    }else {
+                        continuation.resume(returning: data)
+                    }
+                }
+            }else {
+                continuation.resume(returning: data)
+                break
+            }
+        case .ignore:
+            continuation.resume(returning: data)
+            break
+        }
+    }
+    private func debugError(to: Pointable, error: Error, continuation: CheckedContinuation<Data, Error>) {
+        let debugResult = self.debugger.debug(debug: to, feature: to.networkErrorDebugType)
+        switch debugResult {
+        case .console:
+            if let action = self.debugger.action(actionType: NetworkDebuggerActions.self)?.action {
+                action(.error(error)) { actionBack in
+                    if case .error(let freshError) = actionBack {
+                        continuation.resume(throwing: freshError)
+                    }
+                }
+            }else {
+                continuation.resume(throwing: error)
+                break
+            }
+        case .ignore:
+            continuation.resume(throwing: error)
+            break
+        }
+    }
+}
+
+struct NetworkDataModel: DataModel {
+    var debugData: Data
 }

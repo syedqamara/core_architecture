@@ -42,47 +42,5 @@ class UserProfileViewModel: ViewModeling {
 /// This public protocol is designed to be used as a foundation for SwiftUI view models, enabling reactive UI updates when the underlying data changes.
 // sourcery: AutoMockable
 public protocol ViewModeling: AnyObject, ObservableObject {
-    /// The associated type representing the data source used by the view model.
-    ///
-    /// The `DataSourceType` should conform to the `DataSourcing` public protocol, providing the underlying data used by the view model for presentation and manipulation.
-    ///
-    /// Example Usage:
-    ///
-    ///     // Define a struct conforming to DataSourcing public protocol
-    ///     struct UserData: DataSourcing {
-    ///         // Data source implementation
-    ///     }
-    ///
-    ///     // Conform to the ViewModeling public protocol using UserData as the data source type
-    ///     class UserProfileViewModel: ViewModeling {
-    ///         typealias DataSourceType = UserData
-    ///
-    ///         // ViewModeling public protocol implementation using UserData as data source
-    ///     }
-    ///
-    /// In the above example, we define a `UserData` struct conforming to the `DataSourcing` public protocol, which provides the underlying data for the view model. Then, we create a `UserProfileViewModel` class conforming to the `ViewModeling` public protocol, specifying `UserData` as the associated data source type. The view model can now use the `UserData` type to fetch and update data for the SwiftUI views.
-    ///
-    associatedtype DataSourceType: DataSourcing
-
-    /// The associated type representing the UI model used by the view model.
-    ///
-    /// The `UIModelType` should conform to the `UIModel` public protocol, presenting the data from the data source for display in the user interface.
-    ///
-    /// Example Usage:
-    ///
-    ///     // Define a struct conforming to UIModel public protocol
-    ///     struct UserUIModel: UIModel {
-    ///         // UI model implementation
-    ///     }
-    ///
-    ///     // Conform to the ViewModeling public protocol using UserUIModel as the UI model type
-    ///     class UserProfileViewModel: ViewModeling {
-    ///         typealias UIModelType = UserUIModel
-    ///
-    ///         // ViewModeling public protocol implementation using UserUIModel as UI model
-    ///     }
-    ///
-    /// In the above example, we define a `UserUIModel` struct conforming to the `UIModel` public protocol, which is tailored for presenting user data to the user interface. Then, we create a `UserProfileViewModel` class conforming to the `ViewModeling` public protocol, specifying `UserUIModel` as the associated UI model type. The view model can now use the `UserUIModel` type to format and transform the data for display in the SwiftUI views.
-    ///
-    associatedtype UIModelType: UIModel
+    
 }

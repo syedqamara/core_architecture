@@ -13,6 +13,7 @@ public enum LocalFileErrorCode: Int {
 // TODO: Add Custom Error Option for `NetworkErrorCode`
 public enum NetworkErrorCode: Int {
     // Client-side errors
+    case invalidURL = 399
     case badRequest = 400
     case unauthorized = 401
     case forbidden = 403
@@ -79,6 +80,8 @@ extension NetworkErrorCode: Erroring {
     }
     public var message: String {
         switch self {
+        case .invalidURL:
+            return "Invalid URL"
         case .badRequest:
             return "Bad Request"
         case .unauthorized:

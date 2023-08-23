@@ -11,6 +11,11 @@ import Foundation
 /// The `Moduling` public protocol represents a modular component that can be instantiated with a specific input, denoted by the associated type `ModuleInput`.
 /// This public protocol is designed to facilitate the creation of modular components that can encapsulate functionality and be configured with input data as needed.
 // sourcery: AutoMockable
+
+public protocol ModulingInput {
+    
+}
+
 public protocol Moduling {
     /// The associated type representing the input data required to configure the module.
     ///
@@ -32,7 +37,7 @@ public protocol Moduling {
     ///
     /// In the above example, we define a `UserProfileInput` struct that represents the input data required to configure a user profile module. Then, we create a `UserProfileModule` struct conforming to the `Moduling` public protocol, specifying `UserProfileInput` as the associated module input type. The module can now be instantiated with specific `UserProfileInput` data to provide personalized user profile functionality.
     ///
-    associatedtype ModuleInput
+    associatedtype ModuleInput: ModulingInput
 
     /// Initializes the module with the provided input data.
     ///

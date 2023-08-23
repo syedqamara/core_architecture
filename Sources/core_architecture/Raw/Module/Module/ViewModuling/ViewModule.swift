@@ -6,12 +6,15 @@
 //
 
 import Foundation
+public protocol PreviewableModuling: Moduling {
+    static var preview: ModuleInput { get }
+}
 
 // MARK: - ViewModule
 /// The `ViewModule` public protocol represents a view module that conforms to the `Moduling` public protocol and specifies an associated type for the view it manages, denoted by `ViewType`.
 /// This public protocol is designed to encapsulate the logic and configuration of a specific SwiftUI view, allowing for modular and reusable view components.
 // sourcery: AutoMockable
-public protocol ViewModule: Moduling {
+public protocol ViewModuling: Moduling {
     /// The associated type representing the SwiftUI view managed by the view module.
     ///
     /// The `ViewType` should conform to the `ViewProtocol`, enabling the seamless integration of view models with SwiftUI views.

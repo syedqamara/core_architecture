@@ -1,117 +1,161 @@
 //
-//  Network.swift
-//  Architecture
+//  File.swift
+//  
 //
-//  Created by Syed Qamar Abbas on 16/05/2023.
+//  Created by Apple on 23/08/2023.
 //
 
 import Foundation
 import core_architecture
-protocol DataDecoder {
-    init()
-    func decode<T: Decodable>(type: T.Type, data: Data) throws -> T
+
+protocol Pointable: Debugable {
+    var pointing: String { get }
+}
+protocol Hosting {
+    var host: String { get }
+    var domain: String { get }
+    var port: String { get }
+}
+protocol Networking {
+    var host: Hosting { get }
+    var debugger: Debugging { get }
+    var requestEncoder: any NetworkRequestEncoding { get }
+    func send(to: Pointable, method: HTTPMethod, with data: DataModel?, contentType: ContentType, headers: [String: String]) async throws -> Data
+}
+protocol NetworkRequestEncoding {
+    func encode(data: DataModel?) async throws -> String?
+}
+struct GetNetworkRequestEncoder: NetworkRequestEncoding {
+    func encode(data: DataModel?) async throws -> String? {
+        guard let dictionary = data?.data?.dictionary()?.headersDictionary else { return nil }
+        let queryParamString = dictionary.map { "\($0.key)=\($0.value)" }.joined(separator: "&")
+        return queryParamString
+    }
+}
+struct PostFormNetworkRequestEncoder: NetworkRequestEncoding {
+    func encode(data: DataModel?) async throws -> String? {
+        guard let dictionary = data?.data?.dictionary()?.headersDictionary else { return nil }
+        let queryParamString = dictionary.map { "\($0.key)=\($0.value)" }.joined(separator: "&")
+        return queryParamString
+    }
+}
+struct PostJSONNetworkRequestEncoder: NetworkRequestEncoding {
+    func encode(data: DataModel?) async throws -> String? {
+        guard let queryParamString = try data?.data?.prettyJSONString() else { return nil }
+        return queryParamString
+    }
+}
+enum HTTPMethod: String {
+case get, post, put
+    var rawValue: String {
+        switch self {
+        case .get:
+            return "GET"
+        case .post:
+            return "POST"
+        case .put:
+            return "PUT"
+        }
+    }
+}
+enum ContentType: String {
+    case queryParam, postFormData, applicationJSON
+    
+    var rawValue: String {
+        switch self {
+        case .queryParam:
+            return ""
+        case .postFormData:
+            return "url-form-encoded"
+        case .applicationJSON:
+            return "application/json"
+        }
+    }
 }
 
-class Network<R: NetworkRequestProviderProtocol, D: DataDecoder>: Networking {
-    typealias DebugConsoleAction = (DebugActions) -> ()
-    enum DebugActions {
-    case request(URLRequest), data(Data), error(Error), response(URLResponse)
+
+class Network: Networking {
+    var host: Hosting
+    var debugger: Debugging
+    var requestEncoder: NetworkRequestEncoding
+    var session: URLSession
+    init(host: Hosting, debugger: Debugging, requestEncoder: NetworkRequestEncoding, session: URLSession) {
+        self.host = host
+        self.debugger = debugger
+        self.requestEncoder = requestEncoder
+        self.session = session
     }
-    enum NetworkLogActions: LogAction {
-        case validating, requesting, parsing, responsing, throwing
-        
-        var rawValue: String{
-            switch self {
-            case .validating:
-                return "Validation a network request"
-            case .requesting:
-                return "Sending a network request"
-            case .parsing:
-                return "Parsing returned response"
-            case .responsing:
-                return "Responding back to network caller"
-            case .throwing:
-                return "Throwing back to network caller"
+    func send(to: Pointable, method: HTTPMethod, with data: DataModel?, contentType: ContentType, headers: [String: String] = [:]) async throws -> Data {
+        guard var url = URL(string: "\(host.host)/\(to.pointing)") else {
+            throw NetworkErrorCode.invalidURL
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = method.rawValue
+        request.allHTTPHeaderFields = headers
+        switch contentType {
+        case .queryParam:
+            if let params = try await requestEncoder.encode(data: data),
+                params.isNotEmpty {
+                url.insert(params: params)
+                request.url = url
             }
+            
+        case .postFormData:
+            request.httpBody = try await requestEncoder.encode(data: data)?.data(using: .utf8)
+            request.setValue(contentType.rawValue, forHTTPHeaderField: "Content-Type")
+        case .applicationJSON:
+            request.httpBody = try await requestEncoder.encode(data: data)?.data(using: .utf8)
+            request.setValue(contentType.rawValue, forHTTPHeaderField: "Content-Type")
         }
+        return try await sendRequest(request: request, to: to)
     }
-    typealias RequestProvider = R
-    private let session = URLSession.shared
-    private let dataDecoder: D = .init()
-    private let debugger = NetworkDebugger()
-    private let logger = Logs<NetworkLogActions>(id: "com.networking.logs")
-    private let debugAction: DebugConsoleAction?
-    public init(debugAction: DebugConsoleAction? = nil) {
-        self.debugAction = debugAction
-    }
-    func run<DM>(requestProvider: R, dataType: DM.Type, completion: @escaping (Result<DM, NetworkError>) -> ()) where DM : DataModel {
-        guard let urlRequest = requestProvider.request else {
-            let result: Result<DM, NetworkError> = .failure(.standard(.badRequest))
-            logger.log(result, action: .validating)
-            completion(result)
-            return
-        }
-        if isDebugEnabled(request: urlRequest, requestProvider: requestProvider) {
-            if performDebugAction(action: .request(urlRequest)) {
-                return
-            }
-        }
-        logger.log(urlRequest, action: .requesting)
-        session.dataTask(with: urlRequest) { data, resp, error in
-            DispatchQueue.main.async {
-                if let error {
-                    self.logger.log(error, action: .throwing)
-                    completion(.failure(.custom(error)))
-                }
-                if let data {
-                    do {
-                        self.logger.log(data, action: .parsing)
-                        let model = try self.dataDecoder.decode(type: dataType, data: data)
-                        completion(.success(model))
+    private func sendRequest(request: URLRequest, to: Pointable) async throws -> Data {
+        let requestDebuggingResult = debugger.debug(debug: to)
+        return try await withCheckedThrowingContinuation({
+            [weak self]
+            (continuation: CheckedContinuation<Data, Error>) in
+            switch requestDebuggingResult {
+            case .console:
+                if let action = self?.debugger.action(actionType: NetworkDebuggerActions.self) {
+                    action.action(.request(request)) {
+                        [weak self]
+                        returnedAction in
+                        switch returnedAction {
+                        case .request(let newRequest):
+                            self?.sendRequest(request: newRequest, completion: {
+                                [weak self ]
+                                error, returnedData in
+                                self?.processResponse(data: returnedData, error: error, continuation: continuation)
+                            })
+                            break
+                        default:
+                            break
+                            
+                        }
                     }
-                    catch let err {
-                        self.logger.log(error, action: .throwing)
-                        completion(.failure(.custom(err)))
-                    }
                 }
+            case .ignore:
+                self?.sendRequest(request: request, completion: {
+                    [weak self ]
+                    error, returnedData in
+                    self?.processResponse(data: returnedData, error: error, continuation: continuation)
+                })
             }
-        }.resume()
+        })
     }
-    private func isDebugEnabled(request: URLRequest, requestProvider: R) -> Bool {
-        let result = debugger.debug(identifier: request, debug: requestProvider)
-        switch result {
-        case .ignore:
-            return true
-        default:
-            return false
+    private func sendRequest(request: URLRequest, completion: @escaping (Error?, Data?) -> ()) {
+        session.dataTask(with: request) { data, response, error in
+            completion(error, data)
         }
     }
-    private func performDebugAction(action: DebugActions) -> Bool {
-        if let debugAction {
-            debugAction(action)
-            return true
+    private func processResponse(data: Data?, error: Error?, continuation: CheckedContinuation<Data, Error>) {
+        if let data {
+            continuation.resume(returning: data)
         }
-        return false
-    }
-}
-
-extension URLRequest: DebugingID {
-    public var id: String { url?.absoluteString ?? ""}
-}
-
-extension Network {
-    func api<DM>(requestProvider: R, dataType: DM.Type, completion: @escaping (Result<DM, NetworkError>) -> ()) where DM : Responsable {
-        run(requestProvider: requestProvider, dataType: dataType) { result in
-            switch result {
-            case .success(let success):
-                if success.code >= 200 && success.code <= 204 {
-                    completion(.success(success))
-                }else {
-                    completion(.failure(.standard(.unauthorized)))
-                }
-            case .failure(let failure):
-                completion(.failure(failure))
-            }
+        else if let error {
+            continuation.resume(throwing: error)
+        }else {
+            continuation.resume(throwing: NetworkErrorCode.notFound)
         }
     }
 }

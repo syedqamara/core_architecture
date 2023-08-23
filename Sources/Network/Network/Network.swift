@@ -11,6 +11,9 @@ import core_architecture
 protocol Pointable: Debugable {
     var pointing: String { get }
 }
+extension Pointable {
+    var id: String { pointing + "_debug_config_id" }
+}
 protocol Hosting {
     var host: String { get }
     var domain: String { get }
@@ -125,7 +128,7 @@ class Network: Networking {
                             self?.sendRequest(request: newRequest, completion: {
                                 [weak self ]
                                 error, returnedData in
-                                self?.processResponse(data: returnedData, error: error, continuation: continuation)
+                                self?.processResponse(to: to, data: returnedData, error: error, continuation: continuation)
                             })
                             break
                         default:
@@ -138,7 +141,7 @@ class Network: Networking {
                 self?.sendRequest(request: request, completion: {
                     [weak self ]
                     error, returnedData in
-                    self?.processResponse(data: returnedData, error: error, continuation: continuation)
+                    self?.processResponse(to: to, data: returnedData, error: error, continuation: continuation)
                 })
             }
         })
@@ -148,7 +151,8 @@ class Network: Networking {
             completion(error, data)
         }
     }
-    private func processResponse(data: Data?, error: Error?, continuation: CheckedContinuation<Data, Error>) {
+    private func processResponse(to: Pointable, data: Data?, error: Error?, continuation: CheckedContinuation<Data, Error>) {
+        let action = self.debugger.action(actionType: NetworkDebuggerActions.self)
         if let data {
             continuation.resume(returning: data)
         }

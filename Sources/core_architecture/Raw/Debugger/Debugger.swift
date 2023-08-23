@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol Debugable: ConfigID {
+public protocol Debugable {
     
 }
 public enum DebugResult {
@@ -74,23 +74,23 @@ open class Debugger<A: DebuggingAction>: Debugging {
         return nil
     }
     public func debug<D>(debug: D) -> DebugResult where D : Debugable {
-        @ConfigStore<EnableBreakPoint>(debug) var breakPointConfig
-        guard let config = breakPointConfig else {
-            fatalError("No Debug Breakpoint Configuration Found")
-        }
-        if config.isEnabled {
-            return console(debug: debug)
-        }
+//        @ConfigStore<EnableBreakPoint>(debug) var breakPointConfig
+//        guard let config = breakPointConfig else {
+//            fatalError("No Debug Breakpoint Configuration Found")
+//        }
+//        if config.isEnabled {
+//            return console(debug: debug)
+//        }
         return .ignore
     }
     public func console<D>(debug: D) -> DebugResult where D : Debugable {
-        @ConfigStore<EnableDebugConsole>(debug) var debugConsoleConfig
-        guard let config = debugConsoleConfig else {
-            fatalError("No Debug Console Configuration Found")
-        }
-        if config.isEnabled {
-            return .console
-        }
+//        @ConfigStore<EnableDebugConsole>(debug) var debugConsoleConfig
+//        guard let config = debugConsoleConfig else {
+//            fatalError("No Debug Console Configuration Found")
+//        }
+//        if config.isEnabled {
+//            return .console
+//        }
         return .ignore
     }
 }

@@ -35,4 +35,13 @@ public class Logs<L: LogAction> {
     public func log(_ any: Any?, action: L) {
         print(printStructuredInfo(completion: String(describing: any), action: action))
     }
+    public func log(_ any: URLRequest?, action: L) {
+        print(printStructuredInfo(completion: String(describing: any), action: action))
+    }
+    public func log(_ any: URL?, action: L) {
+        print(printStructuredInfo(completion: String(describing: any), action: action))
+    }
+    public func log(_ any: Error?, action: L) {
+        print(printStructuredInfo(completion: String(describing: any), action: action))
+    }
 }

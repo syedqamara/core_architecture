@@ -12,6 +12,9 @@ let package = Package(
             name: "core_architecture",
             targets: ["core_architecture"]),
         .library(
+            name: "Debugger",
+            targets: ["Debugger"]),
+        .library(
             name: "DebuggerUI",
             targets: ["DebuggerUI"]),
         .library(
@@ -37,10 +40,21 @@ let package = Package(
             name: "core_architectureTests",
             dependencies: ["core_architecture"]),
         
+        
+        .target(
+            name: "Debugger",
+            dependencies: [
+                "core_architecture",
+                .product(name: "Dependencies", package: "swift-dependencies")
+            ]),
+        .testTarget(
+            name: "DebuggerTests",
+            dependencies: ["Debugger"]),
+        
         .target(
             name: "DebuggerUI",
             dependencies: [
-                "core_architecture",
+                "Debugger",
                 .product(name: "Dependencies", package: "swift-dependencies")
             ]),
         .testTarget(
@@ -50,11 +64,14 @@ let package = Package(
         .target(
             name: "Network",
             dependencies: [
-                "core_architecture",
+                "Debugger",
                 .product(name: "Dependencies", package: "swift-dependencies")
             ]),
         .testTarget(
             name: "NetworkTests",
-            dependencies: ["Network"]),
+            dependencies: [
+                "Network",
+                .product(name: "ManagedAppConfigLib", package: "ManagedAppConfigLib")
+            ]),
     ]
 )

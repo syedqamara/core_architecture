@@ -7,10 +7,11 @@
 
 import Foundation
 import core_architecture
+import Debugger
 import SwiftUI
 
 public struct NetworkDebugModule: ViewModuling {
-    public static var preview: ModuleInput { .request(RootObject.exampleRequest()) }
+    public static var preview: ModuleInput { .init(configID: "123", debugID: "123", debugData: .request(RootObject.exampleRequest())) }
     public typealias ViewType = NetworkDebugView
     public typealias ModuleInput = NetworkDebuggerActions
     public let input: ModuleInput
@@ -28,6 +29,7 @@ public struct NetworkDebugModule: ViewModuling {
 public struct NetworkDebugView: ViewProtocol, View {
     public typealias ViewModelType = NetworkDebugViewModel
     @ObservedObject var viewModel: NetworkDebugViewModel
+    @EnvironmentObject var networkDebugConnectionVM: NetworkDebugConnectionViewModel
     public init(viewModel: NetworkDebugViewModel) {
         self.viewModel = viewModel
     }
@@ -73,9 +75,11 @@ public struct NetworkDebugView: ViewProtocol, View {
                         )
                     )
                     .view()
+                    .environmentObject(networkDebugConnectionVM)
                     .id(viewModel.debuggerAction.rawValue)
                 default:
                     DebugDataView(viewModel: viewModel)
+                        .environmentObject(networkDebugConnectionVM)
                         .id(String(describing: viewModel))
                 }
                 Spacer()
@@ -88,7 +92,7 @@ public struct NetworkDebugView: ViewProtocol, View {
 public class NetworkDebugViewModel: ViewModeling {
     public enum NetworkDebugAction: String {
     case request, data, error, response
-        public init(networkDebugAction: NetworkDebuggerActions) {
+        public init(networkDebugAction: NetworkDebuggers) {
             switch networkDebugAction {
             case .request(_):
                 self = .request
@@ -109,7 +113,7 @@ public class NetworkDebugViewModel: ViewModeling {
     init(action: NetworkDebuggerActions) {
         self.action = action
         self.keyValues = []
-        debuggerAction = .init(networkDebugAction: action)
+        debuggerAction = .init(networkDebugAction: action.debugData)
         fatchAndSetupKeyValue()
     }
     public func bindingKeyValues() -> Binding<[KeyValueData]> {
@@ -124,12 +128,12 @@ public class NetworkDebugViewModel: ViewModeling {
         .init {
             return self.request() ?? URLRequest(url: .init(string: "https://www.google.com")!)
         } set: { newRequest in
-            self.action = .request(newRequest)
+            self.action.debugData = .request(newRequest)
         }
 
     }
     private func data() -> DataModel? {
-        switch action {
+        switch action.debugData {
         case .data(let dataModel, _):
             return dataModel
         default:
@@ -137,7 +141,7 @@ public class NetworkDebugViewModel: ViewModeling {
         }
     }
     private func request() -> URLRequest? {
-        switch action {
+        switch action.debugData {
         case .request(let request):
             return request
         default:
@@ -145,7 +149,7 @@ public class NetworkDebugViewModel: ViewModeling {
         }
     }
     private func dataType() -> DataModel.Type? {
-        switch action {
+        switch action.debugData {
         case .data(_ ,let dataModelType):
             return dataModelType
         default:
@@ -160,7 +164,7 @@ public class NetworkDebugViewModel: ViewModeling {
         guard isEditingEnabled else { return }
         let saveDict = self.keyValues.map { $0.dictionary }.merge()
         if let dataModelType = dataType(), let dataModel = saveDict.decode(dataModelType) {
-            self.action = .data(dataModel, dataModelType)
+            self.action.debugData = .data(dataModel, dataModelType)
         }
         fatchAndSetupKeyValue()
         isEditingEnabled.toggle()

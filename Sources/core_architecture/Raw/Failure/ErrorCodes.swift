@@ -13,6 +13,8 @@ public enum LocalFileErrorCode: Int {
 // TODO: Add Custom Error Option for `NetworkErrorCode`
 public enum NetworkErrorCode: Int {
     // Client-side errors
+    case invalidSwiftModel = 397
+    case noNetworkConfigurationFound = 398
     case invalidURL = 399
     case badRequest = 400
     case unauthorized = 401
@@ -80,6 +82,10 @@ extension NetworkErrorCode: Erroring {
     }
     public var message: String {
         switch self {
+        case .invalidSwiftModel:
+            return "Invalid Swift Model for Response"
+        case .noNetworkConfigurationFound:
+            return "No Network Configuration Found"
         case .invalidURL:
             return "Invalid URL"
         case .badRequest:
@@ -139,4 +145,60 @@ extension NetworkErrorCode: Erroring {
         }
     }
     
+}
+// MARK: Debugging Error Codes
+public enum DebuggerErrorCode: Int {
+    case noConfigurationFound = -1
+}
+
+
+extension DebuggerErrorCode: Erroring {
+    public var code: Int {
+        self.rawValue
+    }
+    
+    private func snakeCase(_ input: String) -> String {
+        let parts = input.split(separator: " ").map { $0.lowercased() }
+        return parts.joined(separator: "_")
+    }
+    
+    public var identifier: String {
+        return snakeCase(message)
+    }
+    
+    public var message: String {
+        switch self {
+        case .noConfigurationFound:
+            return "No Debug Configuration Found"
+        }
+    }
+}
+// MARK: Registration Error Codes
+public enum RegistrationErrorCode: Int {
+    case noConfigurationFound = -1
+    case unEqualConfigurationProvided
+}
+
+extension RegistrationErrorCode: Erroring {
+    public var code: Int {
+        self.rawValue
+    }
+    
+    private func snakeCase(_ input: String) -> String {
+        let parts = input.split(separator: " ").map { $0.lowercased() }
+        return parts.joined(separator: "_")
+    }
+    
+    public var identifier: String {
+        return snakeCase(message)
+    }
+    
+    public var message: String {
+        switch self {
+        case .noConfigurationFound:
+            return "No Registration Configuration Found"
+        case .unEqualConfigurationProvided:
+            return "Configuration provided is not complete please check for batch registration method"
+        }
+    }
 }

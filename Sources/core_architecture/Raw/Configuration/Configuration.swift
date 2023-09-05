@@ -51,7 +51,8 @@ public struct Configuration<A> {
     private let key: String
     private let manager: ConfigManager = .shared
     public init(_ key: String) {
-        self.key = key
+        let finalKey = key + "_" + String(describing: A.self)
+        self.key = finalKey
     }
     fileprivate var applyingKey: String {
         return key + String(describing: A.self)

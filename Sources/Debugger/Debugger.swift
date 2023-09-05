@@ -14,7 +14,7 @@ public protocol Debugable: Configurable {
 }
 
 
-public enum BreakPointType {
+public enum BreakPointType: String, CaseIterable {
     case console, ignore
 }
 public protocol DebuggingAction: Debugable {

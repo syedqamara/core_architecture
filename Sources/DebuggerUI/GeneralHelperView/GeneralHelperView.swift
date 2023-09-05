@@ -9,15 +9,50 @@ import SwiftUI
 
 public struct RoundedBackgroundView<Content: View>: View {
     let content: Content
-
-    public init(@ViewBuilder content: () -> Content) {
+    let color: Color
+    public init(@ViewBuilder content: () -> Content, color: Color = .black) {
         self.content = content()
+        self.color = color
     }
 
     public var body: some View {
         content
             .padding()
-            .background(RoundedRectangle(cornerRadius: 10).fill(Color.black))
+            .background(RoundedRectangle(cornerRadius: 10).fill(color))
+    }
+}
+
+public struct SheetView<Content: View>: View {
+    @Environment(\.presentationMode) var dismiss
+    let content: Content
+    private let buttons: [String]
+    private let onClick: (String) -> ()
+    public init(@ViewBuilder content: () -> Content, buttons: [String], onClick: @escaping (String) -> ()) {
+        self.content = content()
+        self.onClick = onClick
+        self.buttons = buttons
+    }
+
+    public var body: some View {
+        VStack {
+            content
+            HStack {
+                ForEach(buttons, id: \.self) { btn in
+                    RoundedBackgroundView {
+                        Text(btn)
+                            .foregroundColor(.white)
+                            .padding()
+                    }
+                    .padding()
+                    .onTapGesture {
+                        onClick(btn)
+                        dismiss.wrappedValue.dismiss()
+                    }
+
+                }
+            }
+        }
+        
     }
 }
 

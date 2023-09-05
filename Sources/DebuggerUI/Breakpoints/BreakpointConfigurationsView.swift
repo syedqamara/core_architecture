@@ -13,6 +13,7 @@ import Network
 public struct BreakpointConfigurationsView: SwiftUIView {
     public typealias ViewModelType = BreakpointConfigurationsViewModel
     @ObservedObject var viewModel: BreakpointConfigurationsViewModel
+    @State var showBreakPointSelectionOption: Bool = false
     public init(viewModel: BreakpointConfigurationsViewModel) {
         self.viewModel = viewModel
     }
@@ -23,59 +24,26 @@ public struct BreakpointConfigurationsView: SwiftUIView {
         List(viewModel.networks(), id: \.to.configID) { networkConfig in
             VStack {
                 RoundedBackgroundView {
-                    NetworkConfigView(config: networkConfig)
+                    VStack {
+                        NetworkConfigView(config: networkConfig)
+                        separater()
+                        ForEach(viewModel.debuggers(for: networkConfig.to.debugID), id: \.className) { debugger in
+                            DebugConfigView(debug: debugger)
+                        }
+                    }
                 }
             }
         }
     }
-    func debuggerList() -> some View {
-        List(viewModel.debuggers(), id: \.self) { debugger in
-            VStack {
-                HStack {
-                    Text(debugger)
-                        .font(.title.bold())
-                        .foregroundColor(.black)
-                    Spacer()
-                    Text("\(viewModel.selectedDebuggerConfigurations(debugger: debugger).count)")
-                        .font(.title.bold())
-                        .foregroundColor(.gray)
-                }
-                listView(configurations: viewModel.selectedDebuggerConfigurations(debugger: debugger))
-            }
-        }
-    }
-    func configView(id: String, value: String) -> some View {
-        ZStack {
-            RoundedRectangle(cornerSize: .init(width: 5, height: 5))
-                .foregroundColor(.black)
-            VStack {
-                HStack {
-                    Text("Configuration ID")
-                        .font(.title3.bold())
-                        .foregroundColor(.gray)
-                    Spacer()
-                    Text(id)
-                        .font(.title3.bold())
-                        .foregroundColor(.white)
-                }
-                .padding(.vertical)
-                HStack {
-                    Text("Breakpoint")
-                        .font(.title3.bold())
-                        .foregroundColor(.gray)
-                    Spacer()
-                    Text(value)
-                        .font(.title3.bold())
-                        .foregroundColor(.white)
-                }
-                .padding(.vertical)
-            }
-            .padding()
-        }
-    }
-    func listView(configurations: [Debug]) -> some View {
-        ForEach(configurations, id: \.configID) { configuration in
-            configView(id: configuration.configID, value: String(describing: configuration.breakpoint))
+}
+
+struct DebugConfigView: View {
+    var debug: Debug
+    @State var showBreakPointSelectionOption: Bool = false
+    
+    var body: some View {
+        VStack {
+            TitleSubtitleView(title: debug.className, subtitle: debug.breakpoint.rawValue, subtitleColor: .blue)
         }
     }
 }
@@ -109,6 +77,7 @@ struct HostingView: View {
             TitleSubtitleView(title: "Port", subtitle: "\(host.port)")
             separater()
             TitleSubtitleView(title: "Path", subtitle: host.path)
+            separater()
         }
     }
 }

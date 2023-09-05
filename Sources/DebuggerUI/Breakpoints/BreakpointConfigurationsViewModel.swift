@@ -49,16 +49,11 @@ public class BreakpointConfigurationsViewModel: ViewModeling {
         @Configurations(NetworkConfig.self) var networkConfigurations
         return networkConfigurations
     }
-    
-    func debuggers() -> [String] {
-        return kAllDebuggers.map { String(describing: $0) }
+    func debuggers(for id: String) -> [Debug] {
+        @Configuration<NetworkRequestDebug>(id) var request
+        @Configuration<NetworkDataDebug>(id) var data
+        @Configuration<NetworkResponseDebug>(id) var response
+        @Configuration<NetworkErrorDebug>(id) var error
+        return [request, data, response, error].compactMap { $0 }
     }
-    func selectedDebuggerConfigurations(debugger: String) -> [Debug] {
-        guard let selected = kAllDebuggers.filter({ String(describing: $0) == debugger }).first else {
-            return []
-        }
-        @Configurations(selected) var breakpointConfigurations
-        return breakpointConfigurations.filter { $0.className == debugger }
-    }
-    
 }

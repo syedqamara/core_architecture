@@ -268,6 +268,18 @@ extension Dictionary where Key == String, Value == String {
         }
         return keyValuesArray.joined(separator: "&")
     }
+    public func prettyPrintJSONString() -> String {
+        do {
+            let prettyPrintedData = try JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+            
+            if let prettyPrintedString = String(data: prettyPrintedData, encoding: .utf8) {
+                return prettyPrintedString
+            }
+        } catch {
+            
+        }
+        return "{}"
+    }
 }
 extension DataModel {
     public var data: Data? {

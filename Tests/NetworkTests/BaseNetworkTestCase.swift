@@ -8,10 +8,13 @@ import XCTest
 import Foundation
 import core_architecture
 import ManagedAppConfigLib
+import Dependencies
 @testable import Network
+import Debugger
 
 class NetworkBaseTestCase: XCTestCase {
-    private let registrar: RegisteringSystem = .shared
+    @Dependency(\.registerar) var registrar
+//    private let registrar: RegisteringSystem = .shared
     func register(completion: (RegisteringSystem) -> ([Registering])) {
         ConfigManager.shared.removeAll()
         let registers = completion(registrar)
@@ -21,8 +24,6 @@ class NetworkBaseTestCase: XCTestCase {
     func sendNetworkRequest<N: Network>(action: DebugAction<NetworkDebuggerActions>, session: SessionManager, requestData: DataModel? = nil) -> NetworkManager<N> {
         let host = NetworkHost.default()
         let network = N(
-            host: host,
-            debugger: Debugger(action: action),
             session: session
         )
         return NetworkManager(network: network)

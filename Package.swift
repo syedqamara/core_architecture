@@ -54,7 +54,7 @@ let package = Package(
         .target(
             name: "DebuggerUI",
             dependencies: [
-                "Debugger",
+                "Network",
                 .product(name: "Dependencies", package: "swift-dependencies")
             ]),
         .testTarget(

@@ -20,7 +20,7 @@ public class DebugConnection<A: DebuggingAction>: ViewModeling {
         self.debugger = debugger
         setupAction()
     }
-    public func setupAction() {
+    private func setupAction() {
         self.debugger?.action = .init(
             action: {
                 [weak self]
@@ -29,6 +29,11 @@ public class DebugConnection<A: DebuggingAction>: ViewModeling {
                 self?.reactionCompletion = reaction
             }
         )
+    }
+    public func sendReaction(action: A) {
+        if let reactionCompletion {
+            reactionCompletion(action)
+        }
     }
 }
 

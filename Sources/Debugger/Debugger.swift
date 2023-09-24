@@ -42,6 +42,7 @@ public struct DebugAction<A> {
     public init(action: @escaping ActionCompletion) {
         self.action = action
     }
+    public static var noAction: DebugAction<A> { .init(action: { $1($0) }) }
 }
 
 open class Debugger<A: DebuggingAction>: Debugging {

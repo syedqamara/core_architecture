@@ -1,4 +1,5 @@
 import XCTest
+import Debugger
 import core_architecture
 import ManagedAppConfigLib
 @testable import Network
@@ -12,7 +13,7 @@ final class NetworkTests: NetworkBaseTestCase {
         register { _ in [] }
         Task {
             let manager = self.sendNetworkRequest(
-                action: NoActionMockNetworkDebugAction().action,
+                action: .noAction,
                 session: MockErrorSessionManager(error: .network(.noNetworkConfigurationFound))
             )
             do {
@@ -35,16 +36,14 @@ final class NetworkTests: NetworkBaseTestCase {
         wait(for: [expectation], timeout: .init(10))
     }
     func testNoDebugConfiguration() throws {
-        register { registrar in
-            [
-                registrar.networkRegister(endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
-            ]
+        do {
+            try registrar.networkRegister(host: NetworkHost.default(), endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
         }
         
         let expectation = XCTestExpectation(description: "Network Test Call")
         Task {
             let manager = self.sendNetworkRequest(
-                action: NoActionMockNetworkDebugAction().action,
+                action: .noAction,
                 session: MockErrorSessionManager(error: .debugger(.noConfigurationFound))
             )
             do {
@@ -66,20 +65,15 @@ final class NetworkTests: NetworkBaseTestCase {
         wait(for: [expectation], timeout: .init(10))
     }
     func testSuccessfullApi() throws {
-        register { registrar in
-            [
-                // Network Registration
-                registrar.networkRegister(endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:]),
-                // Debug Registration
-                registrar.debuggerRegister(type: NetworkRequestDebug.self, debugable: Endpoint.signup, breakPoint: .ignore),
-                registrar.debuggerRegister(type: NetworkDataDebug.self, debugable: Endpoint.signup, breakPoint: .ignore),
-                registrar.debuggerRegister(type: NetworkErrorDebug.self, debugable: Endpoint.signup, breakPoint: .ignore),
-            ]
-        }
+        try registrar.networkRegister(host: NetworkHost.default(), endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
+        // Debug Registration
+        _ = registrar.debuggerRegister(type: NetworkRequestDebug.self, debugable: Endpoint.signup, breakPoint: .ignore)
+        _ = registrar.debuggerRegister(type: NetworkDataDebug.self, debugable: Endpoint.signup, breakPoint: .ignore)
+        _ = registrar.debuggerRegister(type: NetworkErrorDebug.self, debugable: Endpoint.signup, breakPoint: .ignore)
         let expectation = XCTestExpectation(description: "Network Test Call")
         Task {
             let manager = self.sendNetworkRequest(
-                action: NoActionMockNetworkDebugAction().action,
+                action: .noAction,
                 session: MockSessionManager(data: User.testExample)
             )
             do {
@@ -99,20 +93,14 @@ final class NetworkTests: NetworkBaseTestCase {
         wait(for: [expectation], timeout: .init(10))
     }
     func testSuccessfullApiAfterDataDebugEditing() throws {
-        register { registrar in
-            [
-                // Network Registration
-                registrar.networkRegister(endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:]),
-                // Debug Registration
-                registrar.debuggerRegister(type: NetworkRequestDebug.self, debugable: Endpoint.signup, breakPoint: .ignore),
-                registrar.debuggerRegister(type: NetworkDataDebug.self, debugable: Endpoint.signup, breakPoint: .console),
-                registrar.debuggerRegister(type: NetworkErrorDebug.self, debugable: Endpoint.signup, breakPoint: .ignore),
-            ]
-        }
+        try registrar.networkRegister(host: NetworkHost.default(), endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
+        _ = registrar.debuggerRegister(type: NetworkRequestDebug.self, debugable: Endpoint.signup, breakPoint: .ignore)
+        _ = registrar.debuggerRegister(type: NetworkDataDebug.self, debugable: Endpoint.signup, breakPoint: .console)
+        _ = registrar.debuggerRegister(type: NetworkErrorDebug.self, debugable: Endpoint.signup, breakPoint: .ignore)
         let expectation = XCTestExpectation(description: "Network Test Call")
         Task {
             let manager = self.sendNetworkRequest(
-                action: DataActionMockNetworkDebugAction().action,
+                action: .init(action: { $1($0) }),
                 session: MockSessionManager(data: User.testExample)
             )
             do {

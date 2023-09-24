@@ -45,6 +45,10 @@ enum Endpoint {
 }
 
 extension Endpoint: Pointable {
+    var debugID: String { "debugging.id.\(pointing)" }
+    
+    var configID: String { "configuration.id.\(pointing)" }
+    
     static var allCases: [Endpoint] {
         [
             .login(isSocial: false),

@@ -9,6 +9,7 @@ import Foundation
 import core_architecture
 import Debugger
 import SwiftUI
+import Dependencies
 
 public struct NetworkDebugModule: ViewModuling {
     public static var preview: ModuleInput { .init(configID: "123", debugID: "123", debugData: .request(RootObject.exampleRequest())) }
@@ -30,6 +31,7 @@ public struct NetworkDebugView: ViewProtocol, View {
     public typealias ViewModelType = NetworkDebugViewModel
     @ObservedObject var viewModel: NetworkDebugViewModel
     @EnvironmentObject var networkDebugConnectionVM: NetworkDebugConnectionViewModel
+    @Environment(\.dismiss) var dismiss
     public init(viewModel: NetworkDebugViewModel) {
         self.viewModel = viewModel
     }
@@ -60,6 +62,7 @@ public struct NetworkDebugView: ViewProtocol, View {
                             .foregroundColor(viewModel.isEditingEnabled ? .blue : .gray)
                             .onTapGesture {
                                 viewModel.save()
+                                dismiss()
                             }
                     }
                     .padding(.horizontal)
@@ -105,6 +108,7 @@ public class NetworkDebugViewModel: ViewModeling {
             }
         }
     }
+    @Dependency(\.networkDebugConnection) private var debugConnection
     private var action: NetworkDebuggerActions
     @Published public var debuggerAction: NetworkDebugAction
     @Published public var keyValues: [KeyValueData]
@@ -165,6 +169,7 @@ public class NetworkDebugViewModel: ViewModeling {
         let saveDict = self.keyValues.map { $0.dictionary }.merge()
         if let dataModelType = dataType(), let dataModel = saveDict.decode(dataModelType) {
             self.action.debugData = .data(dataModel, dataModelType)
+            self.debugConnection.sendReaction(action: action)
         }
         fatchAndSetupKeyValue()
         isEditingEnabled.toggle()

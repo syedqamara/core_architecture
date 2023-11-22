@@ -17,6 +17,8 @@ public protocol ViewingFactory {
 }
 
 public struct ViewFactory: ViewingFactory {
+    public init() {}
+    
     public func makeView<I>(input: I) -> any ViewProtocol {
         NoView(viewModel: .init())
     }

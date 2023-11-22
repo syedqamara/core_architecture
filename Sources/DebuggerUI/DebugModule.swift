@@ -11,6 +11,10 @@ import Debugger
 import SwiftUI
 import Dependencies
 
+
+
+
+
 public struct NetworkDebugModule: ViewModuling {
     public static var preview: ModuleInput { .init(configID: "123", debugID: "123", debugData: .request(RootObject.exampleRequest())) }
     public typealias ViewType = NetworkDebugView
@@ -27,7 +31,7 @@ public struct NetworkDebugModule: ViewModuling {
         )
     }
 }
-public struct NetworkDebugView: ViewProtocol, View {
+public struct NetworkDebugView: SwiftUIView {
     public typealias ViewModelType = NetworkDebugViewModel
     @ObservedObject var viewModel: NetworkDebugViewModel
     @EnvironmentObject var networkDebugConnectionVM: NetworkDebugConnectionViewModel

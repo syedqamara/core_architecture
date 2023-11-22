@@ -7,9 +7,27 @@
 
 import Foundation
 
-public class ViewModuleFactory {
-    public func create<M: ViewModuling>(_ input: M.ModuleInput) -> M {
-        return M(input: input)
-    }
+/// Protocol for a factory that creates views.
+public protocol ViewingFactory {
+    /// Creates a view of a specific type for a given input.
+    ///
+    /// - Parameter input: The input data for configuring the view.
+    /// - Returns: An instance of a view that conforms to the `Viewing` protocol.
+    func makeView<I>(input: I) -> any ViewProtocol
 }
 
+public struct ViewFactory: ViewingFactory {
+    public func makeView<I>(input: I) -> any ViewProtocol {
+        NoView(viewModel: .init())
+    }
+    
+}
+
+private  class NoViewModel: ViewModeling {}
+
+private struct NoView: ViewProtocol {
+    public typealias ViewModelType = NoViewModel
+    public init(viewModel: NoViewModel) {
+        
+    }
+}

@@ -14,7 +14,7 @@ public protocol SwiftUIViewFactoryProtocol {
     ///
     /// - Parameter input: The input data for configuring the view.
     /// - Returns: An instance of a view that conforms to the `SwiftUIView` protocol.
-    func makeView<I>(input: I) -> some SwiftUIView
+    func makeView<I>(input: I) -> any SwiftUIView
 }
 
 /// A concrete implementation of `SwiftUIViewFactoryProtocol`.
@@ -23,7 +23,7 @@ public struct SwiftUIViewFactory: SwiftUIViewFactoryProtocol {
     public init() {}
 
     /// Creates a `NoSwiftUIView` with a default view model.
-    public func makeView<I>(input: I) -> some SwiftUIView {
+    public func makeView<I>(input: I) -> any SwiftUIView {
         NoSwiftUIView(viewModel: .init())
     }
 }
@@ -34,7 +34,7 @@ public protocol ViewingFactory {
     ///
     /// - Parameter input: The input data for configuring the view.
     /// - Returns: An instance of a view that conforms to the `ViewProtocol` protocol.
-    func makeView<I>(input: I) -> some ViewProtocol
+    func makeView<I>(input: I) -> any ViewProtocol
 }
 
 /// A concrete implementation of `ViewingFactory`.
@@ -43,7 +43,7 @@ public struct ViewFactory: ViewingFactory {
     public init() {}
 
     /// Creates a `NoView` with a default view model.
-    public func makeView<I>(input: I) -> some ViewProtocol {
+    public func makeView<I>(input: I) -> any ViewProtocol {
         NoView(viewModel: .init())
     }
 }

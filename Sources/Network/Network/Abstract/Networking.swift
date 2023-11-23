@@ -22,7 +22,7 @@ public protocol Hosting {
 }
 
 extension Hosting {
-    var hostScheme: String {
+    public var hostScheme: String {
         scheme + "://" + host + "/" + path
     }
 }

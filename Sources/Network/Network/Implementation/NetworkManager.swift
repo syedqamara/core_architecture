@@ -14,8 +14,9 @@ public class NetworkManager<N: Network>: ManagableNetworking {
         self.network = network
     }
     public func send<D>(to: Pointable, with data: DataModel?, type: D.Type) async throws -> D where D : DataModel {
-        @Configuration(to.configID) var config: NetworkConfig?
-        if let config {
+        @Configuration(to.configID) var configuration: NetworkConfig?
+        if var staticConfiguration = configuration {
+            let config = NetworkConfig(config: staticConfiguration, to: to)
             let result = try await network.send(with: data, config: config)
             if let decodedResult = result as? D {
                 return decodedResult

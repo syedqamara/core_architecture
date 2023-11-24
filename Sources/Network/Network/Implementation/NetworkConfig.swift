@@ -23,6 +23,14 @@ public struct NetworkConfig {
         self.responseType = responseType
         self.headers = headers
     }
+    public init(config: NetworkConfig, to: Pointable) {
+        self.host = config.host
+        self.to = to
+        self.method = config.method
+        self.contentType = config.contentType
+        self.responseType = config.responseType
+        self.headers = config.headers
+    }
 }
 public enum HTTPMethod: String {
 case get, post, put

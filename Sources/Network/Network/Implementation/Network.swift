@@ -12,7 +12,7 @@ import Debugger
 
 public class Network: Networking {
     enum NetworkLogAction {
-    case url, createRequest, sendRequest, receiveData(Data), throwsError
+    case url, createRequest, sendRequest, receiveData, throwsError
     }
     struct NetworkDebugDataModel: DataModel {
         var debugData: Data
@@ -120,7 +120,7 @@ public class Network: Networking {
             data, response, error in
             if let data {
                 do {
-                    self?.logger.log(data, action: .receiveData(data))
+                    self?.logger.log(data, action: .receiveData)
                     let dataModel = try JSONDecoder().decode(config.responseType, from: data)
                     completion(nil, dataModel)
                 }
@@ -213,13 +213,8 @@ extension Network.NetworkLogAction: LogAction {
             return "Created Request"
         case .sendRequest:
             return "Sent Request"
-        case .receiveData(let data):
-            do {
-                return try data.prettyJSONString()
-            }
-            catch let err {
-                return err.localizedDescription
-            }
+        case .receiveData:
+            return "Received Data"
         case .throwsError:
             return "Received Error"
         }

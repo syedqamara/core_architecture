@@ -25,8 +25,10 @@ public class DebugConnection<A: DebuggingAction>: ViewModeling {
             action: {
                 [weak self]
                 action, reaction in
-                self?.debuggingAction = action
-                self?.reactionCompletion = reaction
+                DispatchQueue.main.async {
+                    self?.debuggingAction = action
+                    self?.reactionCompletion = reaction
+                }
             }
         )
     }

@@ -17,6 +17,7 @@ extension KeyValueData: Identifiable {
 }
 
 public struct KeyValueView: View {
+    @Dependency(\.networkModuleKeyValueTheme) var theme
     @Binding var keyValue: KeyValueData
     @Binding var isEditingEnabled: Bool
     @State private var valueAsString: String {
@@ -59,20 +60,29 @@ public struct KeyValueView: View {
 
     }
     public var body: some View {
-        HStack {
+        HStack(alignment: .center) {
             Text(keyValue.key)
-                .font(.title.bold())
+                .font(theme.keyTitleFont)
+                .foregroundColor(theme.keyTiteColor)
+                .padding(.horizontal, theme.keyPadding)
             Spacer()
             if isEditingEnabled {
-                TextField("Enter value for \(keyValue.key)", text: binding())
-                    .id(keyValue.id)
-                    .multilineTextAlignment(.trailing)
-                    .font(.title)
-                    .frame(height: 50)
+                RoundedBorderView(height: theme.jsonContentHeight) {
+                    TextField("Enter value for \(keyValue.key)", text: binding())
+                        .id(keyValue.id)
+                        .foregroundColor(theme.keyTiteColor)
+                        .padding(.horizontal, theme.valuePadding)
+                        .multilineTextAlignment(.trailing)
+                        .font(theme.valueTitleFont.monospaced())
+                        
+                }
             }else {
                 Text(keyValue.value.description)
                     .id(keyValue.id)
-                    .font(.title)
+                    .font(theme.valueTitleFont)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(theme.valueTiteColor)
+                    .padding(.horizontal, theme.valuePadding)
             }
         }
     }
@@ -133,14 +143,14 @@ public class KeyValueCollectionViewModel: ViewModeling {
         }
     }
 }
-
+import Dependencies
 public struct KeyValueCollectionView: View {
+    @Dependency(\.networkModuleKeyValueTheme) var theme
     var key: String
     @ObservedObject var viewModel: KeyValueCollectionViewModel
     @Binding var isExpanded: Bool
     @Binding var isEditingEnabled: Bool
     @State var expandedBindings: [String: Bool] = [:]
-    let contentHeight: CGFloat = 35
     init(key: String, keyValues: Binding<[KeyValueData]>, isEditingEnabled: Binding<Bool>, isExpanded: Binding<Bool>) {
         self.key = key
         self.viewModel = .init(keyValues: keyValues)
@@ -149,66 +159,80 @@ public struct KeyValueCollectionView: View {
     }
     func binding(key: String) -> Binding<Bool> {
         .init {
-            expandedBindings[key] ?? false
+            expandedBindings[key] ?? true
         } set: { newValue in
             expandedBindings[key] = newValue
         }
     }
-    
+    @ViewBuilder
+    func expandableHeaderView() -> some View {
+        Image(systemName: isExpanded ? "arrow.down.circle.fill" : "arrow.down.circle")
+            .rotationEffect(.degrees(isExpanded ? 180 : 0))
+            .font(theme.headerTitleFont)
+            .foregroundColor(theme.borderColor)
+            .padding(.horizontal, theme.headerPadding)
+    }
     public var body: some View {
         VStack {
-            VStack {
+            ZStack {
+                RoundedRectangle(cornerRadius: theme.radius)
+                    .stroke(lineWidth: 1)
+                    .stroke(theme.keyTiteColor)
+                
                 VStack {
-                    ScrollView(.horizontal) {
-                        RoundedBorderView(height: contentHeight) {
+                    VStack {
+                        VStack {
                             HStack {
                                 Text(key)
-                                    .font(.title.bold())
-                                    .padding(.horizontal)
+                                    .foregroundColor(theme.keyTiteColor)
+                                    .lineLimit(1)
+                                    .font(theme.headerTitleFont)
+                                    .padding(theme.headerPadding)
                                 Spacer()
-                                Text(isExpanded ? "🔺" : "🔻")
-                                    .padding(.horizontal)
+                                expandableHeaderView()
+                            }
+                            if isExpanded {
+                                Rectangle()
+                                    .foregroundColor(theme.keyTiteColor)
+                                    .frame(height: 1.5)
+                                    .padding(.horizontal, theme.headerPadding)
                             }
                         }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            withAnimation {
+                                isExpanded.toggle()
+                            }
+                        }
+                        .frame(height: theme.headerHeight)
                     }
-                }
-                .onTapGesture {
-                    withAnimation {
-                        isExpanded.toggle()
-                    }
-                }
-                .frame(height: contentHeight)
-                
-            }
-            if isExpanded {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(.black, lineWidth: 5)
-                        .background(Color.white)
-                        .padding(.horizontal)
-                    VStack {
+                    if isExpanded {
                         ForEach(viewModel.keyValues) { kv in
                             switch kv.value {
                             case .keyValue(_):
                                 KeyValueCollectionView(key: kv.key, keyValues: viewModel.getBinding(kv: kv), isEditingEnabled: $isEditingEnabled, isExpanded: binding(key: kv.key))
                                     .id(kv.id)
-                                    .padding([.horizontal])
+                                    .padding(.horizontal, theme.keyPadding)
                                     
                             case .arrayValue(_):
                                 KeyValueCollectionView(key: kv.key, keyValues: viewModel.getBinding(kv: kv), isEditingEnabled: $isEditingEnabled, isExpanded: binding(key: kv.key))
                                     .id(kv.id)
-                                    .padding([.horizontal])
+                                    .padding(.horizontal, theme.keyPadding)
                             default:
                                 KeyValueView(keyValue: viewModel.getBinding(kv: kv), isEditingEnabled: $isEditingEnabled)
-                                    .frame(height: contentHeight)
+                                    .frame(height: theme.jsonContentHeight)
                                     .id(kv.id)
-                                    .padding([.horizontal])
+                                    .padding(.horizontal, theme.keyPadding)
                             }
                         }
                     }
-                    .padding()
                 }
+                .padding(.horizontal, 0)
+                .padding(.vertical, theme.keyPadding)
             }
+            .padding(.vertical, theme.keyPadding)
+            .padding(.horizontal, theme.headerPadding)
+            
         }
     }
 }
@@ -216,6 +240,7 @@ public struct KeyValueCollectionView: View {
 
 public struct DebugDataView: ViewProtocol, View {
     public typealias ViewModelType = NetworkDebugViewModel
+    @Dependency(\.networkModuleKeyValueTheme) var theme
     @ObservedObject var viewModel: NetworkDebugViewModel
     public init(viewModel: NetworkDebugViewModel) {
         self.viewModel = viewModel
@@ -228,8 +253,22 @@ public struct DebugDataView: ViewProtocol, View {
                         .id("Root")
                 }
             }
+            .background(theme.backgroundColor)
             .navigationBarBackButtonHidden(false)
-            .navigationTitle(Text("Debug Data"))
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    HStack {
+                        Text("Metflix Network Debugger")
+                            .font(theme.navigationTitleFont)
+                            .foregroundColor(.white)
+                            .shadow(color: .red, radius: 3, x: 3, y: -3)
+                        Spacer()
+                    }
+                    
+                    .ignoresSafeArea(.all, edges: [.top, .bottom])
+                }
+            }
+            .navigationTitle(Text("Debug Data").foregroundColor(theme.valueTiteColor))
         }
     }
 }
@@ -237,6 +276,7 @@ public struct DebugDataView: ViewProtocol, View {
 
 
 struct RoundedBorderView<Content: View>: View {
+    @Dependency(\.networkModuleKeyValueTheme) var theme
     var height: CGFloat
     var content: Content
     
@@ -249,8 +289,7 @@ struct RoundedBorderView<Content: View>: View {
         GeometryReader { geometry in
             ZStack(alignment: .topLeading) {
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.blue, lineWidth: 2)
-                    .background(Color.white)
+                    .stroke(theme.borderColor, lineWidth: 2)
                     .frame(width: geometry.size.width, height: height == 0 ? geometry.size.height : height)
                 content
                     .frame(width: geometry.size.width, height: height == 0 ? geometry.size.height : height)
@@ -259,3 +298,16 @@ struct RoundedBorderView<Content: View>: View {
         }
     }
 }
+import Debugger
+
+public struct DebugDataViewTT_Previews: PreviewProvider {
+    public static var previews: some View {
+        NetworkDebugModule(
+            input: NetworkDebugModule.preview
+        ).view()
+            .environmentObject(NetworkDebugConnectionViewModel(debugger: .liveValue))
+            
+    }
+}
+
+

@@ -16,7 +16,7 @@ import Dependencies
 
 
 public struct NetworkDebugModule: ViewModuling {
-    public static var preview: ModuleInput { .init(configID: "123", debugID: "123", debugData: .request(RootObject.exampleRequest())) }
+    public static var preview: ModuleInput { .init(configID: "123", debugID: "123", debugData: .data(RootObject.example(), RootObject.self)) }
     public typealias ViewType = NetworkDebugView
     public typealias ModuleInput = NetworkDebuggerActions
     public let input: ModuleInput
@@ -33,6 +33,7 @@ public struct NetworkDebugModule: ViewModuling {
 }
 public struct NetworkDebugView: SwiftUIView {
     public typealias ViewModelType = NetworkDebugViewModel
+    @Dependency(\.networkModuleKeyValueTheme) var theme
     @ObservedObject var viewModel: NetworkDebugViewModel
     @EnvironmentObject var networkDebugConnectionVM: NetworkDebugConnectionViewModel
     @Environment(\.dismiss) var dismiss
@@ -47,12 +48,12 @@ public struct NetworkDebugView: SwiftUIView {
                         HStack {
                             if viewModel.isEditingEnabled {
                                 Text("Disable Editing")
-                                    .font(.title3.bold())
-                                    .foregroundColor(.red)
+                                    .font(theme.headerTitleFont)
+                                    .foregroundColor(theme.keyTiteColor)
                             }else {
                                 Text("Enable Editing")
-                                    .font(.title3.bold())
-                                    .foregroundColor(.blue)
+                                    .font(theme.headerTitleFont)
+                                    .foregroundColor(theme.keyTiteColor)
                             }
                         }
                         .onTapGesture {
@@ -62,8 +63,8 @@ public struct NetworkDebugView: SwiftUIView {
                         }
                         Spacer()
                         Text("Save")
-                            .font(.title3.bold())
-                            .foregroundColor(viewModel.isEditingEnabled ? .blue : .gray)
+                            .font(theme.headerTitleFont)
+                            .foregroundColor(viewModel.isEditingEnabled ? theme.keyTiteColor : theme.valueTiteColor)
                             .onTapGesture {
                                 viewModel.save()
                                 dismiss()
@@ -91,8 +92,10 @@ public struct NetworkDebugView: SwiftUIView {
                 }
                 Spacer()
             }
+            .padding(.top, 10)
+            .navigationBarTitleDisplayMode(.inline)
+            .background(theme.backgroundColor)
             .navigationBarBackButtonHidden(false)
-            .navigationTitle(Text("Debug Data"))
         }
     }
 }
@@ -116,8 +119,8 @@ public class NetworkDebugViewModel: ViewModeling {
     private var action: NetworkDebuggerActions
     @Published public var debuggerAction: NetworkDebugAction
     @Published public var keyValues: [KeyValueData]
-    @Published public var isExpanded: Bool = false
-    @Published public var isEditingEnabled: Bool = false
+    @Published public var isExpanded: Bool = true
+    @Published public var isEditingEnabled: Bool = true
     init(action: NetworkDebuggerActions) {
         self.action = action
         self.keyValues = []
@@ -177,5 +180,16 @@ public class NetworkDebugViewModel: ViewModeling {
         }
         fatchAndSetupKeyValue()
         isEditingEnabled.toggle()
+    }
+}
+import Debugger
+
+public struct DebugDataViewT_Previews: PreviewProvider {
+    public static var previews: some View {
+        NetworkDebugModule(
+            input: NetworkDebugModule.preview
+        ).view()
+            .environmentObject(NetworkDebugConnectionViewModel(debugger: .liveValue))
+            
     }
 }

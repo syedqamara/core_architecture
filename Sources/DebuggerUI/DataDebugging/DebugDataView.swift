@@ -159,14 +159,16 @@ public struct KeyValueCollectionView: View {
         VStack {
             VStack {
                 VStack {
-                    RoundedBorderView(height: contentHeight) {
-                        HStack {
-                            Text(key)
-                                .font(.title.bold())
-                                .padding(.horizontal)
-                            Spacer()
-                            Text(isExpanded ? "🔺" : "🔻")
-                                .padding(.horizontal)
+                    ScrollView(.horizontal) {
+                        RoundedBorderView(height: contentHeight) {
+                            HStack {
+                                Text(key)
+                                    .font(.title.bold())
+                                    .padding(.horizontal)
+                                Spacer()
+                                Text(isExpanded ? "🔺" : "🔻")
+                                    .padding(.horizontal)
+                            }
                         }
                     }
                 }
@@ -221,7 +223,7 @@ public struct DebugDataView: ViewProtocol, View {
     public var body: some View {
         NavigationStack {
             VStack {
-                ScrollView {
+                ScrollView(.vertical) {
                     KeyValueCollectionView(key: "Root", keyValues: viewModel.bindingKeyValues(), isEditingEnabled: $viewModel.isEditingEnabled, isExpanded: $viewModel.isExpanded)
                         .id("Root")
                 }

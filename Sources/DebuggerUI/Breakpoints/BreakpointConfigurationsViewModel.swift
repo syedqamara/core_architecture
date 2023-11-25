@@ -9,6 +9,7 @@ import Foundation
 import core_architecture
 import Debugger
 import Network
+import SwiftUI
 
 public enum DebugConfigurations: Identifiable {
     case request(NetworkRequestDebug), data(NetworkDataDebug), response(NetworkResponseDebug), error(NetworkErrorDebug)

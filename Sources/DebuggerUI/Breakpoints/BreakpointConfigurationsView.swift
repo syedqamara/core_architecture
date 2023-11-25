@@ -14,6 +14,7 @@ public struct BreakpointConfigurationsView: SwiftUIView {
     public typealias ViewModelType = BreakpointConfigurationsViewModel
     @ObservedObject var viewModel: BreakpointConfigurationsViewModel
     @State var showBreakPointSelectionOption: Bool = false
+    @State var refresh: Bool = false
     public init(viewModel: BreakpointConfigurationsViewModel) {
         self.viewModel = viewModel
     }
@@ -27,8 +28,19 @@ public struct BreakpointConfigurationsView: SwiftUIView {
                     VStack {
                         NetworkConfigView(config: networkConfig)
                         separater()
-                        ForEach(viewModel.debuggers(for: networkConfig.to.debugID), id: \.className) { debugger in
-                            DebugConfigView(debug: debugger)
+                        if refresh || !refresh {
+                            ForEach(viewModel.debuggers(for: networkConfig.to.debugID), id: \.className) { debugger in
+                                DebugConfigView(debug: debugger)
+                                    .onTapGesture {
+                                        switch debugger.breakpoint {
+                                        case .console:
+                                            debugger.breakpoint = .ignore
+                                        case .ignore:
+                                            debugger.breakpoint = .console
+                                        }
+                                        refresh.toggle()
+                                    }
+                            }
                         }
                     }
                 }

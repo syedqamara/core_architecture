@@ -33,7 +33,7 @@ public struct BreakpointConfigurationsView: SwiftUIView {
                             ForEach(viewModel.debuggers(for: networkConfig.to.debugID), id: \.className) { debugger in
                                 DebugConfigView(debug: debugger)
                                     .onTapGesture {
-                                        viewModel.toggleBreakpoint(for: networkConfig.to.debugID)
+                                        viewModel.toggleBreakpoint(for: networkConfig.to.debugID, className: debugger.className)
                                         refresh.toggle()
                                     }
                             }

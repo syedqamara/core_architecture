@@ -35,7 +35,6 @@ public struct BreakpointConfigurationsView: SwiftUIView {
                                         viewModel.toggleBreakpoint(for: networkConfig.to.debugID, className: debugger.className)
                                         withAnimation {
                                             isExpanded.toggle()
-                                            isExpanded.toggle()
                                         }
                                     }
                             }

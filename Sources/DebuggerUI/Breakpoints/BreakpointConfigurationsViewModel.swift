@@ -57,4 +57,16 @@ public class BreakpointConfigurationsViewModel: ViewModeling {
         @Configuration<NetworkErrorDebug>(id) var error
         return [request, data, response, error].compactMap { $0 }
     }
+    func toggleBreakpoint(for id: String) {
+        @Configuration<Debug>(id) var debugConfig
+        if let debug = debugConfig {
+            switch debug.breakpoint {
+            case .console:
+                debug.breakpoint = .ignore
+            case .ignore:
+                debug.breakpoint = .console
+            }
+            debugConfig = debug
+        }
+    }
 }

@@ -14,7 +14,6 @@ public struct BreakpointConfigurationsView: SwiftUIView {
     public typealias ViewModelType = BreakpointConfigurationsViewModel
     @ObservedObject var viewModel: BreakpointConfigurationsViewModel
     @State var showBreakPointSelectionOption: Bool = false
-    @State var refresh: Bool = false
     @State var isExpanded: Bool = false
     public init(viewModel: BreakpointConfigurationsViewModel) {
         self.viewModel = viewModel
@@ -29,12 +28,15 @@ public struct BreakpointConfigurationsView: SwiftUIView {
                     VStack {
                         NetworkConfigView(config: networkConfig, isExpanded: $isExpanded)
                         separater()
-                        if (refresh || !refresh) && isExpanded {
+                        if isExpanded {
                             ForEach(viewModel.debuggers(for: networkConfig.to.debugID), id: \.className) { debugger in
                                 DebugConfigView(debug: debugger)
                                     .onTapGesture {
                                         viewModel.toggleBreakpoint(for: networkConfig.to.debugID, className: debugger.className)
-                                        refresh.toggle()
+                                        withAnimation {
+                                            isExpanded.toggle()
+                                            isExpanded.toggle()
+                                        }
                                     }
                             }
                         }

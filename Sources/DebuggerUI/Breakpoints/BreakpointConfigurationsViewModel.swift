@@ -72,5 +72,6 @@ public class BreakpointConfigurationsViewModel: ViewModeling {
         } else if error?.className == className {
             error?.toggle()
         }
+        objectWillChange.send()
     }
 }

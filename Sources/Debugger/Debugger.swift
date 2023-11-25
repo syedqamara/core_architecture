@@ -32,6 +32,14 @@ public class Debug: Configurable {
         self.breakpoint = breakpoint
     }
     public var className: String { String(describing: Self.self) }
+    public func toggle() {
+        switch breakpoint {
+        case .console:
+            breakpoint = .ignore
+        case .ignore:
+            breakpoint = .console
+        }
+    }
 }
 
 

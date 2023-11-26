@@ -29,11 +29,25 @@ public struct BreakpointConfigurationsView: SwiftUIView {
         }
 
     }
-    func networkList() -> some View {
-        List(viewModel.networks(), id: \.to.configID) { networkConfig in
-            VStack {
-                RoundedBackgroundView {
-                    VStack {
+    @ViewBuilder
+    func networkConfigView(_ networkConfig: NetworkConfig) -> some View {
+        VStack {
+            RoundedBackgroundView {
+                VStack {
+                    NetworkConfigView(config: networkConfig, isExpanded: binding(networkConfig.to.pointing))
+                    if binding(networkConfig.to.pointing).wrappedValue {
+                        separater()
+                        ForEach(viewModel.debuggers(for: networkConfig.to.debugID), id: \.className) { debugger in
+                            DebugConfigView(debug: debugger)
+                                .onTapGesture {
+                                    viewModel.toggleBreakpoint(for: networkConfig.to.debugID, className: debugger.className)
+                                    withAnimation {
+                                        binding(networkConfig.to.pointing).wrappedValue.toggle()
+                                    }
+                                }
+                        }
+                    }
+                    RoundedBorderView(height: 30) {
                         Image(systemName: binding(networkConfig.to.pointing).wrappedValue ? "arrow.down.circle.fill" : "arrow.down.circle")
                             .rotationEffect(.degrees(binding(networkConfig.to.pointing).wrappedValue ? 180 : 0))
                             .font(.title2.bold())
@@ -43,23 +57,28 @@ public struct BreakpointConfigurationsView: SwiftUIView {
                                     binding(networkConfig.to.pointing).wrappedValue.toggle()
                                 }
                             }
-                        NetworkConfigView(config: networkConfig, isExpanded: binding(networkConfig.to.pointing))
-                        if binding(networkConfig.to.pointing).wrappedValue {
-                            separater()
-                            ForEach(viewModel.debuggers(for: networkConfig.to.debugID), id: \.className) { debugger in
-                                DebugConfigView(debug: debugger)
-                                    .onTapGesture {
-                                        viewModel.toggleBreakpoint(for: networkConfig.to.debugID, className: debugger.className)
-                                        withAnimation {
-                                            binding(networkConfig.to.pointing).wrappedValue.toggle()
-                                        }
-                                    }
-                            }
-                        }
                     }
                 }
             }
         }
+    }
+    
+    func networkList() -> some View {
+        NavigationStack {
+            ScrollView {
+                ForEach(viewModel.networks(), id: \.to.configID) { networkConfig in
+                    networkConfigView(networkConfig)
+                        .onTapGesture {
+                            withAnimation {
+                                binding(networkConfig.to.pointing).wrappedValue.toggle()
+                            }
+                        }
+                }
+            }
+            .padding(.horizontal)
+            .background(.black)
+        }
+        
     }
 }
 

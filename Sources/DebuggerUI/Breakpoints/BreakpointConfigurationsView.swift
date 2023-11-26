@@ -98,6 +98,8 @@ struct NetworkConfigView: View {
     @Binding var isExpanded: Bool
     var body: some View {
         VStack {
+            TitleSubtitleView(title: "Api Name", subtitle: config.name)
+            separater()
             HostingView(host: config.host)
             TitleSubtitleView(title: "Endpoint", subtitle: config.to.pointing)
             if isExpanded {

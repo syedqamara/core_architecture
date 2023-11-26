@@ -48,7 +48,9 @@ public class BreakpointConfigurationsViewModel: ViewModeling {
     
     func networks() -> [NetworkConfig] {
         @Configurations(NetworkConfig.self) var networkConfigurations
-        return networkConfigurations
+        return networkConfigurations.sorted { prev, next in
+            prev.id < next.id
+        }
     }
     func debuggers(for id: String) -> [Debug] {
         @Configuration<NetworkRequestDebug>(id) var request

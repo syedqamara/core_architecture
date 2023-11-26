@@ -9,13 +9,16 @@ import Foundation
 import core_architecture
 
 public struct NetworkConfig {
+    public let id: TimeInterval = Date().timeIntervalSince1970
+    public let name: String
     public let host: Hosting
     public let to: Pointable
     public let method: HTTPMethod
     public let contentType: ContentType
     public let responseType: DataModel.Type
     public let headers: [String: String]
-    public init(host: Hosting, to: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModel.Type, headers: [String: String]) {
+    public init(name: String, host: Hosting, to: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModel.Type, headers: [String: String]) {
+        self.name = name
         self.host = host
         self.to = to
         self.method = method
@@ -24,6 +27,7 @@ public struct NetworkConfig {
         self.headers = headers
     }
     public init(config: NetworkConfig, to: Pointable) {
+        self.name = config.name
         self.host = config.host
         self.to = to
         self.method = config.method
@@ -87,6 +91,7 @@ extension NetworkConfig {
     }
     public static var preview: NetworkConfig {
         .init(
+            name: "Preview Api",
             host: NetworkHost.localHost,
             to: __Preview__Endpoint__.no,
             method: .get,
@@ -99,6 +104,7 @@ extension NetworkConfig {
     }
     public static var preview1: NetworkConfig {
         .init(
+            name: "Preview-1 Api",
             host: NetworkHost.localHost,
             to: __Preview__Endpoint__.no1,
             method: .get,
@@ -111,6 +117,7 @@ extension NetworkConfig {
     }
     public static var preview2: NetworkConfig {
         .init(
+            name: "Preview-2 Api",
             host: NetworkHost.localHost,
             to: __Preview__Endpoint__.no2,
             method: .get,

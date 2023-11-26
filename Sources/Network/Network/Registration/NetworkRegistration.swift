@@ -11,15 +11,16 @@ import Debugger
 //NetworkConfig(to: endpoint, method: .post, contentType: .applicationJSON, responseType: User.self)
 
 public protocol NetworkingConfigRegistering: Registering {
-    init(host: Hosting, endpoint: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModel.Type, headers: [String : String])
+    init(name: String, host: Hosting, endpoint: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModel.Type, headers: [String : String])
 }
 
 public struct NetworkConfigRegisteration: NetworkingConfigRegistering {
     public var id: String
-    public init(host: Hosting, endpoint: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModel.Type, headers: [String : String]) {
+    public init(name: String, host: Hosting, endpoint: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModel.Type, headers: [String : String]) {
         self.id = endpoint.configID
         @Configuration(endpoint.configID) var configuration: NetworkConfig?
         configuration = NetworkConfig(
+            name: name,
             host: host,
             to: endpoint,
             method: method,
@@ -52,13 +53,15 @@ extension RegisteringSystem {
     }
     
     // MARK: Network Config Registration
-    public func networkRegister(host: Hosting,
+    public func networkRegister(name: String,
+                         host: Hosting,
                          endpoint: Pointable,
                          method: HTTPMethod,
                          contentType: ContentType,
                          responseType: DataModel.Type,
                          headers: [String : String]) throws {
         let networkRegister = NetworkConfigRegisteration(
+            name: name,
             host: host,
             endpoint: endpoint,
             method: method,
@@ -74,7 +77,7 @@ extension RegisteringSystem {
             throw SystemError.registration(.noConfigurationFound)
         }
     }
-    public func networkRegisterBatch<P: Pointable>(pointType: P.Type, host: Hosting, endpoints: [P],
+    public func networkRegisterBatch<P: Pointable>(pointType: P.Type, name: String, host: Hosting, endpoints: [P],
                          methods: [HTTPMethod],
                          contentTypes: [ContentType],
                          responseTypes: [DataModel.Type],
@@ -87,6 +90,7 @@ extension RegisteringSystem {
         }
         for i in 0..<endpoints.count {
             try networkRegister(
+                name: name,
                 host: host,
                 endpoint: endpoints[i],
                 method: methods[i],

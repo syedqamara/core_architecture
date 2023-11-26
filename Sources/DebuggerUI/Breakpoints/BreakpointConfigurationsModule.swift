@@ -21,3 +21,4 @@ public struct BreakpointConfigurationsModule: ViewModuling {
         .init(viewModel: .init())
     }
 }
+

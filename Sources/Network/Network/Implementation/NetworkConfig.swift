@@ -70,3 +70,56 @@ public enum ContentType: String {
         }
     }
 }
+
+extension NetworkConfig {
+    private enum __Preview__Endpoint__: String, Pointable {
+        case no, no1, no2
+        
+        var pointing: String { rawValue }
+        var debugID: String { rawValue }
+        var configID: String { rawValue }
+        
+        static var allCases: [NetworkConfig.__Preview__Endpoint__] = []
+        
+    }
+    public struct __Preview_Data__Model: DataModel {
+        
+    }
+    public static var preview: NetworkConfig {
+        .init(
+            host: NetworkHost.localHost,
+            to: __Preview__Endpoint__.no,
+            method: .get,
+            contentType: .applicationJSON,
+            responseType: __Preview_Data__Model.self,
+            headers: [
+                "static_header": "No"
+            ]
+        )
+    }
+    public static var preview1: NetworkConfig {
+        .init(
+            host: NetworkHost.localHost,
+            to: __Preview__Endpoint__.no1,
+            method: .get,
+            contentType: .applicationJSON,
+            responseType: __Preview_Data__Model.self,
+            headers: [
+                "static_header": "No 1"
+            ]
+        )
+    }
+    public static var preview2: NetworkConfig {
+        .init(
+            host: NetworkHost.localHost,
+            to: __Preview__Endpoint__.no2,
+            method: .get,
+            contentType: .applicationJSON,
+            responseType: __Preview_Data__Model.self,
+            headers: [
+                "static_header": "No 1"
+            ]
+        )
+    }
+}
+

@@ -17,41 +17,15 @@ import Debugger
 extension Notification.Name {
     static let deviceDidShake = Notification.Name(rawValue: "deviceDidShake")
 }
-#if os(iOS)
-extension UIResponder {
-    @objc func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        #if os(iOS)
+extension UIWindow {
+    open override func motionEnded(_ motion: UIEvent.EventSubtype, with: UIEvent?) {
         guard motion == .motionShake else { return }
         NotificationCenter.default.post(name: .deviceDidShake, object: nil)
-        #endif
-    }
-    @objc func didShake(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        #if os(iOS)
-        guard motion == .motionShake else { return }
-        NotificationCenter.default.post(name: .deviceDidShake, object: nil)
-        #endif
-    }
-    static func swizzleMotionMethods() {
-        let originalMotionEndedSelector = #selector(motionEnded(_:with:))
-        let swizzledMotionEndedSelector = #selector(didShake(_:with:))
-        
-        guard
-            let originalMotionEndedMethod = class_getInstanceMethod(UIResponder.self, originalMotionEndedSelector),
-            let swizzledMotionEndedMethod = class_getInstanceMethod(UIResponder.self, swizzledMotionEndedSelector)
-        else {
-            return
-        }
-        
-        method_exchangeImplementations(originalMotionEndedMethod, swizzledMotionEndedMethod)
-    }
+  }
 }
-#endif
 struct ShakeGestureViewModifier: ViewModifier {
     let action: () -> Void
-    init(action: @escaping () -> Void) {
-        self.action = action
-        UIResponder.swizzleMotionMethods()
-    }
+    
     func body(content: Content) -> some View {
         content
             .onReceive(NotificationCenter.default.publisher(for: .deviceDidShake)) { _ in

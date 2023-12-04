@@ -10,9 +10,9 @@ import SwiftUI
 import Debugger
 import Dependencies
 
-enum ApplicationDebugCommands: String, CustomStringConvertible, CaseIterable {
+public enum ApplicationDebugCommands: String, CustomStringConvertible, CaseIterable {
 case application, breakpoint
-    var description: String {
+    public var description: String {
         switch self {
         case .application:
             return "Application"
@@ -20,7 +20,7 @@ case application, breakpoint
             return "Breakpoint"
         }
     }
-    var shortcut: String {
+    public var shortcut: String {
         switch self {
         case .application:
             return "A"
@@ -31,14 +31,18 @@ case application, breakpoint
 }
 
 
-struct DebugShakeGestureModifier: ViewModifier {
+public struct DebugShakeGestureModifier: ViewModifier {
     @Binding var selectedCommand: ApplicationDebugCommands
     @State var isShowing: Bool = false
     @State var networkDebugAction: NetworkDebuggerActions?
     @Dependency(\.networkDebugConnection) var networkDebugConnection
     @Dependency(\.viewFactory) var viewFactory
-    
-    func body(content: Content) -> some View {
+    init(selectedCommand: Binding<ApplicationDebugCommands>, isShowing: Bool = false, networkDebugAction: NetworkDebuggerActions? = nil) {
+        _selectedCommand = selectedCommand
+        self.isShowing = isShowing
+        self.networkDebugAction = networkDebugAction
+    }
+    public func body(content: Content) -> some View {
         content
             .onShakeGesture {
                 switch selectedCommand {

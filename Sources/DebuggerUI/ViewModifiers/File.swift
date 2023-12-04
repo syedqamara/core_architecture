@@ -36,7 +36,7 @@ struct DebugShakeGestureModifier: ViewModifier {
     @State var isShowing: Bool = false
     @State var networkDebugAction: NetworkDebuggerActions?
     @Dependency(\.networkDebugConnection) var networkDebugConnection
-    @Dependency(\.debuggerUIFactory) var viewFactory
+    @Dependency(\.viewFactory) var viewFactory
     
     func body(content: Content) -> some View {
         content

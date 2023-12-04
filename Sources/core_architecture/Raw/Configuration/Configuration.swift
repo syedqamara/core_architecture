@@ -23,7 +23,7 @@ public final class ConfigManager {
             }
         }
         set {
-            queue.async(flags: .barrier) {
+            queue.sync(flags: .barrier) {
                 self.configDictionary[key] = newValue
             }
         }

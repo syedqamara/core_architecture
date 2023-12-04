@@ -93,7 +93,6 @@ public struct NetworkDebugView: SwiftUIView {
                 Spacer()
             }
             .padding(.top, 10)
-            .navigationBarTitleDisplayMode(.inline)
             .background(theme.backgroundColor)
             .navigationBarBackButtonHidden(false)
         }

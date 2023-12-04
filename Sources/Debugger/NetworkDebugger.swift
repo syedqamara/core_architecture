@@ -11,7 +11,8 @@ import core_architecture
 
 public typealias NetworkDebugger = Debugger<NetworkDebuggerActions>
 
-public struct NetworkDebuggerActions: DebuggingAction, ModulingInput {
+public struct NetworkDebuggerActions: DebuggingAction, ModulingInput, Identifiable {
+    public var id: String = "\(Date().timeIntervalSince1970)"
     public var configID: String
     public var debugID: String
     public var debugData: NetworkDebuggers

@@ -23,6 +23,7 @@ public protocol Hosting {
 
 extension Hosting {
     public var hostScheme: String {
+        // TODO: Implement port
         scheme + "://" + host + "/" + path
     }
 }

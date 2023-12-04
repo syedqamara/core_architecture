@@ -54,9 +54,9 @@ public class Network: Networking {
             request.setValue(config.contentType.rawValue, forHTTPHeaderField: "Content-Type")
         }
         logger.log(request, action: .createRequest)
-        return try await sendRequest(request: request, config: config)
+        return try await setupDebuggerAndSend(requestData: data, request: request, config: config)
     }
-    private func sendRequest(request: URLRequest, config: NetworkConfig) async throws -> DataModel {
+    private func setupDebuggerAndSend(requestData: DataModel?, request: URLRequest, config: NetworkConfig) async throws -> DataModel {
         try await withCheckedThrowingContinuation({
             [weak self]
             continuation in
@@ -78,7 +78,7 @@ public class Network: Networking {
                             }
                             switch returnedAction.debugData {
                             case .request(let newRequest):
-                                welf.sendRequest(request: newRequest, config: config, completion: {
+                                welf.sendRequest(requestData: requestData, request: newRequest, config: config, completion: {
                                     [weak self ]
                                     error, returnedData in
                                     guard let welf = self else {
@@ -95,7 +95,7 @@ public class Network: Networking {
                         }
                     }
                 case .ignore:
-                    welf.sendRequest(request: request, config: config, completion: {
+                    welf.sendRequest(requestData: requestData, request: request, config: config, completion: {
                         [weak self ]
                         error, returnedData in
                         guard let welf = self else {
@@ -113,11 +113,25 @@ public class Network: Networking {
             
 //        })
     }
-    private func sendRequest(request: URLRequest, config: NetworkConfig, completion: @escaping (SystemError?, DataModel?) -> ()) {
+    private func sendRequest(requestData: DataModel?, request: URLRequest, config: NetworkConfig, completion: @escaping (SystemError?, DataModel?) -> ()) {
         let requestID = UUID().uuidString
         let sessionTask = session.task(with: request) {
             [weak self, requestID]
             data, response, error in
+            @Configuration<NetworkPacket>("\(config.id)") var packet: NetworkPacket?
+            _packet.wrappedValue = .init(
+                config: config,
+                request: NetworkPacket.NetworkRequest(
+                    requestSent: request,
+                    requestData: requestData
+                ),
+                response: NetworkPacket.NetworkResponse(
+                    response: response,
+                    data: data,
+                    error: error
+                )
+            )
+            
             if let data {
                 do {
                     self?.logger.log(data, action: .receiveData)

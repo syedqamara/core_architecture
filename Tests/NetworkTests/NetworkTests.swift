@@ -37,7 +37,7 @@ final class NetworkTests: NetworkBaseTestCase {
     }
     func testNoDebugConfiguration() throws {
         do {
-            try registrar.networkRegister(host: NetworkHost.default(), endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
+            try registrar.networkRegister(name: "Sign up Api", host: NetworkHost.default(), endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
         }
         
         let expectation = XCTestExpectation(description: "Network Test Call")
@@ -65,7 +65,7 @@ final class NetworkTests: NetworkBaseTestCase {
         wait(for: [expectation], timeout: .init(10))
     }
     func testSuccessfullApi() throws {
-        try registrar.networkRegister(host: NetworkHost.default(), endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
+        try registrar.networkRegister(name: "Sign up", host: NetworkHost.default(), endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
         // Debug Registration
         _ = registrar.debuggerRegister(type: NetworkRequestDebug.self, debugable: Endpoint.signup, breakPoint: .ignore)
         _ = registrar.debuggerRegister(type: NetworkDataDebug.self, debugable: Endpoint.signup, breakPoint: .ignore)
@@ -93,7 +93,7 @@ final class NetworkTests: NetworkBaseTestCase {
         wait(for: [expectation], timeout: .init(10))
     }
     func testSuccessfullApiAfterDataDebugEditing() throws {
-        try registrar.networkRegister(host: NetworkHost.default(), endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
+        try registrar.networkRegister(name: "Sign up Api", host: NetworkHost.default(), endpoint: Endpoint.signup, method: .post, contentType: .applicationJSON, responseType: User.self, headers: [:])
         _ = registrar.debuggerRegister(type: NetworkRequestDebug.self, debugable: Endpoint.signup, breakPoint: .ignore)
         _ = registrar.debuggerRegister(type: NetworkDataDebug.self, debugable: Endpoint.signup, breakPoint: .console)
         _ = registrar.debuggerRegister(type: NetworkErrorDebug.self, debugable: Endpoint.signup, breakPoint: .ignore)

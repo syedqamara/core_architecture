@@ -255,20 +255,6 @@ public struct DebugDataView: ViewProtocol, View {
             }
             .background(theme.backgroundColor)
             .navigationBarBackButtonHidden(false)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    HStack {
-                        Text("Metflix Network Debugger")
-                            .font(theme.navigationTitleFont)
-                            .foregroundColor(.white)
-                            .shadow(color: .red, radius: 3, x: 3, y: -3)
-                        Spacer()
-                    }
-                    
-                    .ignoresSafeArea(.all, edges: [.top, .bottom])
-                }
-            }
-            .navigationTitle(Text("Debug Data").foregroundColor(theme.valueTiteColor))
         }
     }
 }

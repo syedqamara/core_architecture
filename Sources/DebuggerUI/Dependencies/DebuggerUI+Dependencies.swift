@@ -9,12 +9,11 @@ import Foundation
 import core_architecture
 import Debugger
 import Dependencies
-
-public extension SwiftUIViewFactory {
-    enum DebuggerViewFactoryInput {
-    case breakpoint, debug(NetworkDebuggerActions)
-    }
-    func makeView(input: DebuggerViewFactoryInput) -> any SwiftUIView {
+public enum DebuggerViewFactoryInput {
+case breakpoint, debug(NetworkDebuggerActions)
+}
+extension SwiftUIViewFactory {
+    public func makeView(input: DebuggerViewFactoryInput) -> any SwiftUIView {
         switch input {
         case .breakpoint:
             return BreakpointConfigurationsModule(input: .init()).view()

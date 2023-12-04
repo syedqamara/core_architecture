@@ -86,7 +86,7 @@ extension DebugUITheme.NetworkDebugModule.KeyValue: DependencyKey {
     }
 }
 
-extension DependencyValues {
+public extension DependencyValues {
     var networkModuleKeyValueTheme: DebugUITheme.NetworkDebugModule.KeyValue {
         get {
             let dependencyValue = self[DebugUITheme.NetworkDebugModule.KeyValue.self]

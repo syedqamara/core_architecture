@@ -9,12 +9,14 @@ import SwiftUI
 import core_architecture
 import Debugger
 import Network
+import Dependencies
 
 public struct BreakpointConfigurationsView: SwiftUIView {
     public typealias ViewModelType = BreakpointConfigurationsViewModel
     @ObservedObject var viewModel: BreakpointConfigurationsViewModel
     @State var showBreakPointSelectionOption: Bool = false
     @State var networkExpandCollapes: [String: Bool] = [:]
+    @Dependency(\.networkModuleKeyValueTheme) var theme
     public init(viewModel: BreakpointConfigurationsViewModel) {
         self.viewModel = viewModel
     }
@@ -51,7 +53,7 @@ public struct BreakpointConfigurationsView: SwiftUIView {
                         Image(systemName: binding(networkConfig.to.pointing).wrappedValue ? "arrow.down.circle.fill" : "arrow.down.circle")
                             .rotationEffect(.degrees(binding(networkConfig.to.pointing).wrappedValue ? 180 : 0))
                             .font(.title2.bold())
-                            .foregroundColor(.red)
+                            .foregroundColor(theme.borderColor)
                             .onTapGesture {
                                 withAnimation {
                                     binding(networkConfig.to.pointing).wrappedValue.toggle()

@@ -119,7 +119,7 @@ public class NetworkDebugViewModel: ViewModeling {
     @Published public var debuggerAction: NetworkDebugAction
     @Published public var keyValues: [KeyValueData]
     @Published public var isExpanded: Bool = true
-    @Published public var isEditingEnabled: Bool = true
+    @Published public var isEditingEnabled: Bool = false
     init(action: NetworkDebuggerActions) {
         self.action = action
         self.keyValues = []

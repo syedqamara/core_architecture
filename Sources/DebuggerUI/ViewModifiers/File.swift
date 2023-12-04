@@ -37,7 +37,7 @@ public struct DebugShakeGestureModifier: ViewModifier {
     @State var networkDebugAction: NetworkDebuggerActions?
     @Dependency(\.networkDebugConnection) var networkDebugConnection
     @Dependency(\.viewFactory) var viewFactory
-    init(selectedCommand: Binding<ApplicationDebugCommands>, isShowing: Bool = false, networkDebugAction: NetworkDebuggerActions? = nil) {
+    public init(selectedCommand: Binding<ApplicationDebugCommands>, isShowing: Bool = false, networkDebugAction: NetworkDebuggerActions? = nil) {
         _selectedCommand = selectedCommand
         self.isShowing = isShowing
         self.networkDebugAction = networkDebugAction

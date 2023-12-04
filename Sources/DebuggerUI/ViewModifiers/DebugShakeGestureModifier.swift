@@ -60,6 +60,7 @@ public struct DebugShakeGestureModifier: ViewModifier {
             .onReceive(networkDebugConnection.$debuggingAction) { debuggingAction in
                 guard let action: NetworkDebuggerActions = debuggingAction else { return }
                 self.networkDebugAction = action
+                self.isShowing = true
             }
     }
     private func debugView(action: NetworkDebuggerActions) -> some View {

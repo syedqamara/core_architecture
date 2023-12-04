@@ -10,11 +10,11 @@ import core_architecture
 import Debugger
 import Dependencies
 
-extension SwiftUIViewFactory {
-    enum MetflixInput {
+public extension SwiftUIViewFactory {
+    enum DebuggerViewFactoryInput {
     case breakpoint, debug(NetworkDebuggerActions)
     }
-    func makeView(input: MetflixInput) -> any SwiftUIView {
+    func makeView(input: DebuggerViewFactoryInput) -> any SwiftUIView {
         switch input {
         case .breakpoint:
             return BreakpointConfigurationsModule(input: .init()).view()

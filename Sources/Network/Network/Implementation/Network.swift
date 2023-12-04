@@ -57,9 +57,19 @@ public class Network: Networking {
         return try await setupDebuggerAndSend(requestData: data, request: request, config: config)
     }
     private func setupDebuggerAndSend(requestData: DataModel?, request: URLRequest, config: NetworkConfig) async throws -> DataModel {
-        try await withCheckedThrowingContinuation({
-            [weak self]
-            continuation in
+        let continuation = Continuation<DataModel, Error>()
+        return try await withCheckedThrowingContinuation({
+            [weak self, continuation]
+            cont in
+            
+            continuation.onRecieving {
+                data in
+                cont.resume(returning: data)
+            }
+            continuation.onThrowing {
+                error in
+                cont.resume(throwing: error)
+            }
             guard let welf = self else {
                 continuation.resume(throwing: SystemError.network(.methodNotAllowed))
                 return
@@ -155,7 +165,7 @@ public class Network: Networking {
             logger.log(request, action: .sendRequest)
         }
     }
-    private func processResponse(config: NetworkConfig, data: DataModel?, error: SystemError?, continuation: CheckedContinuation<DataModel, Error>) {
+    private func processResponse(config: NetworkConfig, data: DataModel?, error: SystemError?, continuation: Continuation<DataModel, Error>) {
         if let data {
             debugData(config: config, data: data, continuation: continuation)
         }
@@ -165,7 +175,7 @@ public class Network: Networking {
             continuation.resume(throwing: SystemError.network(.notFound))
         }
     }
-    private func debugData(config: NetworkConfig, data: DataModel, continuation: CheckedContinuation<DataModel, Error>) {
+    private func debugData(config: NetworkConfig, data: DataModel, continuation: Continuation<DataModel, Error>) {
         do {
             let debugResult = try self.debugger.debug(debug: config.to, feature: NetworkDataDebug.self)
             switch debugResult {
@@ -191,7 +201,7 @@ public class Network: Networking {
             continuation.resume(throwing: error)
         }
     }
-    private func debugError(config: NetworkConfig, error: Error, continuation: CheckedContinuation<DataModel, Error>) {
+    private func debugError(config: NetworkConfig, error: Error, continuation: Continuation<DataModel, Error>) {
         do {
             let debugResult = try self.debugger.debug(debug: config.to, feature: NetworkErrorDebug.self)
             switch debugResult {
@@ -216,7 +226,33 @@ public class Network: Networking {
         }
     }
 }
-
+class Continuation<A, B> {
+    typealias ACallback = (A) -> ()
+    typealias BCallback = (B) -> ()
+    public init() {
+        
+    }
+    fileprivate var a: ACallback?
+    fileprivate var b: BCallback?
+    
+    func onRecieving(a: ACallback?) {
+        self.a = a
+    }
+    func onThrowing(b: BCallback?) {
+        self.b = b
+    }
+    
+    func resume(throwing: B) {
+        if let b {
+            b(throwing)
+        }
+    }
+    func resume(returning: A) {
+        if let a {
+            a(returning)
+        }
+    }
+}
 
 extension Network.NetworkLogAction: LogAction {
     var rawValue: String {

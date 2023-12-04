@@ -171,7 +171,6 @@ public class NetworkDebugViewModel: ViewModeling {
         self.keyValues = keyValues.debugDataSorting
     }
     func save() {
-        guard isEditingEnabled else { return }
         let saveDict = self.keyValues.map { $0.dictionary }.merge()
         if let dataModelType = dataType(), let dataModel = saveDict.decode(dataModelType) {
             self.action.debugData = .data(dataModel, dataModelType)

@@ -53,8 +53,8 @@ public struct DebugShakeGestureModifier: ViewModifier {
                 }
             }
             .sheet(isPresented: $isShowing, content: {
-                if let networkDebugAction {
-                    self.debugView(action: networkDebugAction)
+                if let action = self.networkDebugAction {
+                    self.debugView(action: action)
                 }
             })
             .onReceive(networkDebugConnection.$debuggingAction) { debuggingAction in

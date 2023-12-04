@@ -52,6 +52,9 @@ public struct DebugShakeGestureModifier: ViewModifier {
                     selectedCommand = .application
                 }
             }
+            .sheet(item: $networkDebugAction, content: { action in
+                self.debugView(action: action)
+            })
             .sheet(isPresented: $isShowing, content: {
                 if let action = self.networkDebugAction {
                     self.debugView(action: action)
@@ -60,7 +63,7 @@ public struct DebugShakeGestureModifier: ViewModifier {
             .onReceive(networkDebugConnection.$debuggingAction) { debuggingAction in
                 guard let action: NetworkDebuggerActions = debuggingAction else { return }
                 self.networkDebugAction = action
-                self.isShowing = true
+//                self.isShowing = true
             }
     }
     private func debugView(action: NetworkDebuggerActions) -> some View {

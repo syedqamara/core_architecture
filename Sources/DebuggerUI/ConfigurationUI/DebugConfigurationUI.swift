@@ -85,20 +85,20 @@ extension DebugUITheme.NetworkDebugModule.KeyValue: DependencyKey {
         )
     }
 }
-
+public let networkModuleKeyValueThemeName = "DebugUITheme.NetworkDebugModule.KeyValue.networkModuleKeyValueThemeName"
 public extension DependencyValues {
-    static let networkModuleKeyValueThemeName = "DebugUITheme.NetworkDebugModule.KeyValue.networkModuleKeyValueThemeName"
+    
     var networkModuleKeyValueTheme: DebugUITheme.NetworkDebugModule.KeyValue {
         get {
             let dependencyValue = self[DebugUITheme.NetworkDebugModule.KeyValue.self]
-            @Configuration<DebugUITheme.NetworkDebugModule.KeyValue>(DependencyValues.networkModuleKeyValueThemeName) var theme
+            @Configuration<DebugUITheme.NetworkDebugModule.KeyValue>(networkModuleKeyValueThemeName) var theme
             if let theme {
                 return theme
             }
             return dependencyValue
         }
         set {
-            @Configuration<DebugUITheme.NetworkDebugModule.KeyValue>(DependencyValues.networkModuleKeyValueThemeName) var theme: DebugUITheme.NetworkDebugModule.KeyValue?
+            @Configuration<DebugUITheme.NetworkDebugModule.KeyValue>(networkModuleKeyValueThemeName) var theme: DebugUITheme.NetworkDebugModule.KeyValue?
             _theme.wrappedValue = newValue
             self[DebugUITheme.NetworkDebugModule.KeyValue.self] = newValue
         }

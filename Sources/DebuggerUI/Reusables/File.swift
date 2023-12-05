@@ -8,11 +8,11 @@
 import Foundation
 import SwiftUI
 
-struct NavigationUI<Content: View>: View {
+public struct NavigationUI<Content: View>: View {
 
     private var content: Content
 
-    init(@ViewBuilder content: () -> Content) {
+    public init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
 

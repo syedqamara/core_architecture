@@ -31,17 +31,20 @@ public struct NetworkDebugModule: ViewModuling {
         )
     }
 }
+
+
+
 public struct NetworkDebugView: SwiftUIView {
     public typealias ViewModelType = NetworkDebugViewModel
     @Dependency(\.networkModuleKeyValueTheme) var theme
     @ObservedObject var viewModel: NetworkDebugViewModel
     @EnvironmentObject var networkDebugConnectionVM: NetworkDebugConnectionViewModel
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.presentationMode) var presentationMode
     public init(viewModel: NetworkDebugViewModel) {
         self.viewModel = viewModel
     }
     public var body: some View {
-        NavigationStack {
+        NavigationUI {
             VStack {
                 RoundedBorderView(height: 40) {
                     HStack {
@@ -67,8 +70,10 @@ public struct NetworkDebugView: SwiftUIView {
                             .foregroundColor(viewModel.isEditingEnabled ? theme.keyTiteColor : theme.valueTiteColor)
                             .onTapGesture {
                                 viewModel.save()
-                                dismiss()
+                                presentationMode.wrappedValue.dismiss()
+                                
                             }
+                        
                     }
                     .padding(.horizontal)
                 }

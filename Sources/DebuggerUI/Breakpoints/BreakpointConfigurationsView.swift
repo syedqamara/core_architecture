@@ -52,7 +52,7 @@ public struct BreakpointConfigurationsView: SwiftUIView {
                     RoundedBorderView(height: 30) {
                         Image(systemName: binding(networkConfig.to.pointing).wrappedValue ? "arrow.down.circle.fill" : "arrow.down.circle")
                             .rotationEffect(.degrees(binding(networkConfig.to.pointing).wrappedValue ? 180 : 0))
-                            .font(.title2.bold())
+                            .font(.subheadline.bold())
                             .foregroundColor(theme.borderColor)
                             .onTapGesture {
                                 withAnimation {
@@ -66,7 +66,7 @@ public struct BreakpointConfigurationsView: SwiftUIView {
     }
     
     func networkList() -> some View {
-        NavigationStack {
+        NavigationUI {
             ScrollView {
                 ForEach(viewModel.networks(), id: \.to.configID) { networkConfig in
                     networkConfigView(networkConfig)
@@ -78,7 +78,7 @@ public struct BreakpointConfigurationsView: SwiftUIView {
                 }
             }
             .padding(.horizontal)
-            .background(.black)
+            .background(Color.black)
         }
         
     }

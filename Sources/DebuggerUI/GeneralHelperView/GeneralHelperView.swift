@@ -63,7 +63,7 @@ public struct TitleSubtitleView: View {
     let subtitle: String
     let subtitleColor: Color
     let subtitleFont: Font
-    public init(title: String, subtitle: String, titleColor: Color = .gray, titleFont: Font = .title3.bold(), subtitleColor: Color = .white, subtitleFont: Font = .title3.bold()) {
+    public init(title: String, subtitle: String, titleColor: Color = .gray, titleFont: Font = .subheadline.bold(), subtitleColor: Color = .white, subtitleFont: Font = .subheadline.bold()) {
         self.title = title
         self.titleFont = titleFont
         self.titleColor = titleColor

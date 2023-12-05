@@ -73,7 +73,9 @@ public struct KeyValueView: View {
                         .foregroundColor(theme.keyTiteColor)
                         .padding(.horizontal, theme.valuePadding)
                         .multilineTextAlignment(.trailing)
-                        .font(theme.valueTitleFont.monospaced())
+                        .font(
+                            theme.valueTitleFont.editingFont()
+                        )
                         
                 }
             }else {
@@ -91,6 +93,16 @@ public struct KeyValueView: View {
             return keyValue.value
         } set: { newValue in
             
+        }
+    }
+}
+
+extension Font {
+    func editingFont() -> Font {
+        if #available(iOS 15.0, *) {
+            return self.monospaced()
+        } else {
+            return self
         }
     }
 }
@@ -246,7 +258,7 @@ public struct DebugDataView: ViewProtocol, View {
         self.viewModel = viewModel
     }
     public var body: some View {
-        NavigationStack {
+        NavigationUI {
             VStack {
                 ScrollView(.vertical) {
                     KeyValueCollectionView(key: "Root", keyValues: viewModel.bindingKeyValues(), isEditingEnabled: $viewModel.isEditingEnabled, isExpanded: $viewModel.isExpanded)

@@ -33,16 +33,32 @@ case application, breakpoint
 
 public struct DebugShakeGestureModifier: ViewModifier {
     @Binding var selectedCommand: ApplicationDebugCommands
-    @State var isShowing: Bool = false
-    @State var networkDebugAction: NetworkDebuggerActions?
+    @Binding var isShowing: Bool
+    @Binding var networkDebugAction: NetworkDebuggerActions?
     @Dependency(\.networkDebugConnection) var networkDebugConnection
     @Dependency(\.viewFactory) var viewFactory
-    public init(selectedCommand: Binding<ApplicationDebugCommands>, isShowing: Bool = false, networkDebugAction: NetworkDebuggerActions? = nil) {
+    public init(selectedCommand: Binding<ApplicationDebugCommands>, isShowing: Binding<Bool>, networkDebugAction: Binding<NetworkDebuggerActions?>) {
         _selectedCommand = selectedCommand
-        self.isShowing = isShowing
-        self.networkDebugAction = networkDebugAction
+        _isShowing = isShowing
+        _networkDebugAction = networkDebugAction
     }
     public func body(content: Content) -> some View {
+        if #available(iOS 14.0, *) {
+            prepare(content: content)
+                .fullScreenCover(item: $networkDebugAction, content: { action in
+                    self.debugView(action: action)
+                })
+        } else {
+            NavigationLink(isActive: $isShowing) {
+                if let networkDebugAction {
+                    self.debugView(action: networkDebugAction)
+                }
+            } label: {
+                prepare(content: content)
+            }
+        }
+    }
+    private func prepare(content: Content) -> some View {
         content
             .onShakeGesture {
                 switch selectedCommand {
@@ -52,9 +68,7 @@ public struct DebugShakeGestureModifier: ViewModifier {
                     selectedCommand = .application
                 }
             }
-            .fullScreenCover(item: $networkDebugAction, content: { action in
-                self.debugView(action: action)
-            })
+            
             .onReceive(networkDebugConnection.$debuggingAction) { debuggingAction in
                 guard let action: NetworkDebuggerActions = debuggingAction else { return }
                 self.networkDebugAction = action

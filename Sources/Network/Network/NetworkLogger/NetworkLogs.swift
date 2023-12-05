@@ -9,7 +9,7 @@ import Foundation
 import core_architecture
 
 public struct NetworkPacket {
-    public let time: Date = .now
+    public let time: Date = Date()
     public let config: NetworkConfig
     public let request: Self.NetworkRequest
     public let response: Self.NetworkResponse

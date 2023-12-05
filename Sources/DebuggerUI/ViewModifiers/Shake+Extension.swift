@@ -6,11 +6,7 @@
 //
 
 import Foundation
-#if os(iOS)
 import UIKit
-#elseif os(macOS)
-import AppKit
-#endif
 import SwiftUI
 import Debugger
 
@@ -23,6 +19,7 @@ extension UIWindow {
         NotificationCenter.default.post(name: .deviceDidShake, object: nil)
   }
 }
+
 struct ShakeGestureViewModifier: ViewModifier {
     let action: () -> Void
     
@@ -36,13 +33,6 @@ struct ShakeGestureViewModifier: ViewModifier {
 
 extension View {
     public func onShakeGesture(perform action: @escaping () -> Void) -> some View {
-        #if os(iOS)
         return self.modifier(ShakeGestureViewModifier(action: action))
-        #elseif os(macOS)
-        // Shake gesture handling for macOS can be implemented using NSEvent
-        return self.onReceive(NotificationCenter.default.publisher(for: .deviceDidShake)) { _ in
-            action()
-        }
-        #endif
     }
 }

@@ -69,7 +69,7 @@ extension DebugUITheme.NetworkDebugModule.KeyValue: DependencyKey {
             keyTiteColor: .white,
             valueTiteColor: .red,
             
-            navigationTitleFont: .title2.bold(),
+            navigationTitleFont: .title.bold(),
             headerTitleFont: .subheadline.bold(),
             keyTitleFont: .caption.bold(),
             valueTitleFont: .caption.bold(),

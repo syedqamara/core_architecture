@@ -53,10 +53,10 @@ By adopting the `ViewProtocol`, `SwiftUI` views can seamlessly integrate view mo
 
 ## Other Documents
 
-- For detail documentation of [`UIModel`](Documentation/UIModel.md)
-- For detail documentation of [`Module`](Documentation/Module.md)
-- For detail documentation of [`ViewModule`](Documentation/ViewModule.md)
-- For detail documentation of [`ViewModel`](Documentation/ViewModel.md)
+- For detail documentation of [`UIModel`](UIModel.md)
+- For detail documentation of [`Module`](Module.md)
+- For detail documentation of [`ViewModule`](ViewModule.md)
+- For detail documentation of [`ViewModel`](ViewModel.md)
 
 ## Author:
 [🔗 Syed Qamar Abbas](https://www.linkedin.com/in/syed-qamar-abbas-2b23b794/)

@@ -75,10 +75,10 @@ By adopting the `UIModel` protocol, we achieve a clear separation of concerns be
 
 ## Other Documents
 
-- For detail documentation of [`Module`](/Module.md)
-- For detail documentation of [`ViewModule`](/ViewModule.md)
-- For detail documentation of [`View`](/View.md)
-- For detail documentation of [`ViewModel`](/ViewModel.md)
+- For detail documentation of [`Module`](Module.md)
+- For detail documentation of [`ViewModule`](ViewModule.md)
+- For detail documentation of [`View`](View.md)
+- For detail documentation of [`ViewModel`](ViewModel.md)
 
 ## Author:
 [🔗 Syed Qamar Abbas](https://www.linkedin.com/in/syed-qamar-abbas-2b23b794/)

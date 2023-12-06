@@ -58,6 +58,30 @@ public class Network: Networking {
     }
     private func setupDebuggerAndSend(requestData: DataModel?, request: URLRequest, config: NetworkConfig) async throws -> DataModel {
         let continuation = Continuation<DataModel, Error>()
+        let requestContinuation = Continuation<URLRequest, Error>()
+        
+        // Invoke the Action When Debugger Allows to send Request
+        requestContinuation.onRecieving {
+            [weak self, continuation]
+            newRequest in
+            guard let self else { return }
+            self.sendRequest(requestData: requestData, request: newRequest, config: config) {
+                [weak self]
+                error, returnedData in
+                guard let self else {
+                    continuation.resume(throwing: SystemError.network(.methodNotAllowed))
+                    return
+                }
+                self.processResponse(config: config, data: returnedData, error: error, continuation: continuation)
+            }
+        }
+        // Throw the Error When Debugger is debugging Request
+        requestContinuation.onThrowing {
+            [continuation]
+            newError in
+            continuation.resume(throwing: newError)
+        }
+        
         return try await withCheckedThrowingContinuation({
             [weak self, continuation]
             cont in
@@ -70,52 +94,11 @@ public class Network: Networking {
                 error in
                 cont.resume(throwing: error)
             }
-            guard let welf = self else {
+            guard let self else {
                 continuation.resume(throwing: SystemError.network(.methodNotAllowed))
                 return
             }
-            do {
-                let requestDebuggingResult = try welf.debugger.debug(debug: config.to, feature: NetworkRequestDebug.self)
-                switch requestDebuggingResult {
-                case .console:
-                    if let action = welf.debugger.action(actionType: NetworkDebuggerActions.self) {
-                        action.action(.init(configID: config.to.configID, debugID: config.to.debugID, debugData: .request(request))) {
-                            [weak self]
-                            returnedAction in
-                            guard let welf = self else {
-                                continuation.resume(throwing: SystemError.network(.methodNotAllowed))
-                                return
-                            }
-                            switch returnedAction.debugData {
-                            case .request(let newRequest):
-                                welf.sendRequest(requestData: requestData, request: newRequest, config: config, completion: {
-                                    [weak self ]
-                                    error, returnedData in
-                                    guard let welf = self else {
-                                        continuation.resume(throwing: SystemError.network(.methodNotAllowed))
-                                        return
-                                    }
-                                    welf.processResponse(config: config, data: returnedData, error: error, continuation: continuation)
-                                })
-                                break
-                            default:
-                                break
-
-                            }
-                        }
-                    }
-                case .ignore:
-                    welf.sendRequest(requestData: requestData, request: request, config: config, completion: {
-                        [weak self ]
-                        error, returnedData in
-                        guard let welf = self else {
-                            continuation.resume(throwing: SystemError.network(.methodNotAllowed))
-                            return
-                        }
-                        welf.processResponse(config: config, data: returnedData, error: error, continuation: continuation)
-                    })
-                }
-            } catch let err { continuation.resume(throwing: err) }
+            self.debugger.debugRequest(config: config.to, request: request, continuation: requestContinuation)
         })
 //        try await withUnsafeThrowingContinuation({
 //            [weak self]
@@ -167,92 +150,17 @@ public class Network: Networking {
     }
     private func processResponse(config: NetworkConfig, data: DataModel?, error: SystemError?, continuation: Continuation<DataModel, Error>) {
         if let data {
-            debugData(config: config, data: data, continuation: continuation)
+            self.debugger.debugData(config: config.to, type: config.responseType, data: data, continuation: continuation)
         }
         else if let error {
-            debugError(config: config, error: error, continuation: continuation)
+            self.debugger.debugError(config: config.to, error: error, continuation: continuation)
         }else {
             continuation.resume(throwing: SystemError.network(.notFound))
         }
     }
-    private func debugData(config: NetworkConfig, data: DataModel, continuation: Continuation<DataModel, Error>) {
-        do {
-            let debugResult = try self.debugger.debug(debug: config.to, feature: NetworkDataDebug.self)
-            switch debugResult {
-            case .console:
-                if let action = self.debugger.action(actionType: NetworkDebuggerActions.self)?.action {
-                    action(.init(configID: config.to.configID, debugID: config.to.debugID, debugData: .data(data, config.responseType))) { actionback in
-                        if case .data(let dataModel, _) = actionback.debugData {
-                            continuation.resume(returning: dataModel)
-                        }else {
-                            continuation.resume(returning: data)
-                        }
-                    }
-                }else {
-                    continuation.resume(returning: data)
-                    break
-                }
-            case .ignore:
-                continuation.resume(returning: data)
-                break
-            }
-        }
-        catch let error {
-            continuation.resume(throwing: error)
-        }
-    }
-    private func debugError(config: NetworkConfig, error: Error, continuation: Continuation<DataModel, Error>) {
-        do {
-            let debugResult = try self.debugger.debug(debug: config.to, feature: NetworkErrorDebug.self)
-            switch debugResult {
-            case .console:
-                if let action = self.debugger.action(actionType: NetworkDebuggerActions.self)?.action {
-                    action(.init(configID: config.to.configID, debugID: config.to.debugID,debugData: .error(error))) { actionBack in
-                        if case .error(let freshError) = actionBack.debugData {
-                            continuation.resume(throwing: SystemError.custom(freshError))
-                        }
-                    }
-                }else {
-                    continuation.resume(throwing: SystemError.custom(error))
-                    break
-                }
-            case .ignore:
-                continuation.resume(throwing: SystemError.custom(error))
-                break
-            }
-        }
-        catch let error {
-            continuation.resume(throwing: error)
-        }
-    }
-}
-class Continuation<A, B> {
-    typealias ACallback = (A) -> ()
-    typealias BCallback = (B) -> ()
-    public init() {
-        
-    }
-    fileprivate var a: ACallback?
-    fileprivate var b: BCallback?
     
-    func onRecieving(a: ACallback?) {
-        self.a = a
-    }
-    func onThrowing(b: BCallback?) {
-        self.b = b
-    }
-    
-    func resume(throwing: B) {
-        if let b {
-            b(throwing)
-        }
-    }
-    func resume(returning: A) {
-        if let a {
-            a(returning)
-        }
-    }
 }
+
 
 extension Network.NetworkLogAction: LogAction {
     var rawValue: String {

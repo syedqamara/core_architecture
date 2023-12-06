@@ -72,3 +72,30 @@ open class Debugger<A: DebuggingAction>: Debugging {
         return config.breakpoint
     }
 }
+public class Continuation<A, B> {
+    public typealias ACallback = (A) -> ()
+    public typealias BCallback = (B) -> ()
+    public init() {
+        
+    }
+    fileprivate var a: ACallback?
+    fileprivate var b: BCallback?
+    
+    public func onRecieving(a: ACallback?) {
+        self.a = a
+    }
+    public func onThrowing(b: BCallback?) {
+        self.b = b
+    }
+    
+    public func resume(throwing: B) {
+        if let b {
+            b(throwing)
+        }
+    }
+    public func resume(returning: A) {
+        if let a {
+            a(returning)
+        }
+    }
+}

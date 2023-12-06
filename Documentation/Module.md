@@ -50,8 +50,8 @@ By adopting the Moduling protocol, we create modular components that can be easi
 
 ## Other Documents
 
-- For detail documentation of [`UIModel`](Documentation/UIModel.md)
-- For detail documentation of [`ViewModule`](Documentation/ViewModule.md)
+- For detail documentation of [`UIModel`](/UIModel.md)
+- For detail documentation of [`ViewModule`](ViewModule.md)
 - For detail documentation of [`View`](Documentation/View.md)
 - For detail documentation of [`ViewModel`](Documentation/ViewModel.md)
 

@@ -47,11 +47,12 @@ class UserProfileViewModel: ViewModeling {
 In this example, `UserProfileViewModel` is a class conforming to the `ViewModeling` protocol. We specify `UserData` as the associated `DataSourceType` and `UserUIModel` as the associated `UIModelType`. The view model can now use the `UserData` type to fetch and update data for the `SwiftUI` views, while the `UserUIModel` type is used to format and transform the data for display in the user interface.
 
 By adopting the `ViewModeling` protocol, `SwiftUI` view models become observable objects, and specific types for data source and UI model are enforced. This structured approach improves the architecture of SwiftUI-based user interfaces, making them more maintainable and facilitating a clear separation of concerns between data handling and UI presentation.
+
+## Other Documents
+- For detail documentation of [`UIModel`](UIModel.md)
+- For detail documentation of [`Module`](Module.md)
+- For detail documentation of [`ViewModule`](ViewModule.md)
+- For detail documentation of [`View`](View.md)
+
 ## Author:
 [🔗 Syed Qamar Abbas](https://www.linkedin.com/in/syed-qamar-abbas-2b23b794/)
-
-Documentation/UIModel.md
-Documentation/Module.md
-Documentation/ViewModule.md
-Documentation/View.md
-Documentation/ViewModel.md

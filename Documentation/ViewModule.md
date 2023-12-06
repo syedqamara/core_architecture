@@ -1,8 +1,4 @@
-# ViewModule Protocol
 
-The `Moduling` protocol represents a modular component that can be instantiated with a specific input, denoted by the associated type `ModuleInput`. This protocol is designed to facilitate the creation of modular components that can encapsulate functionality and be configured with input data as needed.
-
-## Declaration
 # ViewModule Protocol
 
 The `ViewModule` protocol represents a view module that conforms to the `Moduling` protocol and specifies an associated type for the view it manages, denoted by `ViewType`. This protocol is designed to encapsulate the logic and configuration of a specific SwiftUI view, allowing for modular and reusable view components.
@@ -60,6 +56,14 @@ In this example, `UserProfileModule` is a struct conforming to the ViewModule pr
  2. Specifying UserProfileView as the associated ViewType. The view() method is implemented to configure and return an instance of UserProfileView, ensuring that it is properly initialized with its corresponding view model (assuming UserProfileViewModel is a view model conforming to ViewModeling protocol) and any other necessary dependencies.
 
 By adopting the ViewModule protocol, we create modular and reusable SwiftUI view components. The view module encapsulates the logic and configuration of the SwiftUI view, promoting a separation of concerns and facilitating the creation of scalable and maintainable SwiftUI-based user interfaces.
+
+
+## Other Documents
+
+- For detail documentation of [`UIModel`](UIModel.md)
+- For detail documentation of [`Module`](Module.md)
+- For detail documentation of [`View`](View.md)
+- For detail documentation of [`ViewModel`](ViewModel.md)
 
 ## Author:
 [🔗 Syed Qamar Abbas](https://www.linkedin.com/in/syed-qamar-abbas-2b23b794/)

@@ -24,10 +24,18 @@ public class Network: Networking {
     @Dependency(\.networkDebugger) var debugger
     public var session: SessionManager
     private var tasks: [String: SessionTask] = [:]
-    public required init(session: SessionManager) {
+    private var encoder: EncodingProtocol
+    private var decoder: DecodingProtocol
+    public required init(session: SessionManager, encoder: EncodingProtocol, decoder: DecodingProtocol) {
         self.session = session
+        self.encoder = encoder
+        self.decoder = decoder
+        
     }
-    public func send(with data: DataModel?, config: NetworkConfig) async throws -> DataModel {
+    public func send(with data: DataModel?, config: NetworkConfig) async throws -> DataModelProtocol {
+        throw NetworkErrorCode.invalidURL
+    }
+    private func send(with data: DataModel?, config: NetworkConfig) async throws -> DataModel {
         try await _send(with: data, config: config)
     }
     private func _send(with data: DataModel?, config: NetworkConfig) async throws -> DataModel {

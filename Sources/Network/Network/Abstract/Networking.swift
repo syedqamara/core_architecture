@@ -38,12 +38,19 @@ public protocol SessionManager {
 
 
 public protocol Networking {
-    func send(with data: DataModel?, config: NetworkConfig) async throws -> DataModel
+    func send(with data: DataModel?, config: NetworkConfig) async throws -> DataModelProtocol
 }
 public protocol NetworkRequestEncoding {
     func encode(data: DataModel?) async throws -> String?
 }
 
 public protocol ManagableNetworking {
-    func send<D: DataModel>(to: Pointable, with data: DataModel?, type: D.Type) async throws -> D
+    func send<D: DataModelProtocol>(to: Pointable, with data: DataModel?, type: D.Type) async throws -> D
+}
+
+public protocol EncodingProtocol {
+    func encode(data: DataModelProtocol) throws -> Data
+}
+public protocol DecodingProtocol {
+    func decode<D: DataModelProtocol>(data: Data, type: D.Type) throws -> D
 }

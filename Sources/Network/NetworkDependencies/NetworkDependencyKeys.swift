@@ -14,14 +14,18 @@ extension DefaultNetworkManager: TestDependencyKey, DependencyKey {
     public static var liveValue: NetworkManager<Network> {
         .init(
             network: Network(
-                session: URLSession.shared
+                session: URLSession.shared,
+                encoder: JSONCoding(),
+                decoder: JSONCoding()
             )
         )
     }
     public static var testValue: NetworkManager<Network> {
         .init(
             network: Network(
-                session: URLSession.shared
+                session: URLSession.shared,
+                encoder: JSONCoding(),
+                decoder: JSONCoding()
             )
         )
     }

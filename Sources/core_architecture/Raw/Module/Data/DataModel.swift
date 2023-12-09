@@ -7,5 +7,7 @@
 
 import Foundation
 
+// MARK: - Base Data Model Protocol
+public protocol DataModelProtocol {}
 // MARK: - Data Model
-public protocol DataModel: Codable {}
+public protocol DataModel: DataModelProtocol, Codable {}

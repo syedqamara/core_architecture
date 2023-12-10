@@ -8,22 +8,30 @@
 import Foundation
 import core_architecture
 
+public enum NetworkCachePolicy: String {
+    case noCache
+    case cacheWhenNoNetwork
+    case cacheEveryTime
+}
+
 public struct NetworkConfig {
     public let id: TimeInterval = Date().timeIntervalSince1970
     public let name: String
-    public let host: Hosting
+    public let host: Hosting?
     public let to: Pointable
     public let method: HTTPMethod
     public let contentType: ContentType
-    public let responseType: DataModel.Type
+    public let responseType: DataModelProtocol.Type
+    public let cachePolicy: NetworkCachePolicy
     public let headers: [String: String]
-    public init(name: String, host: Hosting, to: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModel.Type, headers: [String: String]) {
+    public init(name: String, host: Hosting?, to: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModelProtocol.Type, cachePolicy: NetworkCachePolicy, headers: [String: String]) {
         self.name = name
         self.host = host
         self.to = to
         self.method = method
         self.contentType = contentType
         self.responseType = responseType
+        self.cachePolicy = cachePolicy
         self.headers = headers
     }
     public init(config: NetworkConfig, to: Pointable) {
@@ -33,6 +41,7 @@ public struct NetworkConfig {
         self.method = config.method
         self.contentType = config.contentType
         self.responseType = config.responseType
+        self.cachePolicy = config.cachePolicy
         self.headers = config.headers
     }
 }
@@ -74,7 +83,14 @@ public enum ContentType: String {
         }
     }
 }
-
+extension NetworkConfig {
+    var url: URL? {
+        if let host {
+            return URL(string: "\(host.hostScheme)/\(to.pointing)")
+        }
+        return URL(string: to.pointing)
+    }
+}
 extension NetworkConfig {
     private enum __Preview__Endpoint__: String, Pointable {
         case no, no1, no2
@@ -97,6 +113,7 @@ extension NetworkConfig {
             method: .get,
             contentType: .applicationJSON,
             responseType: __Preview_Data__Model.self,
+            cachePolicy: .noCache,
             headers: [
                 "static_header": "No"
             ]
@@ -110,6 +127,7 @@ extension NetworkConfig {
             method: .get,
             contentType: .applicationJSON,
             responseType: __Preview_Data__Model.self,
+            cachePolicy: .noCache,
             headers: [
                 "static_header": "No 1"
             ]
@@ -123,6 +141,7 @@ extension NetworkConfig {
             method: .get,
             contentType: .applicationJSON,
             responseType: __Preview_Data__Model.self,
+            cachePolicy: .noCache,
             headers: [
                 "static_header": "No 1"
             ]
@@ -130,3 +149,29 @@ extension NetworkConfig {
     }
 }
 
+public enum ImageEndpoint {
+    case image(url: String)
+}
+
+extension ImageEndpoint: Pointable {
+    public var pointing: String {
+        switch self {
+        case .image(url: let url):
+            return url
+        }
+    }
+    
+    static public var allCases: [ImageEndpoint] {
+        []
+    }
+    
+    public var debugID: String {
+        "image"
+    }
+    
+    public var configID: String {
+        "image"
+    }
+    
+    
+}

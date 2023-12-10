@@ -149,6 +149,7 @@ extension NetworkErrorCode: Erroring {
 // MARK: Debugging Error Codes
 public enum DebuggerErrorCode: Int {
     case noConfigurationFound = -1
+    case debuggingNotSupported = -2
 }
 
 
@@ -170,6 +171,8 @@ extension DebuggerErrorCode: Erroring {
         switch self {
         case .noConfigurationFound:
             return "No Debug Configuration Found"
+        case .debuggingNotSupported:
+            return "Debugging not supported to Data Type"
         }
     }
 }

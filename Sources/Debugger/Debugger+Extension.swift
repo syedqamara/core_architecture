@@ -9,7 +9,7 @@ import Foundation
 import core_architecture
 
 public extension Debugger {
-    func debugError(config: Debugable, error: Error, continuation: Continuation<DataModel, Error>) {
+    func debugError(config: Debugable, error: Error, continuation: Continuation<DataModelProtocol, Error>) {
         do {
             let debugResult = try self.debug(debug: config, feature: NetworkErrorDebug.self)
             switch debugResult {
@@ -33,7 +33,15 @@ public extension Debugger {
             continuation.resume(throwing: error)
         }
     }
-    func debugData(config: Debugable, type: DataModel.Type, data: DataModel, continuation: Continuation<DataModel, Error>) {
+    func debugData(config: Debugable, type: DataModelProtocol.Type, data: DataModelProtocol, continuation: Continuation<DataModelProtocol, Error>) {
+        guard let type = type as? DataModel.Type else {
+            continuation.resume(returning: data)
+            return
+        }
+        guard let data = data as? DataModel else {
+            continuation.resume(throwing: DebuggerErrorCode.debuggingNotSupported)
+            return
+        }
         do {
             let debugResult = try self.debug(debug: config, feature: NetworkDataDebug.self)
             switch debugResult {

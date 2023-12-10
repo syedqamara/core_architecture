@@ -11,12 +11,12 @@ import Debugger
 //NetworkConfig(to: endpoint, method: .post, contentType: .applicationJSON, responseType: User.self)
 
 public protocol NetworkingConfigRegistering: Registering {
-    init(name: String, host: Hosting, endpoint: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModel.Type, headers: [String : String])
+    init(name: String, host: Hosting?, endpoint: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModelProtocol.Type, cachePolicy: NetworkCachePolicy, headers: [String : String])
 }
 
 public struct NetworkConfigRegisteration: NetworkingConfigRegistering {
     public var id: String
-    public init(name: String, host: Hosting, endpoint: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModel.Type, headers: [String : String]) {
+    public init(name: String, host: Hosting?, endpoint: Pointable, method: HTTPMethod, contentType: ContentType, responseType: DataModelProtocol.Type, cachePolicy: NetworkCachePolicy, headers: [String : String]) {
         self.id = endpoint.configID
         @Configuration(endpoint.configID) var configuration: NetworkConfig?
         configuration = NetworkConfig(
@@ -26,6 +26,7 @@ public struct NetworkConfigRegisteration: NetworkingConfigRegistering {
             method: method,
             contentType: contentType,
             responseType: responseType,
+            cachePolicy: cachePolicy,
             headers: headers
         )
     }
@@ -54,11 +55,12 @@ extension RegisteringSystem {
     
     // MARK: Network Config Registration
     public func networkRegister(name: String,
-                         host: Hosting,
+                         host: Hosting?,
                          endpoint: Pointable,
                          method: HTTPMethod,
                          contentType: ContentType,
-                         responseType: DataModel.Type,
+                         responseType: DataModelProtocol.Type,
+                         cachePolicy: NetworkCachePolicy,
                          headers: [String : String]) throws {
         let networkRegister = NetworkConfigRegisteration(
             name: name,
@@ -67,6 +69,7 @@ extension RegisteringSystem {
             method: method,
             contentType: contentType,
             responseType: responseType,
+            cachePolicy: cachePolicy,
             headers: headers
         )
         let requestDebugRegister = debuggerRegister(type: NetworkRequestDebug.self, debugable: endpoint, breakPoint: .ignore)
@@ -80,12 +83,14 @@ extension RegisteringSystem {
     public func networkRegisterBatch<P: Pointable>(pointType: P.Type, name: String, host: Hosting, endpoints: [P],
                          methods: [HTTPMethod],
                          contentTypes: [ContentType],
-                         responseTypes: [DataModel.Type],
+                         responseTypes: [DataModelProtocol.Type],
+                         cachePolicies: [NetworkCachePolicy],
                          headers: [[String : String]]) throws {
         guard endpoints.count == methods.count,
               endpoints.count == contentTypes.count,
               endpoints.count == responseTypes.count,
-              headers.count == headers.count else {
+              endpoints.count == cachePolicies.count,
+              endpoints.count == headers.count else {
             throw SystemError.registration(.unEqualConfigurationProvided)
         }
         for i in 0..<endpoints.count {
@@ -96,6 +101,7 @@ extension RegisteringSystem {
                 method: methods[i],
                 contentType: contentTypes[i],
                 responseType: responseTypes[i],
+                cachePolicy: cachePolicies[i],
                 headers: headers[i]
             )
         }

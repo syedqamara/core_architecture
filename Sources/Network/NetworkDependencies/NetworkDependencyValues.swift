@@ -9,8 +9,12 @@ import Foundation
 import Dependencies
 
 extension DependencyValues {
-    public var defaultNetwork: DefaultNetworkManager {
-        get { self[DefaultNetworkManager.self] }
-        set { self[DefaultNetworkManager.self] = newValue }
+    public var defaultNetwork: NetworkManager<Network> {
+        get { self[RestfulApiManager.self] }
+        set { self[RestfulApiManager.self] = newValue }
+    }
+    public var imageDownlaoder: NetworkManager<Network>  {
+        get { self[ImageDownloadManager.self] }
+        set { self[ImageDownloadManager.self] = newValue }
     }
 }

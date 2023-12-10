@@ -9,7 +9,15 @@ import Foundation
 import UIKit
 import core_architecture
 
-struct PNGImageCoding: EncodingProtocol, DecodingProtocol {
+extension UIImage: DataModelProtocol { }
+
+struct ImageCoding: EncodingProtocol, DecodingProtocol {
+    /// `imageCompressionQuality: CGFloat` compression is 0(most)..1(least)
+    let imageCompressionQuality: CGFloat
+    /// `init(imageCompressionQuality:`  compression is 0(most)..1(least)
+    init(imageCompressionQuality: CGFloat) {
+        self.imageCompressionQuality = imageCompressionQuality
+    }
     func encode(data: DataModelProtocol) throws -> Data {
         // Your PNG image encoding logic here
         // For demonstration purposes, let's encode an empty image
@@ -18,6 +26,8 @@ struct PNGImageCoding: EncodingProtocol, DecodingProtocol {
         }
         
         if let encodedData = image.pngData() {
+            return encodedData
+        } else if let encodedData = image.jpegData(compressionQuality: imageCompressionQuality) {
             return encodedData
         } else {
             throw EncodingError.invalidValue("Failed to encode PNG image", EncodingError.Context(codingPath: [], debugDescription: "Failed to encode PNG image"))

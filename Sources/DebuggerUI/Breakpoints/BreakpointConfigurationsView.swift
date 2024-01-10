@@ -102,7 +102,9 @@ struct NetworkConfigView: View {
         VStack {
             TitleSubtitleView(title: "Api Name", subtitle: config.name)
             separater()
-            HostingView(host: config.host)
+            if let host = config.host {
+                HostingView(host: host)
+            }
             TitleSubtitleView(title: "Endpoint", subtitle: config.to.pointing)
             if isExpanded {
                 separater()
@@ -111,6 +113,8 @@ struct NetworkConfigView: View {
                 TitleSubtitleView(title: "Content Type", subtitle: config.contentType.rawValue)
                 separater()
                 TitleSubtitleView(title: "Response Model", subtitle: String(describing: config.responseType))
+                separater()
+                TitleSubtitleView(title: "Cache Policy", subtitle: config.cachePolicy.rawValue)
                 separater()
                 TitleSubtitleView(title: "Headers", subtitle: config.headers.prettyPrintJSONString())
             }

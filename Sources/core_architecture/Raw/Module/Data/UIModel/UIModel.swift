@@ -42,7 +42,7 @@ This public protocol allows for a separation of concerns between the underlying 
 */
 public protocol UIModel {
    /// The type of the underlying data model used by the UI model.
-   associatedtype DataModelType
+    associatedtype DataModelType
 
    /**
     Initializes the UI model with the provided data model.
@@ -58,7 +58,6 @@ public protocol UIModel {
 
         var username: String
         var age: String
-
         init(dataModel: UserDataModel) {
             self.username = dataModel.username
             self.age = "Age: \(dataModel.age)"

@@ -11,21 +11,13 @@ import Debugger
 import Dependencies
 
 public enum ApplicationDebugCommands: String, CustomStringConvertible, CaseIterable {
-case application, breakpoint
+case application, debugger
     public var description: String {
         switch self {
         case .application:
             return "Application"
-        case .breakpoint:
-            return "Breakpoint"
-        }
-    }
-    public var shortcut: String {
-        switch self {
-        case .application:
-            return "A"
-        case .breakpoint:
-            return "B"
+        case .debugger:
+            return "Debugger"
         }
     }
 }
@@ -63,8 +55,8 @@ public struct DebugShakeGestureModifier: ViewModifier {
             .onShakeGesture {
                 switch selectedCommand {
                 case .application:
-                    selectedCommand = .breakpoint
-                case .breakpoint:
+                    selectedCommand = .debugger
+                case .debugger:
                     selectedCommand = .application
                 }
             }

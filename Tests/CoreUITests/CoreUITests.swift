@@ -1,11 +1,11 @@
 import XCTest
-@testable import core_architecture
+@testable import Core
 
-final class core_architectureTests: XCTestCase {
+final class CoreUITests: XCTestCase {
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(core_architecture().text, "Hello, World!")
+        XCTAssertEqual("", "Hello, World!")
     }
 }

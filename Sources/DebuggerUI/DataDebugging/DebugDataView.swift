@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 import SwiftUI
 
 
@@ -17,10 +17,10 @@ extension KeyValueData: Identifiable {
 }
 
 public struct KeyValueView: View {
-    @Dependency(\.networkModuleKeyValueTheme) var theme
     @Binding var keyValue: KeyValueData
+    @State var skin: Skin
     @Binding var isEditingEnabled: Bool
-    @State private var valueAsString: String {
+    @State private var valueAsString: String = "" {
         didSet {
             setupJSONValue()
         }
@@ -44,7 +44,8 @@ public struct KeyValueView: View {
             return
         }
     }
-    init(keyValue: Binding<KeyValueData>, isEditingEnabled: Binding<Bool>) {
+    init(keyValue: Binding<KeyValueData>, isEditingEnabled: Binding<Bool>, skin: Skin) {
+        _skin = .init(initialValue: skin)
         _keyValue = keyValue
         _isEditingEnabled = isEditingEnabled
         self.valueAsString = keyValue.wrappedValue.value.description
@@ -62,29 +63,20 @@ public struct KeyValueView: View {
     public var body: some View {
         HStack(alignment: .center) {
             Text(keyValue.key)
-                .font(theme.keyTitleFont)
-                .foregroundColor(theme.keyTiteColor)
-                .padding(.horizontal, theme.keyPadding)
+                .skinTune(skin.title)
             Spacer()
             if isEditingEnabled {
-                RoundedBorderView(height: theme.jsonContentHeight) {
+                RoundedBorderView(skin: skin.roundedRect) {
                     TextField("Enter value for \(keyValue.key)", text: binding())
                         .id(keyValue.id)
-                        .foregroundColor(theme.keyTiteColor)
-                        .padding(.horizontal, theme.valuePadding)
-                        .multilineTextAlignment(.trailing)
-                        .font(
-                            theme.valueTitleFont.editingFont()
-                        )
+                        .skinTune(skin.subTitle)
                         
                 }
             }else {
                 Text(keyValue.value.description)
                     .id(keyValue.id)
-                    .font(theme.valueTitleFont)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(theme.valueTiteColor)
-                    .padding(.horizontal, theme.valuePadding)
+                    .skinTune(skin.title)
             }
         }
     }
@@ -94,6 +86,13 @@ public struct KeyValueView: View {
         } set: { newValue in
             
         }
+    }
+    struct Skin: Skinning {
+        static var `default`: KeyValueView.Skin { .init(title: .default, subTitle: .default, roundedRect: .default) }
+        
+        var title: TextualSkin
+        var subTitle: TextualSkin
+        var roundedRect: ViewSkin
     }
 }
 
@@ -108,10 +107,15 @@ extension Font {
 }
 
 public class KeyValueCollectionViewModel: ViewModeling {
+    let key: String
     @Binding var keyValues: [KeyValueData]
-    
-    init(keyValues: Binding<[KeyValueData]>) {
+    var isEditingEnabled: Binding<Bool>
+    var isExpanded: Binding<Bool>
+    public init(key: String, keyValues: Binding<[KeyValueData]>, isEditingEnabled: Binding<Bool>, isExpanded: Binding<Bool>) {
+        self.key = key
         _keyValues = keyValues
+        self.isEditingEnabled = isEditingEnabled
+        self.isExpanded = isExpanded
     }
     public func getBinding(kv: KeyValueData) -> Binding<[KeyValueData]> {
         let index = keyValues.firstIndex { kvd in
@@ -156,18 +160,16 @@ public class KeyValueCollectionViewModel: ViewModeling {
     }
 }
 import Dependencies
-public struct KeyValueCollectionView: View {
-    @Dependency(\.networkModuleKeyValueTheme) var theme
-    var key: String
+
+public struct KeyValueCollectionView: SwiftUIView {
+    public typealias ViewModelType = KeyValueCollectionViewModel
+    public typealias SkinType = Skin
     @ObservedObject var viewModel: KeyValueCollectionViewModel
-    @Binding var isExpanded: Bool
-    @Binding var isEditingEnabled: Bool
     @State var expandedBindings: [String: Bool] = [:]
-    init(key: String, keyValues: Binding<[KeyValueData]>, isEditingEnabled: Binding<Bool>, isExpanded: Binding<Bool>) {
-        self.key = key
-        self.viewModel = .init(keyValues: keyValues)
-        _isEditingEnabled = isEditingEnabled
-        _isExpanded = isExpanded
+    @State var skin: SkinType
+    public init(viewModel: KeyValueCollectionViewModel, skin: Skin) {
+        self.viewModel = viewModel
+        _skin = .init(initialValue: skin)
     }
     func binding(key: String) -> Binding<Bool> {
         .init {
@@ -178,116 +180,169 @@ public struct KeyValueCollectionView: View {
     }
     @ViewBuilder
     func expandableHeaderView() -> some View {
-        Image(systemName: isExpanded ? "arrow.down.circle.fill" : "arrow.down.circle")
-            .rotationEffect(.degrees(isExpanded ? 180 : 0))
-            .font(theme.headerTitleFont)
-            .foregroundColor(theme.borderColor)
-            .padding(.horizontal, theme.headerPadding)
+        Image(systemName: viewModel.isExpanded.wrappedValue ? "arrow.down.circle.fill" : "arrow.down.circle")
+            .rotationEffect(.degrees(viewModel.isExpanded.wrappedValue ? 180 : 0))
+            .skinTune(skin.headerSkin)
     }
     public var body: some View {
         VStack {
             ZStack {
-                RoundedRectangle(cornerRadius: theme.radius)
-                    .stroke(lineWidth: 1)
-                    .stroke(theme.keyTiteColor)
+                RoundedRectangle(cornerRadius: skin.keyValueContainerSkin.size?.cornerRadius ?? 0)
+                    .stroke(lineWidth: skin.keyValueContainerSkin.size?.borderWidth ?? 1)
+                    .stroke(skin.keyValueContainerSkin.color?.backgroundColor.swiftUI ?? .clear)
                 
                 VStack {
                     VStack {
                         VStack {
                             HStack {
-                                Text(key)
-                                    .foregroundColor(theme.keyTiteColor)
+                                Text(viewModel.key)
                                     .lineLimit(1)
-                                    .font(theme.headerTitleFont)
-                                    .padding(theme.headerPadding)
+                                    .skinTune(skin.keySkin)
                                 Spacer()
                                 expandableHeaderView()
                             }
-                            if isExpanded {
+                            if viewModel.isExpanded.wrappedValue {
                                 Rectangle()
-                                    .foregroundColor(theme.keyTiteColor)
+                                    .skinTune(skin.headerSkin)
                                     .frame(height: 1.5)
-                                    .padding(.horizontal, theme.headerPadding)
                             }
                         }
                         .contentShape(Rectangle())
                         .onTapGesture {
                             withAnimation {
-                                isExpanded.toggle()
+                                viewModel.isExpanded.wrappedValue.toggle()
                             }
                         }
-                        .frame(height: theme.headerHeight)
+                        .skinTune(skin.headerSkin)
                     }
-                    if isExpanded {
+                    if viewModel.isExpanded.wrappedValue {
                         ForEach(viewModel.keyValues) { kv in
                             switch kv.value {
-                            case .keyValue(_):
-                                KeyValueCollectionView(key: kv.key, keyValues: viewModel.getBinding(kv: kv), isEditingEnabled: $isEditingEnabled, isExpanded: binding(key: kv.key))
-                                    .id(kv.id)
-                                    .padding(.horizontal, theme.keyPadding)
-                                    
                             case .arrayValue(_):
-                                KeyValueCollectionView(key: kv.key, keyValues: viewModel.getBinding(kv: kv), isEditingEnabled: $isEditingEnabled, isExpanded: binding(key: kv.key))
+                                KeyValueCollectionView(viewModel: .init(key: viewModel.key, keyValues: $viewModel.keyValues, isEditingEnabled: viewModel.isEditingEnabled, isExpanded: viewModel.isEditingEnabled), skin: skin)
                                     .id(kv.id)
-                                    .padding(.horizontal, theme.keyPadding)
+                            case .keyValue(_):
+                                KeyValueCollectionView(viewModel: .init(key: viewModel.key, keyValues: $viewModel.keyValues, isEditingEnabled: viewModel.isEditingEnabled, isExpanded: viewModel.isEditingEnabled), skin: skin)
+                                    .id(kv.id)
+                                    
                             default:
-                                KeyValueView(keyValue: viewModel.getBinding(kv: kv), isEditingEnabled: $isEditingEnabled)
-                                    .frame(height: theme.jsonContentHeight)
-                                    .id(kv.id)
-                                    .padding(.horizontal, theme.keyPadding)
+                                KeyValueView(keyValue: viewModel.getBinding(kv: kv), isEditingEnabled: viewModel.isEditingEnabled, skin: .init(title: skin.keyValueSkin.titleSkin, subTitle: skin.keyValueSkin.subtitleSkin, roundedRect: skin.keyValueSkin.roundRectSkin))
                             }
                         }
                     }
                 }
-                .padding(.horizontal, 0)
-                .padding(.vertical, theme.keyPadding)
+                .skinTune(skin.keySkin)
             }
-            .padding(.vertical, theme.keyPadding)
-            .padding(.horizontal, theme.headerPadding)
+            .skinTune(skin.keyValueContainerSkin)
             
+        }
+    }
+}
+extension KeyValueCollectionView {
+    public struct Skin: Skinning {
+        public static var `default`: KeyValueCollectionView.Skin { .init(headerSkin: .default, keyValueContainerSkin: .default, keySkin: .default, valueSkin: .default, collectionSkin: .default, keyValueSkin: .init(titleSkin: .default, subtitleSkin: .default, roundRectSkin: .default)) }
+        
+        
+        
+        public struct KeyValueSkin {
+            public var titleSkin: TextualSkin
+            public var subtitleSkin: TextualSkin
+            public var roundRectSkin: ViewSkin
+        }
+        
+        public var headerSkin: ViewSkin
+        public var keyValueContainerSkin: ViewSkin
+        public var keySkin: TextualSkin
+        public var valueSkin: TextualSkin
+        public var collectionSkin: ViewSkin
+        public var keyValueSkin: KeyValueSkin
+        
+        public init(headerSkin: ViewSkin, keyValueContainerSkin: ViewSkin, keySkin: TextualSkin, valueSkin: TextualSkin, collectionSkin: ViewSkin, keyValueSkin: KeyValueSkin) {
+            self.headerSkin = headerSkin
+            self.keyValueContainerSkin = keyValueContainerSkin
+            self.keySkin = keySkin
+            self.valueSkin = valueSkin
+            self.collectionSkin = collectionSkin
+            self.keyValueSkin = keyValueSkin
         }
     }
 }
 
 
-public struct DebugDataView: ViewProtocol, View {
+public struct DebugDataModule: ViewModuling {
+    public typealias ViewType = DebugDataView
+    public struct ModuleInput: ModulingInput {
+        let action: NetworkDebuggerActions
+    }
+    private var input: ModuleInput
+    public init(input: ModuleInput) {
+        self.input = input
+    }
+    
+    public func view() -> DebugDataView {
+        @Skin(.data) var dataSkin: DebugDataView.Skin
+        return .init(
+            viewModel: .init(action: input.action),
+            skin: dataSkin
+        )
+    }
+    
+}
+
+public struct DebugDataView: SwiftUIView, View {
     public typealias ViewModelType = NetworkDebugViewModel
-    @Dependency(\.networkModuleKeyValueTheme) var theme
+    public typealias SkinType = Skin
+    @State var skin: SkinType
     @ObservedObject var viewModel: NetworkDebugViewModel
-    public init(viewModel: NetworkDebugViewModel) {
+    public init(viewModel: NetworkDebugViewModel, skin: SkinType) {
+        _skin = .init(initialValue: skin)
         self.viewModel = viewModel
     }
     public var body: some View {
         NavigationUI {
             VStack {
                 ScrollView(.vertical) {
-                    KeyValueCollectionView(key: "Root", keyValues: viewModel.bindingKeyValues(), isEditingEnabled: $viewModel.isEditingEnabled, isExpanded: $viewModel.isExpanded)
-                        .id("Root")
+                    KeyValueCollectionView(
+                        viewModel: KeyValueCollectionViewModel(
+                            key: "Root",
+                            keyValues: viewModel.bindingKeyValues(),
+                            isEditingEnabled: $viewModel.isEditingEnabled,
+                            isExpanded: $viewModel.isExpanded
+                        ),
+                        skin: .init(headerSkin: .init(configID: ""), keyValueContainerSkin: .init(configID: ""), keySkin: .init(configID: "", font: .title), valueSkin: .init(configID: "", font: .title), collectionSkin: .init(configID: ""), keyValueSkin: .init(titleSkin: .init(configID: "", font: .title), subtitleSkin: .init(configID: "", font: .title), roundRectSkin: .init(configID: "")))
+                    )
+                    .id("Root")
+                        
                 }
             }
-            .background(theme.backgroundColor)
             .navigationBarBackButtonHidden(false)
         }
     }
 }
 
-
+extension DebugDataView {
+    public struct Skin: Skinning {
+        public static var `default`: DebugDataView.Skin { .init() }
+    }
+}
 
 struct RoundedBorderView<Content: View>: View {
-    @Dependency(\.networkModuleKeyValueTheme) var theme
     var height: CGFloat
     var content: Content
     
-    init(height: CGFloat, @ViewBuilder content: () -> Content) {
-        self.height = height
+    @State var skin: ViewSkinning
+    
+    init(skin: ViewSkinning, @ViewBuilder content: () -> Content) {
+        self.height = (skin.size?.height ?? 0)
+        _skin = .init(initialValue: skin)
         self.content = content()
     }
     
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .topLeading) {
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(theme.borderColor, lineWidth: 2)
+                RoundedRectangle(cornerRadius: skin.size?.cornerRadius ?? 10)
+                    .stroke(Color(uiColor: skin.color?.borderColor ?? .clear), lineWidth: skin.size?.borderWidth ?? 0)
                     .frame(width: geometry.size.width, height: height == 0 ? geometry.size.height : height)
                 content
                     .frame(width: geometry.size.width, height: height == 0 ? geometry.size.height : height)
@@ -297,6 +352,7 @@ struct RoundedBorderView<Content: View>: View {
     }
 }
 import Debugger
+import CoreUI
 
 public struct DebugDataViewTT_Previews: PreviewProvider {
     public static var previews: some View {

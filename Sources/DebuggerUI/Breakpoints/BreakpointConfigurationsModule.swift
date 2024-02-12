@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import core_architecture
+import Core
+import CoreUI
 
 public struct BreakpointConfigurationsModule: ViewModuling {
     public typealias ViewType = BreakpointConfigurationsView
@@ -18,7 +19,8 @@ public struct BreakpointConfigurationsModule: ViewModuling {
         self.input = input
     }
     public func view() -> BreakpointConfigurationsView {
-        .init(viewModel: .init())
+        @Skin(.breakpoint) var breakPointSkin: BreakpointConfigurationsView.Skin
+        return BreakpointConfigurationsView(viewModel: .init(), skin: breakPointSkin)
     }
 }
 

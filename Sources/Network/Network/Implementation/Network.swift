@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 import Dependencies
 import Debugger
 
@@ -20,7 +20,7 @@ public class Network: Networking {
             self.debugData = debugData
         }
     }
-    private let logger: Logs<NetworkLogAction> = .init(id: "com.core_architecture.network.logs")
+    private let logger: Logs<NetworkLogAction> = .init(id: "com.Core.network.logs")
     @Dependency(\.networkDebugger) var debugger
     public var session: SessionManager
     private var tasks: [String: SessionTask] = [:]

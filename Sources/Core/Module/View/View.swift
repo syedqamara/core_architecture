@@ -38,6 +38,8 @@ struct UserProfileView: ViewProtocol {
 public protocol ViewProtocol {
     /// The associated type representing the view model conforming to the `ViewModeling` public protocol.
     associatedtype ViewModelType: ViewModeling
+    /// The associated type representing the view's skin (i.e colors, sizes, paddings, fonts)
+    associatedtype SkinType: Skinning
 
     /// Initializes the view with the provided view model.
     ///
@@ -66,6 +68,6 @@ public protocol ViewProtocol {
     ///
     /// By adopting the `ViewProtocol`, SwiftUI views can seamlessly integrate view models, promoting a clear separation of concerns and enabling reactive user interfaces.
     ///
-    init(viewModel: ViewModelType)
+    init(viewModel: ViewModelType, skin: SkinType)
 }
 

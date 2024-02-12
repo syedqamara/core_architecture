@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 
 public protocol DebuggingRegistering: Registering {
     init<D: Debug>(type: D.Type, debugable: Debugable, breakPoint: BreakPointType)

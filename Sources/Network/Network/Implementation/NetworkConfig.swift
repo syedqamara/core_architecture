@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 
 public enum NetworkCachePolicy: String {
     case noCache

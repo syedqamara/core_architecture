@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 
 public class NetworkManager<N: Network>: ManagableNetworking {
     private let network: N

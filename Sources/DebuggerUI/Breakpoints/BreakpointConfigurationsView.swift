@@ -6,19 +6,38 @@
 //
 
 import SwiftUI
-import core_architecture
+import Core
+import CoreUI
 import Debugger
 import Network
 import Dependencies
 
+
+extension BreakpointConfigurationsView {
+    public struct Skin: Skinning {
+        public var roundRectSkin: ViewSkin
+        public init(roundRectSkin: ViewSkin) {
+            self.roundRectSkin = roundRectSkin
+        }
+        public static var `default`: Skin {
+            .init(
+                roundRectSkin: .default
+            )
+        }
+    }
+}
+
+
 public struct BreakpointConfigurationsView: SwiftUIView {
     public typealias ViewModelType = BreakpointConfigurationsViewModel
+    public typealias SkinType = Skin
     @ObservedObject var viewModel: BreakpointConfigurationsViewModel
     @State var showBreakPointSelectionOption: Bool = false
+    @State var skin: SkinType
     @State var networkExpandCollapes: [String: Bool] = [:]
-    @Dependency(\.networkModuleKeyValueTheme) var theme
-    public init(viewModel: BreakpointConfigurationsViewModel) {
+    public init(viewModel: BreakpointConfigurationsViewModel, skin: SkinType) {
         self.viewModel = viewModel
+        _skin = .init(initialValue: skin)
     }
     public var body: some View {
         networkList()
@@ -29,7 +48,6 @@ public struct BreakpointConfigurationsView: SwiftUIView {
         } set: { newValue in
             networkExpandCollapes[id] = newValue
         }
-
     }
     @ViewBuilder
     func networkConfigView(_ networkConfig: NetworkConfig) -> some View {
@@ -49,11 +67,11 @@ public struct BreakpointConfigurationsView: SwiftUIView {
                                 }
                         }
                     }
-                    RoundedBorderView(height: 30) {
+                    RoundedBorderView(skin: skin.roundRectSkin) {
                         Image(systemName: binding(networkConfig.to.pointing).wrappedValue ? "arrow.down.circle.fill" : "arrow.down.circle")
                             .rotationEffect(.degrees(binding(networkConfig.to.pointing).wrappedValue ? 180 : 0))
                             .font(.subheadline.bold())
-                            .foregroundColor(theme.borderColor)
+                            .foregroundColor(skin.roundRectSkin.color?.borderColor.swiftUI)
                             .onTapGesture {
                                 withAnimation {
                                     binding(networkConfig.to.pointing).wrappedValue.toggle()
@@ -149,7 +167,7 @@ struct MockBreakpointView: View {
         _networkConfigurations.wrappedValue = preview
     }
     var body: some View {
-        BreakpointConfigurationsView(viewModel: .init())
+        BreakpointConfigurationsView(viewModel: .init(), skin: .init(roundRectSkin: .init(configID: "")))
     }
 }
 

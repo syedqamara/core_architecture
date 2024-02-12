@@ -7,7 +7,7 @@
 
 import Foundation
 import ManagedAppConfigLib
-import core_architecture
+import Core
 
 public protocol Debugable: Configurable {
     var debugID: String { get }

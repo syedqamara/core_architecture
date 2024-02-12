@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 
 public extension Debugger {
     func debugError(config: Debugable, error: Error, continuation: Continuation<DataModelProtocol, Error>) {

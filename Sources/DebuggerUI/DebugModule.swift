@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import core_architecture
+import Core
+import CoreUI
 import Debugger
 import SwiftUI
 import Dependencies
@@ -24,10 +25,13 @@ public struct NetworkDebugModule: ViewModuling {
         self.input = input
     }
     public func view() -> NetworkDebugView {
-        NetworkDebugView(
+        @Skin(.networkDebug) var networkDebugSkin: NetworkDebugView.Skin
+        
+        return NetworkDebugView(
             viewModel: NetworkDebugViewModel(
                 action: input
-            )
+            ),
+            skin: networkDebugSkin
         )
     }
 }
@@ -36,27 +40,28 @@ public struct NetworkDebugModule: ViewModuling {
 
 public struct NetworkDebugView: SwiftUIView {
     public typealias ViewModelType = NetworkDebugViewModel
-    @Dependency(\.networkModuleKeyValueTheme) var theme
+    public typealias SkinType = Skin
     @ObservedObject var viewModel: NetworkDebugViewModel
+    @State var skin: SkinType
     @EnvironmentObject var networkDebugConnectionVM: NetworkDebugConnectionViewModel
     @Environment(\.presentationMode) var presentationMode
-    public init(viewModel: NetworkDebugViewModel) {
+    public init(viewModel: NetworkDebugViewModel, skin: SkinType) {
+        self._skin = .init(initialValue: skin)
         self.viewModel = viewModel
+        
     }
     public var body: some View {
         NavigationUI {
             VStack {
-                RoundedBorderView(height: 40) {
+                RoundedBorderView(skin: skin.roundedRectSkin) {
                     HStack {
                         HStack {
                             if viewModel.isEditingEnabled {
                                 Text("Disable Editing")
-                                    .font(theme.headerTitleFont)
-                                    .foregroundColor(theme.keyTiteColor)
+                                    .skinTune(skin.toggleEditingBtnSkin)
                             }else {
                                 Text("Enable Editing")
-                                    .font(theme.headerTitleFont)
-                                    .foregroundColor(theme.keyTiteColor)
+                                    .skinTune(skin.toggleEditingBtnSkin)
                             }
                         }
                         .onTapGesture {
@@ -66,8 +71,7 @@ public struct NetworkDebugView: SwiftUIView {
                         }
                         Spacer()
                         Text("Save")
-                            .font(theme.headerTitleFont)
-                            .foregroundColor(viewModel.isEditingEnabled ? theme.keyTiteColor : theme.valueTiteColor)
+                            .skinTune(viewModel.isEditingEnabled ? skin.saveBtnActiveSkin : skin.saveBtnDisableSkin)
                             .onTapGesture {
                                 viewModel.save()
                                 presentationMode.wrappedValue.dismiss()
@@ -91,18 +95,29 @@ public struct NetworkDebugView: SwiftUIView {
                     .environmentObject(networkDebugConnectionVM)
                     .id(viewModel.debuggerAction.rawValue)
                 default:
-                    DebugDataView(viewModel: viewModel)
+                    DebugDataView(viewModel: viewModel, skin: .init())
                         .environmentObject(networkDebugConnectionVM)
                         .id(String(describing: viewModel))
                 }
                 Spacer()
             }
-            .padding(.top, 10)
-            .background(theme.backgroundColor)
+            .skinTune(skin.containerViewSkin)
             .navigationBarBackButtonHidden(false)
         }
     }
 }
+
+extension NetworkDebugView {
+    public struct Skin: Skinning {
+        public static var `default`: NetworkDebugView.Skin { .init(containerViewSkin: .default, roundedRectSkin: .default, toggleEditingBtnSkin: .default, saveBtnActiveSkin: .default, saveBtnDisableSkin: .default) }
+        var containerViewSkin: ViewSkin
+        var roundedRectSkin: ViewSkin
+        var toggleEditingBtnSkin: TextualSkin
+        var saveBtnActiveSkin: TextualSkin
+        var saveBtnDisableSkin: TextualSkin
+    }
+}
+
 public class NetworkDebugViewModel: ViewModeling {
     public enum NetworkDebugAction: String {
     case request, data, error, response

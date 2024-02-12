@@ -7,7 +7,8 @@
 
 import Foundation
 import SwiftUI
-import core_architecture
+import Core
+import CoreUI
 import Network
 
 public struct URLRequestDebugModule: ViewModuling {
@@ -23,19 +24,32 @@ public struct URLRequestDebugModule: ViewModuling {
         self.input = input
     }
     public func view() -> URLRequestDebugView {
-        .init(
+        @Skin(.request) var requestSkin: URLRequestDebugView.Skin
+        return URLRequestDebugView(
             viewModel: .init(
                 urlRequest: input.request,
                 isEditingEnabled: input.isEditingEnabled
-            )
+            ),
+            skin: requestSkin
         )
     }
 }
 
+extension URLRequestDebugView {
+    public struct Skin: Skinning {
+        public static var `default`: URLRequestDebugView.Skin { .init() }
+    }
+
+}
 public struct URLRequestDebugView: ViewProtocol, View {
+    public typealias ViewModelType = URLRequestDebugViewModel
+    public typealias SkinType = Skin
+    
     @ObservedObject var viewModel: URLRequestDebugViewModel
-    public init(viewModel: URLRequestDebugViewModel) {
+    @State var skin: Skin
+    public init(viewModel: URLRequestDebugViewModel, skin: Skin) {
         self.viewModel = viewModel
+        self.skin = skin
     }
     public var body: some View {
         VStack {

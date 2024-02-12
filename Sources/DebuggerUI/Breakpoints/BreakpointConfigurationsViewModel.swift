@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 import Debugger
 import Network
 import SwiftUI

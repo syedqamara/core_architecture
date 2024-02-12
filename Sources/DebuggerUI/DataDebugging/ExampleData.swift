@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 public struct Address: DataModel {
     public let street: String
     public let city: String

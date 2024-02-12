@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 
 public class DebugConnection<A: DebuggingAction>: ViewModeling {
     weak private var debugger: Debugger<A>? {

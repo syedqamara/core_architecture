@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 
 public struct NetworkPacket {
     public let time: Date = Date()

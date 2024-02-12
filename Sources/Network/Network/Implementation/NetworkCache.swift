@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 
 @propertyWrapper
 struct NetworkCache {

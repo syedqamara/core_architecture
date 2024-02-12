@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 
 public struct GetNetworkRequestEncoder: NetworkRequestEncoding {
     public func encode(data: DataModel?) async throws -> String? {

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 
 public struct JSONCoding: EncodingProtocol, DecodingProtocol {
     public func encode(data: DataModelProtocol) throws -> Data {

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 import Debugger
 //NetworkConfig(to: endpoint, method: .post, contentType: .applicationJSON, responseType: User.self)
 

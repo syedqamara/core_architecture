@@ -6,7 +6,7 @@
 //
 import XCTest
 import Foundation
-import core_architecture
+import Core
 import ManagedAppConfigLib
 import Dependencies
 @testable import Network

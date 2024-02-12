@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-import core_architecture
+import Core
 
 extension UIImage: DataModelProtocol { }
 

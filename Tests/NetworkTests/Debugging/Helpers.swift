@@ -7,7 +7,7 @@
 
 import Foundation
 import Network
-import core_architecture
+import Core
 extension NetworkHost {
     static func `default`() -> NetworkHost {
         .init(

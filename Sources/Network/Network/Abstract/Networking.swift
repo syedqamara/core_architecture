@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import core_architecture
+import Core
 import Debugger
 
 public protocol Pointable: Enpointable {

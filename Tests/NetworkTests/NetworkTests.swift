@@ -1,6 +1,6 @@
 import XCTest
 import Debugger
-import core_architecture
+import Core
 import ManagedAppConfigLib
 @testable import Network
 

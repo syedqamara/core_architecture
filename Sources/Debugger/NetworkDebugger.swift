@@ -7,7 +7,7 @@
 
 import Foundation
 import ManagedAppConfigLib
-import core_architecture
+import Core
 
 public typealias NetworkDebugger = Debugger<NetworkDebuggerActions>
 

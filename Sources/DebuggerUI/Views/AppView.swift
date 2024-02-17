@@ -9,15 +9,17 @@ import Foundation
 import SwiftUI
 import Dependencies
 import Core
+import CoreUI
+import Debugger
 
-public struct AppView<V: View>: View {
-    public enum AppScreens {
-    case application, breakpoint
-    }
-    public let startScreen: AppScreens
+public struct AppView<V: View, R: ApplicationConfigurationLoading>: View {
     private var applicationView: V
-    public init(startScreen: AppScreens, @ViewBuilder applicationView: () -> V) {
-        self.startScreen = startScreen
+    @State private var networkDebugAction: NetworkDebuggerActions? = nil
+    @State private var selectedCommand: ApplicationDebugCommands = .application
+    @State private var isDebugViewShowing: Bool = false
+    
+    public init(R: R.Type, @ViewBuilder applicationView: () -> V) {
+        R.registerApplicationConfig()
         self.applicationView = applicationView()
         UINavigationBar.appearance().backgroundColor = .black
         UINavigationBar.appearance().barTintColor = .black
@@ -28,17 +30,18 @@ public struct AppView<V: View>: View {
     @Dependency(\.viewFactory) var viewFactory
     public var body: some View {
         NavigationUI {
-            switch startScreen {
+            switch selectedCommand {
             case .application:
                 applicationView
-            case .breakpoint:
+            case .debugger:
                 AnyView(
                     viewFactory.swiftUIView(
-                        input: startScreen
+                        input: .breakpoint
                     )
                 )
             }
         }
+        .modifier(DebugShakeGestureModifier(selectedCommand: $selectedCommand, isShowing: $isDebugViewShowing, networkDebugAction: $networkDebugAction))
         .background(.black)
     }
 }

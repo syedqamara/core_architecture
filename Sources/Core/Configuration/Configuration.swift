@@ -11,6 +11,10 @@ public protocol Configurable {
     var configID: String { get }
 }
 
+public protocol ApplicationConfigurationLoading {
+    static func registerApplicationConfig()
+}
+
 public final class ConfigManager {
     public static let shared = ConfigManager()
     private var configDictionary: [String: Any] = [:]

@@ -68,7 +68,7 @@ public struct DebugShakeGestureModifier: ViewModifier {
     }
     private func debugView(action: NetworkDebuggerActions) -> some View {
         AnyView(
-            viewFactory.makeSwiftUI(
+            viewFactory.swiftUIView(
                 input: .debug(action)
             )
         )

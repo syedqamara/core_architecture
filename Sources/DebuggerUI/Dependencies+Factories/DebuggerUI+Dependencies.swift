@@ -17,7 +17,7 @@ public enum DebuggerUIViewFactoryInput {
 case data(NetworkDebuggerActions), request(NetworkDebuggerActions)
 }
 extension ViewFactory {
-    public func makeSwiftUI(input: DebuggerViewFactoryInput) -> any SwiftUIView {
+    public func swiftUIView(input: DebuggerViewFactoryInput) -> any SwiftUIView {
         switch input {
         case .breakpoint:
             return BreakpointConfigurationsModule(input: .init()).view()
@@ -25,7 +25,7 @@ extension ViewFactory {
             return NetworkDebugModule(input: action).view()
         }
     }
-    public func makeSwiftUI(input: DebuggerUIViewFactoryInput) -> any SwiftUIView {
+    public func swiftUIView(input: DebuggerUIViewFactoryInput) -> any SwiftUIView {
         switch input {
         case .data(let action):
             return DebugDataModule(input: .init(action: action)).view()

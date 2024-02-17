@@ -9,6 +9,7 @@ import Foundation
 import Core
 
 public struct JSONCoding: EncodingProtocol, DecodingProtocol {
+    public init() {}
     public func encode(data: DataModelProtocol) throws -> Data {
         guard let jsonDataModel = data as? DataModel else {
             throw EncodingError.invalidValue(data, .init(codingPath: [], debugDescription: "Data does not conforms to protocol `DataModel`"))

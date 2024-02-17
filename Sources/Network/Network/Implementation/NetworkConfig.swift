@@ -14,7 +14,8 @@ public enum NetworkCachePolicy: String {
     case cacheEveryTime
 }
 
-public struct NetworkConfig {
+public struct NetworkConfig: Configurable {
+    public var configID: String { "\(id)" }
     public let id: TimeInterval = Date().timeIntervalSince1970
     public let name: String
     public let host: Hosting?

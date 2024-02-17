@@ -38,7 +38,8 @@ public protocol SessionManager {
 
 
 public protocol Networking {
-    func send(with data: DataModel?, config: NetworkConfig) async throws -> DataModelProtocol
+    associatedtype NetworkConfigType: Configurable
+    func send(with data: DataModel?, config: NetworkConfigType) async throws -> DataModelProtocol
 }
 public protocol NetworkRequestEncoding {
     func encode(data: DataModel?) async throws -> String?

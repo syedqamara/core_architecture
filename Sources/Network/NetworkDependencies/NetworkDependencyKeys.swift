@@ -10,6 +10,7 @@ import Dependencies
 
 
 
+public enum FirebaseDatabaseManager {}
 public enum RestfulApiManager {}
 public enum ImageDownloadManager {}
 

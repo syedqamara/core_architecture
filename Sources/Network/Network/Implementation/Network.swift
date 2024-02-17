@@ -11,6 +11,7 @@ import Dependencies
 import Debugger
 
 public class Network: Networking {
+    public typealias NetworkConfigType = NetworkConfig
     enum NetworkLogAction {
     case url, createRequest, sendRequest, receiveData, throwsError
     }

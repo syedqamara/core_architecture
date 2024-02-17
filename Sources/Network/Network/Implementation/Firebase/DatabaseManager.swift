@@ -8,7 +8,7 @@
 import Foundation
 import Core
 
-public class DatabaseManager<N: DatabaseNetwork>: ManagableNetworking {
+public class DatabaseNetworkManager<N: DatabaseNetwork>: ManagableNetworking {
     private let network: N
     public init(network: N) {
         self.network = network

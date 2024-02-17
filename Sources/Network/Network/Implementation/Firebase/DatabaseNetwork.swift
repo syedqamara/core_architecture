@@ -16,16 +16,16 @@ public protocol NetworkService {
 }
 
 public protocol CreateService: NetworkService {
-    func create(_ item: DataModelProtocol, path: Pointable) async throws
+    func create<D: DataModelProtocol>(_ data: D, to: Pointable) async throws
 }
 public protocol FetchService: NetworkService {
-    func fetch(path: Pointable) async throws -> DataModelProtocol
+    func fetch<D: DataModelProtocol>(type: D.Type, to: Pointable) async throws -> D
 }
 public protocol DeleteService: NetworkService {
-    func delete(_ item: DataModelProtocol, path: Pointable) async throws
+    func delete<D: DataModelProtocol>(_ data: D, to: Pointable) async throws
 }
 public protocol UpdateService: NetworkService {
-    func update(_ item: DataModelProtocol, path: Pointable) async throws
+    func update<D: DataModelProtocol>(_ data: D, to: Pointable) async throws
 }
 
 
@@ -61,18 +61,18 @@ public class DatabaseNetwork: Networking {
         switch config.operation {
         case .create:
             if let data {
-                try await service.create(data, path: config.to)
+                try await service.create(data, to: config.to)
                 return data
             }
             else {
                 throw SystemError.network(.unprocessableEntity)
             }
         case .read:
-            let result = try await service.fetch(path: config.to)
+            let result = try await service.fetch(type: config.responseType, to: config.to)
             return result
         case .update:
             if let data {
-                try await service.update(data, path: config.to)
+                try await service.update(data, to: config.to)
                 return data
             }
             else {
@@ -80,7 +80,7 @@ public class DatabaseNetwork: Networking {
             }
         case .delete:
             if let data {
-                try await service.delete(data, path: config.to)
+                try await service.delete(data, to: config.to)
                 return data
             }
             else {

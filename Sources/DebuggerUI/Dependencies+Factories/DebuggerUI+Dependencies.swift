@@ -34,19 +34,4 @@ extension ViewFactory {
         }
     }
 }
-//DebugDataView
-extension ViewFactory: DependencyKey, TestDependencyKey {
-    public static var liveValue: ViewFactory = ViewFactory()
-    public static var testValue: ViewFactory = ViewFactory()
-}
 
-public extension DependencyValues {
-    var viewFactory: ViewFactory {
-        get {
-            self[ViewFactory.self]
-        }
-        set {
-            self[ViewFactory.self] = newValue
-        }
-    }
-}

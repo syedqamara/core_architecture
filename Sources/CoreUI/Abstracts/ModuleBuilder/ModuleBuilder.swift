@@ -17,16 +17,7 @@ public protocol ViewingFactory {
     func makeView<I>(input: I) -> any ViewProtocol
 }
 
-/// A concrete implementation of `ViewingFactory`.
-public struct ViewFactory: ViewingFactory {
-    /// Creates an instance of `ViewFactory`.
-    public init() {}
 
-    /// Creates a `NoView` with a default view model.
-    public func makeView<I>(input: I) -> any ViewProtocol {
-        NoView(viewModel: .init(), skin: .init(configID: "No_View_Config_ID"))
-    }
-}
 
 /// A private class representing a view model for a view.
 private class NoViewModel: ViewModeling {}

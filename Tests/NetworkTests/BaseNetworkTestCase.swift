@@ -24,7 +24,9 @@ class NetworkBaseTestCase: XCTestCase {
     func sendNetworkRequest<N: Network>(action: DebugAction<NetworkDebuggerActions>, session: SessionManager, requestData: DataModel? = nil) -> NetworkManager<N> {
         let host = NetworkHost.default()
         let network = N(
-            session: session
+            session: session,
+            encoder: JSONCoding(),
+            decoder: JSONCoding()
         )
         return NetworkManager(network: network)
     }

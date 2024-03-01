@@ -12,7 +12,7 @@ import Dependencies
 
 // SizableSkinning Implementation
 public struct SizableSkin: SizableSkinning {
-    public static var `default`: Self { .init() }
+    public static var `default`: Self { .init(borderWidth: 0, cornerRadius: 0, configID: "", width: 20, height: 20, padding: .zero) }
     
     public var borderWidth: CGFloat = 0
     public var cornerRadius: CGFloat = 0
@@ -20,18 +20,32 @@ public struct SizableSkin: SizableSkinning {
     public var width: CGFloat = 0
     public var height: CGFloat = 0
     public var padding: UIEdgeInsets = .init()
+    public init(borderWidth: CGFloat, cornerRadius: CGFloat, configID: String, width: CGFloat, height: CGFloat, padding: UIEdgeInsets) {
+        self.borderWidth = borderWidth
+        self.cornerRadius = cornerRadius
+        self.configID = configID
+        self.width = width
+        self.height = height
+        self.padding = padding
+    }
     // SizableSkinning protocol implementation
 }
 
 
 // ColourfulSkinning Implementation
 public struct ColourfulSkin: ColourfulSkinning {
-    public static var `default`: ColourfulSkin { .init() }
+    public static var `default`: ColourfulSkin { .init(backgroundColor: .clear, foreGroundColor: .clear, tintColor: .clear, borderColor: .clear) }
     public var backgroundColor: UIColor = .clear
     public var foreGroundColor: UIColor = .clear
     public var tintColor: UIColor = .clear
     public var borderColor: UIColor = .clear
     // ColourfulSkinning protocol implementation
+    public init(backgroundColor: UIColor, foreGroundColor: UIColor, tintColor: UIColor, borderColor: UIColor) {
+        self.backgroundColor = backgroundColor
+        self.foreGroundColor = foreGroundColor
+        self.tintColor = tintColor
+        self.borderColor = borderColor
+    }
 }
 
 // ViewSkinning Implementation
@@ -50,12 +64,14 @@ public struct ViewSkin: ViewSkinning {
             configID: "application_core_ui_views_default_view_skin",
             color: ColourfulSkin(
                 backgroundColor: .orange,
-                foreGroundColor: .black,
+                foreGroundColor: .black, 
+                tintColor: .clear,
                 borderColor: .red
             ),
             size: SizableSkin(
                 borderWidth: 2,
-                cornerRadius: 5,
+                cornerRadius: 5, 
+                configID: "",
                 width: 100,
                 height: 100,
                 padding: .init(

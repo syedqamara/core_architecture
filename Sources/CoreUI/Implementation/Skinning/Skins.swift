@@ -104,12 +104,14 @@ public struct TextualSkin: ViewSkinning {
             font: .title,
             color: ColourfulSkin(
                 backgroundColor: .orange,
-                foreGroundColor: .black,
+                foreGroundColor: .black, 
+                tintColor: .clear,
                 borderColor: .red
             ),
             size: SizableSkin(
                 borderWidth: 2,
-                cornerRadius: 5,
+                cornerRadius: 5, 
+                configID: "application_core_ui_views_default_text_size_skin",
                 width: 100,
                 height: 100,
                 padding: .init(

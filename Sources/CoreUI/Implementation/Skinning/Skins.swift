@@ -10,14 +10,20 @@ import SwiftUI
 import Core
 import Dependencies
 
+extension UIEdgeInsets {
+    public static func padding(_ value: CGFloat = 20) -> UIEdgeInsets {
+        .init(top: value, left: value, bottom: value, right: value)
+    }
+}
+
 // SizableSkinning Implementation
 public struct SizableSkin: SizableSkinning {
     public var borderWidth: CGFloat = 0
     public var cornerRadius: CGFloat = 0
     public var width: CGFloat = 0
     public var height: CGFloat = 0
-    public var padding: UIEdgeInsets = .init()
-    public init(borderWidth: CGFloat = 0, cornerRadius: CGFloat = 0, width: CGFloat = -1, height: CGFloat = -1, padding: UIEdgeInsets = .zero) {
+    public var padding: UIEdgeInsets = .padding()
+    public init(borderWidth: CGFloat = 0, cornerRadius: CGFloat = 0, width: CGFloat = -1, height: CGFloat = -1, padding: UIEdgeInsets = .padding()) {
         self.borderWidth = borderWidth
         self.cornerRadius = cornerRadius
         self.width = width

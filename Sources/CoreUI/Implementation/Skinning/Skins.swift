@@ -93,6 +93,64 @@ public struct TextualSkin: ViewSkinning {
     }
 }
 
+
+// VStackSkin Implementation
+public struct VStackSkin: ViewSkinning {
+    public var configID: String
+    public var spacing: CGFloat
+    public var alignment: HorizontalAlignment = .center
+    public var color: ColourfulSkinning?
+    public var size: SizableSkinning?
+    // TextualSkinning protocol implementation
+    public init(configID: String = "VStackSkin.SkinID", spacing: CGFloat = 0, alignment: HorizontalAlignment = .center, color: ColourfulSkinning? = ColourfulSkin.default, size: SizableSkinning? = SizableSkin.default) {
+        self.configID = configID
+        self.spacing = spacing
+        self.alignment = alignment
+        self.color = color
+        self.size = size
+    }
+    public static var `default`: VStackSkin {
+        .init()
+    }
+}
+// HStackSkin Implementation
+public struct HStackSkin: ViewSkinning {
+    public var configID: String
+    public var spacing: CGFloat
+    public var alignment: VerticalAlignment = .center
+    public var color: ColourfulSkinning?
+    public var size: SizableSkinning?
+    // TextualSkinning protocol implementation
+    public init(configID: String = "HStackSkin.SkinID", spacing: CGFloat = 0, alignment: VerticalAlignment = .center, color: ColourfulSkinning? = ColourfulSkin.default, size: SizableSkinning? = SizableSkin.default) {
+        self.configID = configID
+        self.spacing = spacing
+        self.alignment = alignment
+        self.color = color
+        self.size = size
+    }
+    public static var `default`: HStackSkin {
+        .init()
+    }
+}
+
+// HStackSkin Implementation
+public struct ZStackSkin: ViewSkinning {
+    public var configID: String
+    public var alignment: Alignment = .center
+    public var color: ColourfulSkinning?
+    public var size: SizableSkinning?
+    // TextualSkinning protocol implementation
+    public init(configID: String = "ZStackSkin.SkinID", alignment: Alignment = .center, color: ColourfulSkinning? = ColourfulSkin.default, size: SizableSkinning? = SizableSkin.default) {
+        self.configID = configID
+        self.alignment = alignment
+        self.color = color
+        self.size = size
+    }
+    public static var `default`: ZStackSkin {
+        .init()
+    }
+}
+
 // ImageSkinning Implementation
 public struct ImageSkin: ViewSkinning {
     public var configID: String

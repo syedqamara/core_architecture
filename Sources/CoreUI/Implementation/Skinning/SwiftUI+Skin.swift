@@ -31,13 +31,14 @@ extension Image {
         if let width = skin.size?.width, width < 0 {
             nonResizableSkinTune(skin)
         }
-        if let height = skin.size?.height, height < 0 {
+        else if let height = skin.size?.height, height < 0 {
             nonResizableSkinTune(skin)
         }
-        if let size = skin.size {
+        else if let size = skin.size {
             resizableSkinTune(skin)
+        } else {
+            self
         }
-        self
     }
     
     @ViewBuilder

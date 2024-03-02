@@ -14,14 +14,12 @@ import Dependencies
 public struct SizableSkin: SizableSkinning {
     public var borderWidth: CGFloat = 0
     public var cornerRadius: CGFloat = 0
-    public var configID: String = ""
     public var width: CGFloat = 0
     public var height: CGFloat = 0
     public var padding: UIEdgeInsets = .init()
-    public init(configID: String = "SizableSkin.default.SkinID", borderWidth: CGFloat = 0, cornerRadius: CGFloat = 0, width: CGFloat = -1, height: CGFloat = -1, padding: UIEdgeInsets = .zero) {
+    public init(borderWidth: CGFloat = 0, cornerRadius: CGFloat = 0, width: CGFloat = -1, height: CGFloat = -1, padding: UIEdgeInsets = .zero) {
         self.borderWidth = borderWidth
         self.cornerRadius = cornerRadius
-        self.configID = configID
         self.width = width
         self.height = height
         self.padding = padding
@@ -39,8 +37,7 @@ public struct ColourfulSkin: ColourfulSkinning {
     public var tintColor: UIColor = .clear
     public var borderColor: UIColor = .clear
     // ColourfulSkinning protocol implementation
-    public init(configID: String = "ColourfulSkin.default.SkinID", backgroundColor: UIColor = .clear, foreGroundColor: UIColor = .clear, tintColor: UIColor = .clear, borderColor: UIColor = .clear) {
-        self.configID = configID
+    public init(backgroundColor: UIColor = .clear, foreGroundColor: UIColor = .clear, tintColor: UIColor = .clear, borderColor: UIColor = .clear) {
         self.backgroundColor = backgroundColor
         self.foreGroundColor = foreGroundColor
         self.tintColor = tintColor

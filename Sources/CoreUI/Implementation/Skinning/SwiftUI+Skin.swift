@@ -37,7 +37,7 @@ extension Image {
         else if let size = skin.size {
             resizableSkinTune(skin)
         } else {
-            self
+            nonResizableSkinTune(skin)
         }
     }
     

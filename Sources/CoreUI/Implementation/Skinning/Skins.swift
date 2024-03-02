@@ -11,13 +11,14 @@ import Core
 import Dependencies
 
 extension UIEdgeInsets {
-    public static func padding(_ value: CGFloat = 20) -> UIEdgeInsets {
+    public static var defaultPaddingValue: CGFloat = 5
+    public static func padding(_ value: CGFloat) -> UIEdgeInsets {
         .init(top: value, left: value, bottom: value, right: value)
     }
-    public static func padding(top: CGFloat = 20, left: CGFloat = 20, bottom: CGFloat = 20, right: CGFloat = 20) -> UIEdgeInsets {
+    public static func padding(top: CGFloat = Self.defaultPaddingValue, left: CGFloat = Self.defaultPaddingValue, bottom: CGFloat = Self.defaultPaddingValue, right: CGFloat = Self.defaultPaddingValue) -> UIEdgeInsets {
         .init(top: top, left: left, bottom: bottom, right: right)
     }
-    public static func padding(verticle: CGFloat, horizontal: CGFloat) -> UIEdgeInsets {
+    public static func padding(verticle: CGFloat = Self.defaultPaddingValue, horizontal: CGFloat = Self.defaultPaddingValue) -> UIEdgeInsets {
         .init(top: verticle, left: horizontal, bottom: verticle, right: horizontal)
     }
 }
@@ -29,7 +30,7 @@ public struct SizableSkin: SizableSkinning {
     public var width: CGFloat = 0
     public var height: CGFloat = 0
     public var padding: UIEdgeInsets = .padding()
-    public init(borderWidth: CGFloat = 0, cornerRadius: CGFloat = 0, width: CGFloat = -1, height: CGFloat = -1, padding: UIEdgeInsets = .padding()) {
+    public init(borderWidth: CGFloat = 0, cornerRadius: CGFloat = 0, width: CGFloat = -1, height: CGFloat = -1, padding: UIEdgeInsets = .padding(UIEdgeInsets.defaultPaddingValue)) {
         self.borderWidth = borderWidth
         self.cornerRadius = cornerRadius
         self.width = width

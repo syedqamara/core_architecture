@@ -124,3 +124,43 @@ public struct TextualSkin: ViewSkinning {
         )
     }
 }
+
+// ImageSkinning Implementation
+public struct ImageSkin: ViewSkinning {
+    public var configID: String
+    public var font: Font
+    public var color: ColourfulSkinning?
+    public var size: SizableSkinning?
+    // TextualSkinning protocol implementation
+    public init(configID: String, font: Font, color: ColourfulSkinning? = nil, size: SizableSkinning? = nil) {
+        self.configID = configID
+        self.font = font
+        self.color = color
+        self.size = size
+    }
+    public static var `default`: ImageSkin {
+        ImageSkin(
+            configID: "application_core_ui_views_default_image_skin",
+            font: .title,
+            color: ColourfulSkin(
+                backgroundColor: .orange,
+                foreGroundColor: .black,
+                tintColor: .clear,
+                borderColor: .red
+            ),
+            size: SizableSkin(
+                borderWidth: 0,
+                cornerRadius: 0,
+                configID: "application_core_ui_views_default_image_size_skin",
+                width: 20,
+                height: 20,
+                padding: .init(
+                    top: 5,
+                    left: 5,
+                    bottom: 5,
+                    right: 5
+                )
+            )
+        )
+    }
+}

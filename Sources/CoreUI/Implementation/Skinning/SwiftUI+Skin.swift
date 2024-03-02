@@ -25,6 +25,12 @@ extension Text {
         modifier(TextSkinModifier(skin: skin))
     }
 }
+extension Image {
+    @ViewBuilder
+    public func skinTune(_ skin: TextualSkin) -> some View {
+        modifier(TextSkinModifier(skin: skin))
+    }
+}
 
 extension TextField {
     @ViewBuilder
@@ -83,6 +89,16 @@ extension EdgeInsets {
 }
 
 // View Modifier for Text
+struct TextSkinModifier: ViewModifier {
+    var skin: TextualSkin
+
+    func body(content: Content) -> some View {
+        return content
+            .font(skin.font)
+            .modifier(ViewSkinModifier(skin: skin))
+    }
+}
+// View Modifier for Image
 struct TextSkinModifier: ViewModifier {
     var skin: TextualSkin
 

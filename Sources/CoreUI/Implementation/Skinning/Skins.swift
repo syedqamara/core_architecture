@@ -12,7 +12,7 @@ import Dependencies
 
 // SizableSkinning Implementation
 public struct SizableSkin: SizableSkinning {
-    public static var `default`: Self { .init(borderWidth: 0, cornerRadius: 0, configID: "", width: 20, height: 20, padding: .zero) }
+    public static var `default`: Self { .init(configID: "SizableSkin.default.SkinID") }
     
     public var borderWidth: CGFloat = 0
     public var cornerRadius: CGFloat = 0
@@ -20,7 +20,7 @@ public struct SizableSkin: SizableSkinning {
     public var width: CGFloat = 0
     public var height: CGFloat = 0
     public var padding: UIEdgeInsets = .init()
-    public init(borderWidth: CGFloat, cornerRadius: CGFloat, configID: String, width: CGFloat, height: CGFloat, padding: UIEdgeInsets) {
+    public init(configID: String, borderWidth: CGFloat = 0, cornerRadius: CGFloat = 0, width: CGFloat = -1, height: CGFloat = -1, padding: UIEdgeInsets = .zero) {
         self.borderWidth = borderWidth
         self.cornerRadius = cornerRadius
         self.configID = configID
@@ -34,13 +34,15 @@ public struct SizableSkin: SizableSkinning {
 
 // ColourfulSkinning Implementation
 public struct ColourfulSkin: ColourfulSkinning {
-    public static var `default`: ColourfulSkin { .init(backgroundColor: .clear, foreGroundColor: .clear, tintColor: .clear, borderColor: .clear) }
+    public static var `default`: ColourfulSkin { .init(configID: "ColourfulSkin.default.SkinID") }
     public var backgroundColor: UIColor = .clear
     public var foreGroundColor: UIColor = .clear
+    public var configID: String = ""
     public var tintColor: UIColor = .clear
     public var borderColor: UIColor = .clear
     // ColourfulSkinning protocol implementation
-    public init(backgroundColor: UIColor, foreGroundColor: UIColor, tintColor: UIColor, borderColor: UIColor) {
+    public init(configID: String, backgroundColor: UIColor = .clear, foreGroundColor: UIColor = .clear, tintColor: UIColor = .clear, borderColor: UIColor = .clear) {
+        self.configID = configID
         self.backgroundColor = backgroundColor
         self.foreGroundColor = foreGroundColor
         self.tintColor = tintColor
@@ -61,25 +63,12 @@ public struct ViewSkin: ViewSkinning {
     }
     public static var `default`: ViewSkin {
         ViewSkin(
-            configID: "application_core_ui_views_default_view_skin",
+            configID: "ViewSkin.SkinID",
             color: ColourfulSkin(
-                backgroundColor: .orange,
-                foreGroundColor: .black, 
-                tintColor: .clear,
-                borderColor: .red
+                configID: "ViewSkin.color.SkinID"
             ),
             size: SizableSkin(
-                borderWidth: 2,
-                cornerRadius: 5, 
-                configID: "",
-                width: 100,
-                height: 100,
-                padding: .init(
-                    top: 5,
-                    left: 5,
-                    bottom: 5,
-                    right: 5
-                )
+                configID: "ViewSkin.color.SkinID"
             )
         )
     }
@@ -100,26 +89,13 @@ public struct TextualSkin: ViewSkinning {
     }
     public static var `default`: TextualSkin {
         TextualSkin(
-            configID: "application_core_ui_views_default_text_skin",
+            configID: "TextualSkin.SkinID",
             font: .title,
             color: ColourfulSkin(
-                backgroundColor: .orange,
-                foreGroundColor: .black, 
-                tintColor: .clear,
-                borderColor: .red
+                configID: "TextualSkin.color.SkinID"
             ),
             size: SizableSkin(
-                borderWidth: 2,
-                cornerRadius: 5, 
-                configID: "application_core_ui_views_default_text_size_skin",
-                width: 100,
-                height: 100,
-                padding: .init(
-                    top: 5,
-                    left: 5,
-                    bottom: 5,
-                    right: 5
-                )
+                configID: "TextualSkin.color.SkinID"
             )
         )
     }
@@ -142,27 +118,14 @@ public struct ImageSkin: ViewSkinning {
     }
     public static var `default`: ImageSkin {
         ImageSkin(
-            configID: "application_core_ui_views_default_image_skin",
+            configID: "ImageSkin.SkinID",
             font: .title,
-            contentMode: .fill,
+            contentMode: .fit,
             color: ColourfulSkin(
-                backgroundColor: .orange,
-                foreGroundColor: .black,
-                tintColor: .clear,
-                borderColor: .red
+                configID: "ImageSkin.color.SkinID"
             ),
             size: SizableSkin(
-                borderWidth: 0,
-                cornerRadius: 0,
-                configID: "application_core_ui_views_default_image_size_skin",
-                width: 20,
-                height: 20,
-                padding: .init(
-                    top: 5,
-                    left: 5,
-                    bottom: 5,
-                    right: 5
-                )
+                configID: "ImageSkin.color.SkinID"
             )
         )
     }

@@ -28,6 +28,27 @@ extension Text {
 extension Image {
     @ViewBuilder
     public func skinTune(_ skin: ImageSkin) -> some View {
+        if let width = skin.size?.width, width < 0 {
+            nonResizableSkinTune(skin)
+        }
+        if let height = skin.size?.height, height < 0 {
+            nonResizableSkinTune(skin)
+        }
+        if let size = skin.size {
+            resizableSkinTune(skin)
+        }
+        self
+    }
+    
+    @ViewBuilder
+    fileprivate func resizableSkinTune(_ skin: ImageSkin) -> some View {
+        self
+            .resizable()
+            .modifier(ViewSkinModifier(skin: skin))
+    }
+    
+    @ViewBuilder
+    fileprivate func nonResizableSkinTune(_ skin: ImageSkin) -> some View {
         self
             .font(skin.font)
             .modifier(ViewSkinModifier(skin: skin))

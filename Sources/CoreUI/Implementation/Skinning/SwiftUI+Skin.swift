@@ -25,6 +25,19 @@ extension Text {
         modifier(TextSkinModifier(skin: skin))
     }
 }
+
+extension VStack {
+    @inlinable public init(skin: VStackSkin = .default, @ViewBuilder content: () -> Content) {
+        self.init(alignment: skin.alignment, spacing: skin.spacing) {
+            content()
+        }
+    }
+    @ViewBuilder
+    public func skinTune(_ skin: TextualSkin) -> some View {
+        modifier(TextSkinModifier(skin: skin))
+    }
+}
+
 extension Image {
     @ViewBuilder
     public func skinTune(_ skin: ImageSkin) -> some View {
@@ -120,6 +133,35 @@ struct TextSkinModifier: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .font(skin.font)
+            .modifier(ViewSkinModifier(skin: skin))
+    }
+}
+// VStack Modifier for Text
+struct VStackSkinModifier: ViewModifier {
+    var skin: VStackSkin
+
+    func body(content: Content) -> some View {
+        return content
+            .modifier(ViewSkinModifier(skin: skin))
+    }
+}
+
+// ZStack Modifier for Text
+struct ZStackSkinModifier: ViewModifier {
+    var skin: ZStackSkin
+
+    func body(content: Content) -> some View {
+        return content
+            .modifier(ViewSkinModifier(skin: skin))
+    }
+}
+
+// HStack Modifier for Text
+struct HStackSkinModifier: ViewModifier {
+    var skin: HStackSkin
+
+    func body(content: Content) -> some View {
+        return content
             .modifier(ViewSkinModifier(skin: skin))
     }
 }

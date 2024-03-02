@@ -27,8 +27,8 @@ extension Text {
 }
 extension Image {
     @ViewBuilder
-    public func skinTune(_ skin: TextualSkin) -> some View {
-        modifier(TextSkinModifier(skin: skin))
+    public func skinTune(_ skin: ImageSkin) -> some View {
+        modifier(ImageSkinModifier(skin: skin))
     }
 }
 
@@ -99,8 +99,8 @@ struct TextSkinModifier: ViewModifier {
     }
 }
 // View Modifier for Image
-struct TextSkinModifier: ViewModifier {
-    var skin: TextualSkin
+struct ImageSkinModifier: ViewModifier {
+    var skin: ImageSkin
 
     func body(content: Content) -> some View {
         return content

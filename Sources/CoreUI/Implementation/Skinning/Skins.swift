@@ -14,6 +14,12 @@ extension UIEdgeInsets {
     public static func padding(_ value: CGFloat = 20) -> UIEdgeInsets {
         .init(top: value, left: value, bottom: value, right: value)
     }
+    public static func padding(top: CGFloat = 20, left: CGFloat = 20, bottom: CGFloat = 20, right: CGFloat = 20) -> UIEdgeInsets {
+        .init(top: top, left: left, bottom: bottom, right: right)
+    }
+    public static func padding(verticle: CGFloat, horizontal: CGFloat) -> UIEdgeInsets {
+        .init(top: verticle, left: horizontal, bottom: verticle, right: horizontal)
+    }
 }
 
 // SizableSkinning Implementation

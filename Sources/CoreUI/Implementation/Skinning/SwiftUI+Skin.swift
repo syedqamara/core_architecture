@@ -98,6 +98,7 @@ struct ViewSkinModifier: ViewModifier {
             .padding(
                 .init(skin.size?.padding)
             )
+            .border(skin.color?.borderColor.swiftUI ?? .clear, width: skin.size?.borderWidth ?? 0)
     }
 }
 

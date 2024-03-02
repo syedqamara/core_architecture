@@ -129,12 +129,14 @@ public struct TextualSkin: ViewSkinning {
 public struct ImageSkin: ViewSkinning {
     public var configID: String
     public var font: Font
+    public var contentMode: ContentMode
     public var color: ColourfulSkinning?
     public var size: SizableSkinning?
     // TextualSkinning protocol implementation
-    public init(configID: String, font: Font, color: ColourfulSkinning? = nil, size: SizableSkinning? = nil) {
+    public init(configID: String, font: Font, contentMode: ContentMode, color: ColourfulSkinning? = nil, size: SizableSkinning? = nil) {
         self.configID = configID
         self.font = font
+        self.contentMode = contentMode
         self.color = color
         self.size = size
     }
@@ -142,6 +144,7 @@ public struct ImageSkin: ViewSkinning {
         ImageSkin(
             configID: "application_core_ui_views_default_image_skin",
             font: .title,
+            contentMode: .fill,
             color: ColourfulSkin(
                 backgroundColor: .orange,
                 foreGroundColor: .black,

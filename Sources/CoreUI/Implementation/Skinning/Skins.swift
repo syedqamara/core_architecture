@@ -12,15 +12,13 @@ import Dependencies
 
 // SizableSkinning Implementation
 public struct SizableSkin: SizableSkinning {
-    public static var `default`: Self { .init(configID: "SizableSkin.default.SkinID") }
-    
     public var borderWidth: CGFloat = 0
     public var cornerRadius: CGFloat = 0
     public var configID: String = ""
     public var width: CGFloat = 0
     public var height: CGFloat = 0
     public var padding: UIEdgeInsets = .init()
-    public init(configID: String, borderWidth: CGFloat = 0, cornerRadius: CGFloat = 0, width: CGFloat = -1, height: CGFloat = -1, padding: UIEdgeInsets = .zero) {
+    public init(configID: String = "SizableSkin.default.SkinID", borderWidth: CGFloat = 0, cornerRadius: CGFloat = 0, width: CGFloat = -1, height: CGFloat = -1, padding: UIEdgeInsets = .zero) {
         self.borderWidth = borderWidth
         self.cornerRadius = cornerRadius
         self.configID = configID
@@ -28,26 +26,27 @@ public struct SizableSkin: SizableSkinning {
         self.height = height
         self.padding = padding
     }
+    public static var `default`: Self { .init() }
     // SizableSkinning protocol implementation
 }
 
 
 // ColourfulSkinning Implementation
 public struct ColourfulSkin: ColourfulSkinning {
-    public static var `default`: ColourfulSkin { .init(configID: "ColourfulSkin.default.SkinID") }
     public var backgroundColor: UIColor = .clear
     public var foreGroundColor: UIColor = .clear
     public var configID: String = ""
     public var tintColor: UIColor = .clear
     public var borderColor: UIColor = .clear
     // ColourfulSkinning protocol implementation
-    public init(configID: String, backgroundColor: UIColor = .clear, foreGroundColor: UIColor = .clear, tintColor: UIColor = .clear, borderColor: UIColor = .clear) {
+    public init(configID: String = "ColourfulSkin.default.SkinID", backgroundColor: UIColor = .clear, foreGroundColor: UIColor = .clear, tintColor: UIColor = .clear, borderColor: UIColor = .clear) {
         self.configID = configID
         self.backgroundColor = backgroundColor
         self.foreGroundColor = foreGroundColor
         self.tintColor = tintColor
         self.borderColor = borderColor
     }
+    public static var `default`: ColourfulSkin { .init() }
 }
 
 // ViewSkinning Implementation
@@ -56,21 +55,13 @@ public struct ViewSkin: ViewSkinning {
     public var color: ColourfulSkinning?
     public var size: SizableSkinning?
     // ViewSkinning protocol implementation
-    public init(configID: String, color: ColourfulSkinning? = nil, size: SizableSkinning? = nil) {
+    public init(configID: String = "ViewSkin.SkinID", color: ColourfulSkinning? = ColourfulSkin.default, size: SizableSkinning? = SizableSkin.default) {
         self.configID = configID
         self.color = color
         self.size = size
     }
     public static var `default`: ViewSkin {
-        ViewSkin(
-            configID: "ViewSkin.SkinID",
-            color: ColourfulSkin(
-                configID: "ViewSkin.color.SkinID"
-            ),
-            size: SizableSkin(
-                configID: "ViewSkin.color.SkinID"
-            )
-        )
+        .init()
     }
 }
 
@@ -81,23 +72,14 @@ public struct TextualSkin: ViewSkinning {
     public var color: ColourfulSkinning?
     public var size: SizableSkinning?
     // TextualSkinning protocol implementation
-    public init(configID: String, font: Font, color: ColourfulSkinning? = nil, size: SizableSkinning? = nil) {
+    public init(configID: String = "TextualSkin.SkinID", font: Font = .body, color: ColourfulSkinning? = ColourfulSkin.default, size: SizableSkinning? = SizableSkin.default) {
         self.configID = configID
         self.font = font
         self.color = color
         self.size = size
     }
     public static var `default`: TextualSkin {
-        TextualSkin(
-            configID: "TextualSkin.SkinID",
-            font: .title,
-            color: ColourfulSkin(
-                configID: "TextualSkin.color.SkinID"
-            ),
-            size: SizableSkin(
-                configID: "TextualSkin.color.SkinID"
-            )
-        )
+        .init()
     }
 }
 
@@ -109,7 +91,7 @@ public struct ImageSkin: ViewSkinning {
     public var color: ColourfulSkinning?
     public var size: SizableSkinning?
     // TextualSkinning protocol implementation
-    public init(configID: String, font: Font, contentMode: ContentMode, color: ColourfulSkinning? = nil, size: SizableSkinning? = nil) {
+    public init(configID: String = "ImageSkin.SkinID", font: Font = .body, contentMode: ContentMode = .fit, color: ColourfulSkinning? = nil, size: SizableSkinning? = nil) {
         self.configID = configID
         self.font = font
         self.contentMode = contentMode
@@ -117,16 +99,6 @@ public struct ImageSkin: ViewSkinning {
         self.size = size
     }
     public static var `default`: ImageSkin {
-        ImageSkin(
-            configID: "ImageSkin.SkinID",
-            font: .title,
-            contentMode: .fit,
-            color: ColourfulSkin(
-                configID: "ImageSkin.color.SkinID"
-            ),
-            size: SizableSkin(
-                configID: "ImageSkin.color.SkinID"
-            )
-        )
+        .init()
     }
 }

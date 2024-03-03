@@ -20,6 +20,7 @@ public struct KeyValueView: View {
     @Binding var keyValue: KeyValueData
     @State var skin: Skin
     @Binding var isEditingEnabled: Bool
+    @State private var lastValueAsString: String = ""
     @State private var valueAsString: String = "" {
         didSet {
             setupJSONValue()
@@ -55,7 +56,13 @@ public struct KeyValueView: View {
             return valueAsString
         } set: { newValue in
             if newValue != valueAsString {
-                valueAsString = newValue
+                lastValueAsString = newValue
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    if newValue == lastValueAsString {
+                        valueAsString = newValue
+                    }
+                }
+                
             }
         }
 

@@ -114,8 +114,13 @@ extension Font {
 }
 
 public class KeyValueCollectionViewModel: ViewModeling {
+    struct KeyValueIndex {
+        let index: Int
+        let binding: Binding<KeyValueData>
+    }
     let key: String
     @Binding var keyValues: [KeyValueData]
+    var keyValuesDictionaries: [String: KeyValueIndex] = [:]
     var isEditingEnabled: Binding<Bool>
     var isExpanded: Binding<Bool>
     public init(key: String, keyValues: Binding<[KeyValueData]>, isEditingEnabled: Binding<Bool>, isExpanded: Binding<Bool>) {
@@ -123,8 +128,18 @@ public class KeyValueCollectionViewModel: ViewModeling {
         _keyValues = keyValues
         self.isEditingEnabled = isEditingEnabled
         self.isExpanded = isExpanded
+        self.keyValuesDictionaries = keyValues.reduce(.init(), { partialResult, binding in
+            var part = partialResult
+            part[binding.id] = .init(index: partialResult.count, binding: binding)
+            return part
+        })
     }
     public func getBinding(kv: KeyValueData) -> Binding<[KeyValueData]> {
+        if let binding = keyValuesDictionaries[kv.id] {
+            let index = binding.index
+            let keyValue = binding.binding.wrappedValue
+            return self.binding(kv: keyValue, index: index)
+        }
         let index = keyValues.firstIndex { kvd in
            return kv.key == kvd.key
         }
@@ -132,6 +147,9 @@ public class KeyValueCollectionViewModel: ViewModeling {
         return binding(kv: kv, index: int)
     }
     public func getBinding(kv: KeyValueData) -> Binding<KeyValueData> {
+        if let binding = keyValuesDictionaries[kv.id] {
+            return binding.binding
+        }
         let index = keyValues.firstIndex { kvd in
            return kv.key == kvd.key
         }
@@ -172,18 +190,10 @@ public struct KeyValueCollectionView: SwiftUIView {
     public typealias ViewModelType = KeyValueCollectionViewModel
     public typealias SkinType = Skin
     @ObservedObject var viewModel: KeyValueCollectionViewModel
-    @State var expandedBindings: [String: Bool] = [:]
     @State var skin: SkinType
     public init(viewModel: KeyValueCollectionViewModel, skin: Skin) {
         self.viewModel = viewModel
         _skin = .init(initialValue: skin)
-    }
-    func binding(key: String) -> Binding<Bool> {
-        .init {
-            expandedBindings[key] ?? true
-        } set: { newValue in
-            expandedBindings[key] = newValue
-        }
     }
     @ViewBuilder
     func expandableHeaderView() -> some View {

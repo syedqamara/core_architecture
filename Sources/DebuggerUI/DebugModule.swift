@@ -101,7 +101,7 @@ public struct NetworkDebugView: SwiftUIView {
                 }
                 Spacer()
             }
-            .skinTune(skin.containerViewSkin)
+//            .skinTune(skin.containerViewSkin)
             .navigationBarBackButtonHidden(false)
         }
     }
@@ -111,13 +111,34 @@ extension NetworkDebugView {
     public struct Skin: Skinning {
         public static var `default`: NetworkDebugView.Skin { .init(containerViewSkin: .default, roundedRectSkin: .default, toggleEditingBtnSkin: .default, saveBtnActiveSkin: .default, saveBtnDisableSkin: .default) }
         var containerViewSkin: ViewSkin
-        var roundedRectSkin: ViewSkin
+        var roundedRectSkin: ViewSkin = .init(color: ColourfulSkin(foreGroundColor: .red), size: SizableSkin(width: 200, height: 50))
         var toggleEditingBtnSkin: TextualSkin
         var saveBtnActiveSkin: TextualSkin
         var saveBtnDisableSkin: TextualSkin
+        public init(containerViewSkin: ViewSkin, roundedRectSkin: ViewSkin, toggleEditingBtnSkin: TextualSkin, saveBtnActiveSkin: TextualSkin, saveBtnDisableSkin: TextualSkin) {
+            self.containerViewSkin = containerViewSkin
+            self.roundedRectSkin = roundedRectSkin
+            self.toggleEditingBtnSkin = toggleEditingBtnSkin
+            self.saveBtnActiveSkin = saveBtnActiveSkin
+            self.saveBtnDisableSkin = saveBtnDisableSkin
+        }
     }
 }
+class Debouncer {
+    let delay: TimeInterval
+    var timer: Timer?
 
+    init(delay: TimeInterval) {
+        self.delay = delay
+    }
+
+    func run(action: @escaping () -> Void) {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { _ in
+            action()
+        }
+    }
+}
 public class NetworkDebugViewModel: ViewModeling {
     public enum NetworkDebugAction: String {
     case request, data, error, response
@@ -147,12 +168,20 @@ public class NetworkDebugViewModel: ViewModeling {
         fatchAndSetupKeyValue()
     }
     public func bindingKeyValues() -> Binding<[KeyValueData]> {
-        .init {
-            return self.keyValues
-        } set: { newKeyValues in
-            self.keyValues = newKeyValues
-        }
-
+        var newKeyValues = keyValues
+        let debouncer = Debouncer(delay: 0.5) // Debouncer with a delay of 0.5 seconds
+        
+        return Binding(
+            get: {
+                return newKeyValues
+            },
+            set: { newValue in
+                newKeyValues = newValue
+                debouncer.run {
+                    self.keyValues = newKeyValues // Update keyValues after the delay
+                }
+            }
+        )
     }
     public func requestBinding() -> Binding<URLRequest> {
         .init {

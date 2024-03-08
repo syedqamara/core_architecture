@@ -42,7 +42,7 @@ public enum DebugSkins {
     case networkDebug, request, data, kv, breakpoint
 }
 extension DebugSkins {
-    var rawValue: String {
+    public var rawValue: String {
         switch self {
         case .request:
             return "request_skin_id"
@@ -58,7 +58,7 @@ extension DebugSkins {
     }
 }
 extension DebuggerSkinRegister.DebugSkins {
-    var rawValue: String {
+    public var rawValue: String {
         switch self {
         case .networkDebug(_):
             return "network_debug_skin_id"

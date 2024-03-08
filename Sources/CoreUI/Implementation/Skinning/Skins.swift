@@ -71,7 +71,17 @@ public struct ViewSkin: ViewSkinning {
         self.size = size
     }
     public static var `default`: ViewSkin {
-        .init()
+        .init(
+            configID: "ViewSkin.default.SkinID",
+            color: ColourfulSkin(
+                backgroundColor: .green,
+                foreGroundColor: .blue
+            ),
+            size: SizableSkin(
+                width: 200,
+                height: 100
+            )
+        )
     }
 }
 
@@ -89,7 +99,18 @@ public struct TextualSkin: ViewSkinning {
         self.size = size
     }
     public static var `default`: TextualSkin {
-        .init()
+        .init(
+            configID: "TextualSkin.default.SkinID",
+            font: .title3,
+            color: ColourfulSkin(
+                backgroundColor: .systemPink,
+                foreGroundColor: .black
+            ),
+            size: SizableSkin(
+                width: 200,
+                height: 50
+            )
+        )
     }
 }
 
@@ -110,7 +131,19 @@ public struct VStackSkin: ViewSkinning {
         self.size = size
     }
     public static var `default`: VStackSkin {
-        .init()
+        .init(
+            configID: "VStackSkin.default.SkinID",
+            spacing: 10,
+            alignment: .center,
+            color: ColourfulSkin(
+                backgroundColor: .yellow,
+                foreGroundColor: .blue
+            ),
+            size: SizableSkin(
+                width: -1,
+                height: -1
+            )
+        )
     }
 }
 // HStackSkin Implementation
@@ -129,7 +162,19 @@ public struct HStackSkin: ViewSkinning {
         self.size = size
     }
     public static var `default`: HStackSkin {
-        .init()
+        .init(
+            configID: "HStackSkin.default.SkinID",
+            spacing: 10,
+            alignment: .center,
+            color: ColourfulSkin(
+                backgroundColor: .yellow,
+                foreGroundColor: .blue
+            ),
+            size: SizableSkin(
+                width: 200,
+                height: 50
+            )
+        )
     }
 }
 

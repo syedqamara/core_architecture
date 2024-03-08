@@ -73,7 +73,7 @@ extension RegisteringSystem {
             headers: headers
         )
         let requestDebugRegister = debuggerRegister(type: NetworkRequestDebug.self, debugable: endpoint, breakPoint: .ignore)
-        let dataDebugRegister = debuggerRegister(type: NetworkDataDebug.self, debugable: endpoint, breakPoint: .ignore)
+        let dataDebugRegister = debuggerRegister(type: NetworkDataDebug.self, debugable: endpoint, breakPoint: .console)
         let errorDebugRegister = debuggerRegister(type: NetworkErrorDebug.self, debugable: endpoint, breakPoint: .ignore)
         let registers: [Registering] = [networkRegister, requestDebugRegister, dataDebugRegister, errorDebugRegister]
         guard registers.filter({ $0.isEmpty }).isEmpty else {

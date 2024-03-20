@@ -44,7 +44,7 @@ protocol Mockable {
     init(parameter: Parameter, returned: Returned)
 }
 
-public class Mocking<P, R>: Mockable {
+open class Mocking<P, R>: Mockable {
     public typealias Parameter = P
     public typealias Returned = R
     public var parameter: P

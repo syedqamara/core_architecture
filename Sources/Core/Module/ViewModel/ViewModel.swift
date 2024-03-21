@@ -44,3 +44,7 @@ class UserProfileViewModel: ViewModeling {
 public protocol ViewModeling: AnyObject, ObservableObject {
     
 }
+
+public protocol CommandableViewModeling: ViewModeling {
+    var executor: CommandExecuting { get }
+}

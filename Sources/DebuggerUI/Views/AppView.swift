@@ -12,14 +12,13 @@ import Core
 import CoreUI
 import Debugger
 
-public struct AppView<V: View, R: ApplicationConfigurationLoading>: View {
+public struct AppView<V: View>: View {
     private var applicationView: V
     @State private var networkDebugAction: NetworkDebuggerActions? = nil
     @State private var selectedCommand: ApplicationDebugCommands = .application
     @State private var isDebugViewShowing: Bool = false
     
-    public init(R: R.Type, @ViewBuilder applicationView: () -> V) {
-        R.registerApplicationConfig()
+    public init(@ViewBuilder applicationView: () -> V) {
         self.applicationView = applicationView()
         UINavigationBar.appearance().backgroundColor = .black
         UINavigationBar.appearance().barTintColor = .black

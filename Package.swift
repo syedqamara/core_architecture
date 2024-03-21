@@ -2,7 +2,7 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
-
+    
 let package = Package(
     name: "Core",
     platforms: [
@@ -27,14 +27,15 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "0.1.0"),
-        .package(url: "https://github.com/jamf/ManagedAppConfigLib", from: "1.1.2")
+//        .package(url: "https://github.com/jamf/ManagedAppConfigLib", from: "1.1.2"),
+        .package(url: "https://github.com/doordash-oss/swiftui-preview-snapshots", from: "1.0.0"),
     ],
     targets: [
         .target(
             name: "Core",
             dependencies: [
                 .product(name: "Dependencies", package: "swift-dependencies"),
-                .product(name: "ManagedAppConfigLib", package: "ManagedAppConfigLib")
+//                .product(name: "ManagedAppConfigLib", package: "ManagedAppConfigLib")
             ]),
         .testTarget(
             name: "CoreTests",
@@ -44,7 +45,8 @@ let package = Package(
             name: "CoreUI",
             dependencies: [
                 "Core",
-                .product(name: "Dependencies", package: "swift-dependencies")
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "PreviewSnapshots", package: "swiftui-preview-snapshots")
             ]),
         .testTarget(
             name: "CoreUITests",
@@ -70,7 +72,7 @@ let package = Package(
             name: "NetworkTests",
             dependencies: [
                 "Network",
-                .product(name: "ManagedAppConfigLib", package: "ManagedAppConfigLib")
+//                .product(name: "ManagedAppConfigLib", package: "ManagedAppConfigLib")
             ]),
 
         .target(

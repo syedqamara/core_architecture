@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import ManagedAppConfigLib
 import Core
 
 public protocol Debugable: Configurable {

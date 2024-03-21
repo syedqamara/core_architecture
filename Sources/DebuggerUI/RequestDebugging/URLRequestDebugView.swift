@@ -36,8 +36,9 @@ public struct URLRequestDebugModule: ViewModuling {
 }
 
 extension URLRequestDebugView {
-    public struct Skin: Skinning {
-        public static var `default`: URLRequestDebugView.Skin { .init() }
+    public struct Skin: SkinTuning {
+        public static var `default`: URLRequestDebugView.Skin { .init(configID: "URLRequestDebugView.Skin.default.configID") }
+        public var configID: String
     }
 
 }

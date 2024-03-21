@@ -7,7 +7,7 @@
 
 import Foundation
 public class FileService {
-    private let queue: DispatchQueue = .init(label: "com.cache.file.queue", qos: .background)
+    private let queue: DispatchQueue = .init(label: "com.cache.file.queue-(\(UUID().uuidString))", qos: .background)
     public init() {
         
     }

@@ -95,7 +95,7 @@ public struct NetworkDebugView: SwiftUIView {
                     .environmentObject(networkDebugConnectionVM)
                     .id(viewModel.debuggerAction.rawValue)
                 default:
-                    DebugDataView(viewModel: viewModel, skin: .init())
+                    DebugDataView(viewModel: viewModel, skin: .default)
                         .environmentObject(networkDebugConnectionVM)
                         .id(String(describing: viewModel))
                 }
@@ -108,14 +108,16 @@ public struct NetworkDebugView: SwiftUIView {
 }
 
 extension NetworkDebugView {
-    public struct Skin: Skinning {
+    public struct Skin: SkinTuning {
         public static var `default`: NetworkDebugView.Skin { .init(containerViewSkin: .default, roundedRectSkin: .default, toggleEditingBtnSkin: .default, saveBtnActiveSkin: .default, saveBtnDisableSkin: .default) }
         var containerViewSkin: ViewSkin
         var roundedRectSkin: ViewSkin = .init(color: ColourfulSkin(foreGroundColor: .red), size: SizableSkin(width: 200, height: 50))
         var toggleEditingBtnSkin: TextualSkin
         var saveBtnActiveSkin: TextualSkin
         var saveBtnDisableSkin: TextualSkin
-        public init(containerViewSkin: ViewSkin, roundedRectSkin: ViewSkin, toggleEditingBtnSkin: TextualSkin, saveBtnActiveSkin: TextualSkin, saveBtnDisableSkin: TextualSkin) {
+        public var configID: String
+        public init(configID: String = "KeyValueCollectionView.Skin.default.configID", containerViewSkin: ViewSkin, roundedRectSkin: ViewSkin, toggleEditingBtnSkin: TextualSkin, saveBtnActiveSkin: TextualSkin, saveBtnDisableSkin: TextualSkin) {
+            self.configID = configID
             self.containerViewSkin = containerViewSkin
             self.roundedRectSkin = roundedRectSkin
             self.toggleEditingBtnSkin = toggleEditingBtnSkin

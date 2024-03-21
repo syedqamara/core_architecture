@@ -84,8 +84,9 @@ public struct DebugDataView: SwiftUIView, View {
 }
 
 extension DebugDataView {
-    public struct Skin: Skinning {
-        public static var `default`: DebugDataView.Skin { .init() }
+    public struct Skin: SkinTuning {
+        public static var `default`: DebugDataView.Skin { .init(configID: "DebugDataView.Skin.default.configID") }
+        public var configID: String
     }
 }
 

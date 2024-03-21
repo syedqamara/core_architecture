@@ -39,7 +39,7 @@ public protocol ViewProtocol {
     /// The associated type representing the view model conforming to the `ViewModeling` public protocol.
     associatedtype ViewModelType: ViewModeling
     /// The associated type representing the view's skin (i.e colors, sizes, paddings, fonts)
-    associatedtype SkinType: Skinning
+    associatedtype SkinType: SkinTuning
 
     /// Initializes the view with the provided view model.
     ///

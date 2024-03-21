@@ -39,7 +39,7 @@ private struct NoView: ViewProtocol {
     }
 }
 extension NoView {
-    struct NoViewTheme: Skinning {
+    struct NoViewTheme: SkinTuning {
         static var `default`: NoView.NoViewTheme {.init(configID: "")}
         
         var configID: String

@@ -7,7 +7,7 @@
 import XCTest
 import Foundation
 import Core
-import ManagedAppConfigLib
+
 import Dependencies
 @testable import Network
 import Debugger

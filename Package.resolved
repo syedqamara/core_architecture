@@ -10,15 +10,6 @@
       }
     },
     {
-      "identity" : "managedappconfiglib",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jamf/ManagedAppConfigLib",
-      "state" : {
-        "revision" : "a6fdff81e57aa26aa75ddafec55183530c52831e",
-        "version" : "1.1.2"
-      }
-    },
-    {
       "identity" : "swift-clocks",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-clocks",
@@ -43,6 +34,33 @@
       "state" : {
         "revision" : "16fd42ae04c6e7f74a6a86395d04722c641cccee",
         "version" : "0.6.0"
+      }
+    },
+    {
+      "identity" : "swift-snapshot-testing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
+      "state" : {
+        "revision" : "5b0c434778f2c1a4c9b5ebdb8682b28e84dd69bd",
+        "version" : "1.15.4"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax",
+      "state" : {
+        "revision" : "fa8f95c2d536d6620cc2f504ebe8a6167c9fc2dd",
+        "version" : "510.0.1"
+      }
+    },
+    {
+      "identity" : "swiftui-preview-snapshots",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/doordash-oss/swiftui-preview-snapshots",
+      "state" : {
+        "revision" : "36cd3662a48ef75cc13eae182d468178279a0445",
+        "version" : "1.1.1"
       }
     },
     {

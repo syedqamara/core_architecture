@@ -14,6 +14,13 @@ public struct ViewFactory: ViewingFactory {
     /// Creates an instance of `ViewFactory`.
     public init() {}
 
+    var isPreview: Bool {
+        if let xcPreview = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] {
+            return xcPreview == "1"
+        }
+        return false
+    }
+    
     /// Creates a `NoView` with a default view model.
     public func makeView<I>(input: I) -> any ViewProtocol {
         fatalError("Implement Sepacialised version of this method.")

@@ -16,6 +16,8 @@ public protocol SkinRegistering {
 public protocol Skinning {
     static var `default`: Self { get }
 }
+
+
 // SkinTuning protocol define that a skin is configurable for tuning the Skin differently
 public protocol SkinTuning: Skinning, Configurable {
     

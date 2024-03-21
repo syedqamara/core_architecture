@@ -11,7 +11,7 @@ public protocol Configurable {
     var configID: String { get }
 }
 
-public protocol ApplicationConfigurationLoading {
+public protocol ApplicationConfigurationLoading: ViewModeling {
     static func registerApplicationConfig()
 }
 

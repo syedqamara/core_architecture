@@ -160,7 +160,7 @@ public struct KeyValueCollectionView: SwiftUIView {
     }
 }
 public extension KeyValueCollectionView {
-    public struct Skin: Skinning {
+    struct Skin: SkinTuning {
         public static var `default`: KeyValueCollectionView.Skin { .init(headerSkin: .default, keyValueContainerSkin: .default, keySkin: .default, valueSkin: .default, collectionSkin: .default, keyValueSkin: .init(titleSkin: .default, subtitleSkin: .default, roundRectSkin: .default)) }
         
         
@@ -170,7 +170,7 @@ public extension KeyValueCollectionView {
             public var subtitleSkin: TextualSkin
             public var roundRectSkin: ViewSkin
         }
-        
+        public var configID: String
         public var headerSkin: ViewSkin
         public var keyValueContainerSkin: ViewSkin
         public var vStackSkin: VStackSkin = .default
@@ -179,7 +179,8 @@ public extension KeyValueCollectionView {
         public var collectionSkin: ViewSkin
         public var keyValueSkin: KeyValueSkin
         
-        public init(headerSkin: ViewSkin, keyValueContainerSkin: ViewSkin, keySkin: TextualSkin, valueSkin: TextualSkin, collectionSkin: ViewSkin, keyValueSkin: KeyValueSkin) {
+        public init(configID: String = "KeyValueCollectionView.Skin.default.configID", headerSkin: ViewSkin, keyValueContainerSkin: ViewSkin, keySkin: TextualSkin, valueSkin: TextualSkin, collectionSkin: ViewSkin, keyValueSkin: KeyValueSkin) {
+            self.configID = configID
             self.headerSkin = headerSkin
             self.keyValueContainerSkin = keyValueContainerSkin
             self.keySkin = keySkin

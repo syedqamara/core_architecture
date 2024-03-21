@@ -14,16 +14,19 @@ import Dependencies
 
 
 extension BreakpointConfigurationsView {
-    public struct Skin: Skinning {
+    public struct Skin: SkinTuning {
         public var roundRectSkin: ViewSkin
-        public init(roundRectSkin: ViewSkin) {
+        public init(roundRectSkin: ViewSkin, configID: String) {
             self.roundRectSkin = roundRectSkin
+            self.configID = configID
         }
         public static var `default`: Skin {
             .init(
-                roundRectSkin: .default
+                roundRectSkin: .default,
+                configID: "BreakpointConfigurationsView.Skin.default.configID"
             )
         }
+        public var configID: String
     }
 }
 
@@ -167,7 +170,7 @@ struct MockBreakpointView: View {
         _networkConfigurations.wrappedValue = preview
     }
     var body: some View {
-        BreakpointConfigurationsView(viewModel: .init(), skin: .init(roundRectSkin: .init(configID: "")))
+        BreakpointConfigurationsView(viewModel: .init(), skin: .default)
     }
 }
 

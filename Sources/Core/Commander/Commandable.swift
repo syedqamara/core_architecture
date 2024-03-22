@@ -15,7 +15,7 @@ public protocol CommandOutput {
 }
 
 public protocol Commandable: AnyObject {
-    init()
+    init(executor: CommandExecuting)
     func execute(_ input: any CommandInput) async throws -> CommandOutput
     func execute(_ input: any CommandInput, completion: @escaping (Result<CommandOutput, Error>) -> ())
 }
@@ -28,6 +28,6 @@ public protocol CommandExecuting {
 public extension CommandExecuting {
     func register<C: Commandable, CI: CommandInput>(id: CI.Type, command: C.Type) {
         @Configuration("\(id)") var commandConfig: C?
-        commandConfig = command.init()
+        commandConfig = command.init(executor: self)
     }
 }

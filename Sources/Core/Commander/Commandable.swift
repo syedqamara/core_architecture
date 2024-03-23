@@ -15,7 +15,7 @@ public protocol CommandOutput {
 }
 
 public protocol Commandable: AnyObject {
-    init(executor: CommandExecuting)
+    init(executor: CommandExecuting?)
     func execute(_ input: any CommandInput) async throws -> CommandOutput
     func execute(_ input: any CommandInput, completion: @escaping (Result<CommandOutput, Error>) -> ())
 }

@@ -21,7 +21,7 @@ public protocol Commandable: AnyObject {
 }
 
 
-public protocol CommandExecuting {
+public protocol CommandExecuting: AnyObject {
     func execute<CI: CommandInput>(_ input: CI) async throws -> CI.Output
 }
 

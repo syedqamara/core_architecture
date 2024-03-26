@@ -8,7 +8,7 @@
 import Foundation
 
 public extension Configuration {
-    init(_ commanderConfigKey: Commander.ConfigKeys) {
+    init(commanderConfigKey: Commander.ConfigKeys) {
         self.init(commanderConfigKey.rawValue)
     }
 }
@@ -23,7 +23,21 @@ public class Commander: CommandExecuting {
     case foundCommandConfig
     case noCommandConfigFound
     }
-    public enum ConfigKeys {
+    public enum ConfigKeys: Hashable {
+        public static func == (lhs: Commander.ConfigKeys, rhs: Commander.ConfigKeys) -> Bool {
+            switch lhs {
+            case .configType(_):
+                if case .configType(_) = rhs {
+                    return true
+                }
+            case .executingCommandRef(_):
+                if case .executingCommandRef(_) = rhs {
+                    return true
+                }
+            }
+            return false
+        }
+        
         case configType(any CommandInput.Type)
         case executingCommandRef(String)
         
@@ -35,10 +49,16 @@ public class Commander: CommandExecuting {
                 return "executing_command_id_\(commandId)"
             }
         }
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(self)
+        }
     }
     
     private let queue: DispatchQueue
     private var logger: Log
+    
+    private var executionDictionary: [ConfigKeys: Commandable] = [:]
+    
     public init(id: String) {
         logger = Log(id: id)
         queue = DispatchQueue(label: "com.core_architecture.command.executor.\(id).queue", qos: .userInitiated)
@@ -48,14 +68,13 @@ public class Commander: CommandExecuting {
     private func errorLogType<CI: CommandInput>(_ type: CI.Type) -> Log.LogType { .error(configID: "\(CI.Type.self)") }
     
     public func executeSerially<CI: CommandInput>(_ input: CI, completion: @escaping (Result<CI.Output, Error> ) -> ()) {
+        @Configuration(commanderConfigKey: ConfigKeys.configType(CI.self)) var commandConfigType: Commandable.Type?
         queue
             .sync {
-                @Configuration(ConfigKeys.configType(CI.self)) var commandConfigType: Commandable.Type?
                 if let commandConfigType {
                     let taskid = UUID().uuidString
                     let commandConfig = commandConfigType.init(executor: Commander(id: taskid))
-                    @Configuration(ConfigKeys.executingCommandRef(taskid)) var command: Commandable?
-                    command = commandConfig
+                    executionDictionary[.executingCommandRef(taskid)] = commandConfig
                     logger.trackLog(
                         type: infoLogType(CI.self),
                         input,
@@ -80,8 +99,7 @@ public class Commander: CommandExecuting {
                         case .failure(let failure):
                             completion(.failure(failure))
                         }
-                        @Configuration(ConfigKeys.executingCommandRef(taskid)) var executingCommandRef: Commandable?
-                        executingCommandRef = nil
+                        executionDictionary.removeValue(forKey: .executingCommandRef(taskid))
                     }
                     return
                 }

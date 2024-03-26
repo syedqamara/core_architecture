@@ -15,13 +15,14 @@ public protocol CommandOutput {
 }
 
 public protocol Commandable: AnyObject {
-    init(executor: CommandExecuting?)
+    init(executor: (any CommandExecuting)?)
     func execute(_ input: any CommandInput) async throws -> CommandOutput
     func execute(_ input: any CommandInput, completion: @escaping (Result<CommandOutput, Error>) -> ())
 }
 
 
 public protocol CommandExecuting: AnyObject {
+    associatedtype Log: Logging
     func execute<CI: CommandInput>(_ input: CI) async throws -> CI.Output
 }
 

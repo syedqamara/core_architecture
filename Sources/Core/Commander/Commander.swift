@@ -8,11 +8,40 @@
 import Foundation
 
 public extension Configuration {
-    init(commanderConfigKey: Commander.ConfigKeys) {
+    init(commanderConfigKey: ConfigKeys) {
         self.init(commanderConfigKey.rawValue)
     }
 }
-
+public enum ConfigKeys: Hashable {
+    public static func == (lhs: ConfigKeys, rhs: ConfigKeys) -> Bool {
+        switch lhs {
+        case .configType(_):
+            if case .configType(_) = rhs {
+                return true
+            }
+        case .executingCommandRef(_):
+            if case .executingCommandRef(_) = rhs {
+                return true
+            }
+        }
+        return false
+    }
+    
+    case configType(String)
+    case executingCommandRef(String)
+    
+    public var rawValue: String {
+        switch self {
+        case .configType(let commandInput):
+            return "command_config_type_\(commandInput.self)"
+        case .executingCommandRef(let commandId):
+            return "executing_command_id_\(commandId)"
+        }
+    }
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self)
+    }
+}
 public class Commander: CommandExecuting {
     public typealias Log = Logs<LogActions>
     
@@ -23,36 +52,7 @@ public class Commander: CommandExecuting {
     case foundCommandConfig
     case noCommandConfigFound
     }
-    public enum ConfigKeys: Hashable {
-        public static func == (lhs: Commander.ConfigKeys, rhs: Commander.ConfigKeys) -> Bool {
-            switch lhs {
-            case .configType(_):
-                if case .configType(_) = rhs {
-                    return true
-                }
-            case .executingCommandRef(_):
-                if case .executingCommandRef(_) = rhs {
-                    return true
-                }
-            }
-            return false
-        }
-        
-        case configType(any CommandInput.Type)
-        case executingCommandRef(String)
-        
-        public var rawValue: String {
-            switch self {
-            case .configType(let commandInput):
-                return "command_config_type_\(commandInput.self)"
-            case .executingCommandRef(let commandId):
-                return "executing_command_id_\(commandId)"
-            }
-        }
-        public func hash(into hasher: inout Hasher) {
-            hasher.combine(self)
-        }
-    }
+    
     
     private let queue: DispatchQueue
     private var logger: Log
@@ -68,7 +68,7 @@ public class Commander: CommandExecuting {
     private func errorLogType<CI: CommandInput>(_ type: CI.Type) -> Log.LogType { .error(configID: "\(CI.Type.self)") }
     
     public func executeSerially<CI: CommandInput>(_ input: CI, completion: @escaping (Result<CI.Output, Error> ) -> ()) {
-        @Configuration(commanderConfigKey: ConfigKeys.configType(CI.self)) var commandConfigType: Commandable.Type?
+        @Configuration(commanderConfigKey: ConfigKeys.configType(String(describing: CI.self))) var commandConfigType: Commandable.Type?
         queue
             .sync {
                 if let commandConfigType {

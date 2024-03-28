@@ -18,7 +18,7 @@ public protocol ApplicationConfigurationLoading: ViewModeling {
 public final class ConfigManager {
     public static let shared = ConfigManager()
     private var configDictionary: [String: Any] = [:]
-    private let queue = DispatchQueue(label: "com.configManager.queue", attributes: .concurrent)
+    private let queue = DispatchQueue(label: "com.configManager.queue")
 
     subscript<T>(key: String) -> T? {
         get {

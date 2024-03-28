@@ -8,7 +8,10 @@
 import Foundation
 import Core
 
-struct EmptySkin: SkinTuning {
-    static var `default`: EmptySkin = .init(configID: "EmptySkin.default")
-    var configID: String
+public struct EmptySkin: SkinTuning {
+    static public var `default`: EmptySkin = .init(configID: "EmptySkin.default")
+    public var configID: String
+    public init(configID: String) {
+        self.configID = configID
+    }
 }

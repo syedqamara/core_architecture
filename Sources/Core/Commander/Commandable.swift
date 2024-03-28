@@ -27,8 +27,8 @@ public protocol CommandExecuting: AnyObject {
 }
 
 public extension CommandExecuting {
-    func register<C: Commandable, CI: CommandInput>(id: CI.Type, command: C.Type) {
-        @Configuration("\(id)") var commandConfig: C?
-        commandConfig = command.init(executor: self)
+    static func register<C: Commandable, CI: CommandInput>(id: CI.Type, command: C.Type) {
+        @Configuration(commanderConfigKey: Commander.ConfigKeys.configType(String(describing: CI.self))) var commandConfig: C.Type?
+        _commandConfig.wrappedValue = command
     }
 }

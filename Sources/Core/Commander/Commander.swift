@@ -66,6 +66,28 @@ public class Commander: CommandExecuting {
     private var logger: Log
     
     private var executionDictionary: [ConfigKeys: Commandable] = [:]
+    private let executionDictionaryQueue = DispatchQueue(label: "com.example.app.executionDictionaryQueue", attributes: .concurrent)
+
+    // Method to access executionDictionary safely
+    private func setExecutionDictionary<T>(block: () -> T) -> T {
+        return executionDictionaryQueue.sync(flags: .barrier) {
+            return block()
+        }
+    }
+    // Method to access executionDictionary safely
+    private func accessExecutionDictionary<T>(block: () -> T) -> T {
+        return executionDictionaryQueue.sync {
+            return block()
+        }
+    }
+
+    // Usage example
+    func addToExecutionDictionary(key: ConfigKeys, value: Commandable?) {
+        setExecutionDictionary {
+            executionDictionary[key] = value
+        }
+    }
+
     
     public init(id: String) {
         logger = Log(id: id)
@@ -82,7 +104,7 @@ public class Commander: CommandExecuting {
                 if let commandConfigType {
                     let taskid = UUID().uuidString
                     let commandConfig = commandConfigType.init(executor: Commander(id: taskid))
-                    executionDictionary[.executingCommandRef(taskid)] = commandConfig
+                    self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: commandConfig)
                     logger.trackLog(
                         type: infoLogType(CI.self),
                         input,
@@ -95,19 +117,23 @@ public class Commander: CommandExecuting {
                         switch result {
                         case .success(let success):
                             if let output = success as? CI.Output {
-                                completion(.success(output))
                                 logger.trackLog(
                                     type: infoLogType(CI.self),
                                     input,
                                     action: .foundCommandConfig
                                 )
+                                self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: nil)
+                                completion(.success(output))
                                 return
+                            } else {
+                                self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: nil)
+                                completion(.failure(Errors.invalidOutput))
                             }
-                            completion(.failure(Errors.invalidOutput))
+                            
                         case .failure(let failure):
+                            self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: nil)
                             completion(.failure(failure))
                         }
-                        executionDictionary.removeValue(forKey: .executingCommandRef(taskid))
                     }
                     return
                 }

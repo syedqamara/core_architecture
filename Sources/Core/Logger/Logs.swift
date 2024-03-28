@@ -88,7 +88,7 @@ public class Logs<L: LogAction>: Logging {
 
 extension Logs {
     public func trackLog<D>(type: LogType,_ data: D?, action: L) {
-        fatalError("Overload Sepacialised version for \(D.self)")
+        print("Overload Sepacialised version for trackable logging \(D.self)")
     }
     public func trackLog(type: LogType,_ data: Data?, action: L) {
         logs[type.configID] = printStructuredInfo(completion: data?.string ?? "", action: action)

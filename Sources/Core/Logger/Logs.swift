@@ -53,6 +53,9 @@ public class Logs<L: LogAction>: Logging {
     public init(id: String) {
         self.id = id
     }
+    public func saveLogs(key: String, value: String) {
+        self.logs[key] = value
+    }
     private func printStructuredInfo(completion: @autoclosure () -> String?, action: L) -> String {
         return """
         Log ID  :  \(id)

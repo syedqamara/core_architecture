@@ -17,7 +17,7 @@ public class Logs<L: LogAction>: Logging {
     public enum LogType {
         case warning(configID: String), info(configID: String), error(configID: String)
         
-        var configID: String {
+        public var configID: String {
             switch self {
             case .warning(let configID):
                 return configID

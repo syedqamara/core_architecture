@@ -33,13 +33,21 @@ public enum ConfigKeys: Hashable {
     public var rawValue: String {
         switch self {
         case .configType(let commandInput):
-            return "command_config_type_\(commandInput.self)"
+            return "command_config_type_\(commandInput)"
         case .executingCommandRef(let commandId):
             return "executing_command_id_\(commandId)"
         }
     }
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(self)
+        // Hash based on the rawValue of each case
+        switch self {
+        case .configType(let commandInput):
+            hasher.combine("configType")
+            hasher.combine(commandInput)
+        case .executingCommandRef(let commandId):
+            hasher.combine("executingCommandRef")
+            hasher.combine(commandId)
+        }
     }
 }
 public class Commander: CommandExecuting {

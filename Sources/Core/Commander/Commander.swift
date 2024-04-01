@@ -62,7 +62,8 @@ public class Commander: CommandExecuting {
     }
     
     
-    private let queue: DispatchQueue
+    private let serialQueue: DispatchQueue
+    private let concurrentQueue: DispatchQueue
     private var logger: Log
     
     private var executionDictionary: [ConfigKeys: Commandable] = [:]
@@ -91,7 +92,8 @@ public class Commander: CommandExecuting {
     
     public init(id: String) {
         logger = Log(id: id)
-        queue = DispatchQueue(label: "com.core_architecture.command.executor.\(id).queue", qos: .userInitiated)
+        serialQueue = DispatchQueue(label: "com.core_architecture.command.executor.\(id).queue", qos: .userInitiated)
+        concurrentQueue = DispatchQueue(label: "com.core_architecture.command.executor.\(id).queue", qos: .background, attributes: .concurrent)
     }
     private func infoLogType<CI: CommandInput>(_ type: CI.Type) -> Log.LogType { .info(configID: "\(CI.Type.self)") }
     private func warningLogType<CI: CommandInput>(_ type: CI.Type) -> Log.LogType{ .warning(configID: "\(CI.Type.self)") }
@@ -99,7 +101,7 @@ public class Commander: CommandExecuting {
     
     public func executeSerially<CI: CommandInput>(_ input: CI, completion: @escaping (Result<CI.Output, Error> ) -> ()) {
         @Configuration(commanderConfigKey: ConfigKeys.configType(String(describing: CI.self))) var commandConfigType: Commandable.Type?
-        queue
+        serialQueue
             .sync {
                 if let commandConfigType {
                     let taskid = UUID().uuidString
@@ -118,6 +120,52 @@ public class Commander: CommandExecuting {
                         case .success(let success):
                             if let output = success as? CI.Output {
                                 logger.trackLog(
+                                    type: infoLogType(CI.self),
+                                    input,
+                                    action: .foundCommandConfig
+                                )
+                                self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: nil)
+                                completion(.success(output))
+                                return
+                            } else {
+                                self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: nil)
+                                completion(.failure(Errors.invalidOutput))
+                            }
+                            
+                        case .failure(let failure):
+                            self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: nil)
+                            completion(.failure(failure))
+                        }
+                    }
+                    return
+                }
+                completion(.failure(Errors.noCommandConfigFound))
+                return
+            }
+    }
+    public func executeAschronously<CI: CommandInput>(_ input: CI, completion: @escaping (Result<CI.Output, Error> ) -> ()) {
+        @Configuration(commanderConfigKey: ConfigKeys.configType(String(describing: CI.self))) var commandConfigType: Commandable.Type?
+        concurrentQueue
+            .async {
+                [weak self] in
+                guard let self = self else { return }
+                if let commandConfigType {
+                    let taskid = UUID().uuidString
+                    let commandConfig = commandConfigType.init(executor: Commander(id: taskid))
+                    self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: commandConfig)
+                    self.logger.trackLog(
+                        type: self.infoLogType(CI.self),
+                        input,
+                        action: .foundCommandConfig
+                    )
+                    commandConfig.execute(input) {
+                        [weak self]
+                        result in
+                        guard let self = self else { return }
+                        switch result {
+                        case .success(let success):
+                            if let output = success as? CI.Output {
+                                self.logger.trackLog(
                                     type: infoLogType(CI.self),
                                     input,
                                     action: .foundCommandConfig

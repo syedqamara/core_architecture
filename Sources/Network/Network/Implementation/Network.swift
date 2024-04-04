@@ -40,7 +40,7 @@ public class Network: Networking {
         guard var url = config.url else {
             throw NetworkErrorCode.invalidURL
         }
-        logger.trackLog(type: .info(configID: config.configID), url, action: .url)
+        logger.trackLog(type: .info(configID: config.configID), data: url, action: .url)
         var request = URLRequest(url: url)
         request.httpMethod = config.method.rawValue
         request.allHTTPHeaderFields = config.headers
@@ -59,7 +59,7 @@ public class Network: Networking {
             request.httpBody = try await config.contentType.encoder.encode(data: data)?.data(using: .utf8)
             request.setValue(config.contentType.rawValue, forHTTPHeaderField: "Content-Type")
         }
-        logger.trackLog(type: .info(configID: config.configID), request, action: .createRequest)
+        logger.trackLog(type: .info(configID: config.configID), data: request, action: .createRequest)
         return try await setupDebuggerAndSend(requestData: data, request: request, config: config)
     }
     private func setupDebuggerAndSend(requestData: DataModel?, request: URLRequest, config: NetworkConfig) async throws -> DataModelProtocol {
@@ -194,17 +194,17 @@ public class Network: Networking {
             
             if let data {
                 do {
-                    self?.logger.trackLog(type: .info(configID: config.configID), data, action: .receiveData)
+                    self?.logger.trackLog(type: .info(configID: config.configID), data: data, action: .receiveData)
                     let dataModel = try self?.decoder.decode(data: data, type: config.responseType)
                     completion(nil, dataModel)
                 }
                 catch let err {
-                    self?.logger.trackLog(type: .error(configID: config.configID), err, action: .throwsError)
+                    self?.logger.trackLog(type: .error(configID: config.configID), data: err, action: .throwsError)
                     completion(.custom(err), nil)
                 }
             }
             else {
-                self?.logger.trackLog(type: .error(configID: config.configID), error, action: .throwsError)
+                self?.logger.trackLog(type: .error(configID: config.configID),data: error, action: .throwsError)
                 completion(error == nil ? nil : .custom(error!), nil)
             }
             self?.tasks.removeValue(forKey: requestID)
@@ -212,7 +212,7 @@ public class Network: Networking {
         if let sessionTask {
             tasks[requestID] = sessionTask
             sessionTask.resume()
-            logger.trackLog(type: .info(configID: config.configID), request, action: .sendRequest)
+            logger.trackLog(type: .info(configID: config.configID), data: request, action: .sendRequest)
         }
     }
     private func processResponse(config: NetworkConfig, data: DataModelProtocol?, error: SystemError?, continuation: Continuation<DataModelProtocol, Error>) {

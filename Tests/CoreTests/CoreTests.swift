@@ -8,7 +8,7 @@ final class CoreTests: XCTestCase {
             case log
         }
         let logger = Logs<LogingAction>(id: "123")
-        logger.trackLog(type: .warning(configID: "1122"), ["example_JSON_key": "Json Object"], action: .log)
+        logger.trackLog(type: .warning(configID: "1122"), data: ["example_JSON_key": "Json Object"], action: .log)
         logger.log(log: .warning(configID: "1122"))
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct

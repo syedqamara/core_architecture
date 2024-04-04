@@ -109,7 +109,7 @@ public class Commander: CommandExecuting {
                     self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: commandConfig)
                     logger.trackLog(
                         type: infoLogType(CI.self),
-                        input,
+                        data: input,
                         action: .foundCommandConfig
                     )
                     commandConfig.execute(input) {
@@ -121,7 +121,7 @@ public class Commander: CommandExecuting {
                             if let output = success as? CI.Output {
                                 logger.trackLog(
                                     type: infoLogType(CI.self),
-                                    input,
+                                    data: input,
                                     action: .foundCommandConfig
                                 )
                                 self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: nil)
@@ -155,7 +155,7 @@ public class Commander: CommandExecuting {
                     self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: commandConfig)
                     self.logger.trackLog(
                         type: self.infoLogType(CI.self),
-                        input,
+                        data: input,
                         action: .foundCommandConfig
                     )
                     commandConfig.execute(input) {
@@ -167,7 +167,7 @@ public class Commander: CommandExecuting {
                             if let output = success as? CI.Output {
                                 self.logger.trackLog(
                                     type: infoLogType(CI.self),
-                                    input,
+                                    data: input,
                                     action: .foundCommandConfig
                                 )
                                 self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: nil)

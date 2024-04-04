@@ -11,5 +11,5 @@ public protocol Logging {
     associatedtype LoggingAction: LogAction
     associatedtype LogType
     func log(log: LogType)
-    func trackLog<D>(type: LogType,_ data: D?, action: LoggingAction)
+    func trackLog<D>(type: LogType, data: D?, action: LoggingAction)
 }

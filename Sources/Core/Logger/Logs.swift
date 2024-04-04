@@ -75,7 +75,7 @@ public class Logs<L: LogAction>: Logging {
             print("\(value)")
         }
     }
-    public func trackLog<D>(type: LogType,_ data: D?, action: L) {
+    public func trackLog<D>(type: LogType, data: D?, action: L) {
         print("Overload Sepacialised version for trackable logging \(D.self)")
     }
     private func storeLogs(content: String, type: LogType) {
@@ -90,24 +90,24 @@ public class Logs<L: LogAction>: Logging {
 }
 
 extension Logs {
-    public func trackLog(type: LogType,_ data: Data?, action: L) {
+    public func trackLog(type: LogType, data: Data?, action: L) {
         logs[type.configID] = printStructuredInfo(completion: data?.string ?? "", action: action)
     }
     
-    public func trackLog(type: LogType,_ dictionary: [String: Any]?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: (dictionary ?? [:]).description, action: action)
+    public func trackLog(type: LogType, data: [String: Any]?, action: L) {
+        logs[type.configID] = printStructuredInfo(completion: (data ?? [:]).description, action: action)
     }
     
-    public func trackLog(type: LogType,_ any: Any?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: String(describing: any), action: action)
+    public func trackLog(type: LogType, data: Any?, action: L) {
+        logs[type.configID] = printStructuredInfo(completion: String(describing: data), action: action)
     }
-    public func trackLog(type: LogType,_ any: URLRequest?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: String(describing: any), action: action)
+    public func trackLog(type: LogType, data: URLRequest?, action: L) {
+        logs[type.configID] = printStructuredInfo(completion: String(describing: data), action: action)
     }
-    public func trackLog(type: LogType,_ any: URL?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: String(describing: any), action: action)
+    public func trackLog(type: LogType, data: URL?, action: L) {
+        logs[type.configID] = printStructuredInfo(completion: String(describing: data), action: action)
     }
-    public func trackLog(type: LogType,_ any: Error?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: String(describing: any), action: action)
+    public func trackLog(type: LogType, data: Error?, action: L) {
+        logs[type.configID] = printStructuredInfo(completion: String(describing: data), action: action)
     }
 }

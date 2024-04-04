@@ -106,7 +106,7 @@ public class Commander: CommandExecuting {
             .sync {
                 if let commandConfigType {
                     @Dependency(\.uuid) var uuidGenerator
-                    let taskid = uuidGenerator.callAsFunction().uuidString
+                    let taskid = "\(Date().timeIntervalSince1970)"
                     let commandConfig = commandConfigType.init(executor: Commander(id: taskid))
                     self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: commandConfig)
                     logger.trackLog(

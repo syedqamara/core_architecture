@@ -76,7 +76,7 @@ public class Logs<L: LogAction>: Logging {
         }
     }
     public func trackLog<D>(type: LogType, data: D?, action: L) {
-        print("Overload Sepacialised version for trackable logging \(D.self)")
+        
     }
     private func storeLogs(content: String, type: LogType) {
         let beautifyContent = type.sign + content + type.sign

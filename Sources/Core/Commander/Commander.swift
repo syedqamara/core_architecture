@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Dependencies
 
 public extension Configuration {
     init(commanderConfigKey: ConfigKeys) {
@@ -104,7 +105,8 @@ public class Commander: CommandExecuting {
         serialQueue
             .sync {
                 if let commandConfigType {
-                    let taskid = UUID().uuidString
+                    @Dependency(\.uuid) var uuidGenerator
+                    let taskid = uuidGenerator.callAsFunction().uuidString
                     let commandConfig = commandConfigType.init(executor: Commander(id: taskid))
                     self.addToExecutionDictionary(key: .executingCommandRef(taskid), value: commandConfig)
                     logger.trackLog(

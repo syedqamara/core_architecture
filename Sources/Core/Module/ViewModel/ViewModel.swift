@@ -42,7 +42,7 @@ class UserProfileViewModel: ViewModeling {
 /// This public protocol is designed to be used as a foundation for SwiftUI view models, enabling reactive UI updates when the underlying data changes.
 // sourcery: AutoMockable
 public protocol ViewModeling: AnyObject, ObservableObject {}
-public protocol ViewStating: AnyObject, ObservableObject {
+public protocol ViewStating: ViewModeling {
     init()
 }
 

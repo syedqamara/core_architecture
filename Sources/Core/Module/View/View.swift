@@ -39,6 +39,8 @@ public protocol ViewProtocol {
     /// The associated type representing the view model conforming to the `ViewModeling` public protocol.
     associatedtype ViewModelType: ViewModeling
     
+    
+    
 
     /// Initializes the view with the provided view model.
     ///

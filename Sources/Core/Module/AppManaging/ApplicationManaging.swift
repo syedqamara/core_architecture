@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  ApplicationManaging.swift
+//
 //
 //  Created by Apple on 15/04/2024.
 //

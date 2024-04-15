@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol ApplicationManaging: ViewStating {
+public protocol ApplicationManaging: ViewStating {
     
 }

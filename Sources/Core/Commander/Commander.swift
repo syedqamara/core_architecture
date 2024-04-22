@@ -103,7 +103,7 @@ public class Commander: CommandExecuting {
     public func executeSerially<CI: CommandInput>(_ input: CI, completion: @escaping (Result<CI.Output, Error> ) -> ()) {
         @Configuration(commanderConfigKey: ConfigKeys.configType(String(describing: CI.self))) var commandConfigType: Commandable.Type?
         serialQueue
-            .sync {
+            .sync(flags: .barrier) {
                 if let commandConfigType {
                     @Dependency(\.uuid) var uuidGenerator
                     let taskid = "\(Date().timeIntervalSince1970)"

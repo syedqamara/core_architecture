@@ -15,17 +15,7 @@ public extension Configuration {
 }
 public enum ConfigKeys: Hashable {
     public static func == (lhs: ConfigKeys, rhs: ConfigKeys) -> Bool {
-        switch lhs {
-        case .configType(_):
-            if case .configType(_) = rhs {
-                return true
-            }
-        case .executingCommandRef(_):
-            if case .executingCommandRef(_) = rhs {
-                return true
-            }
-        }
-        return false
+        return lhs.rawValue == rhs.rawValue
     }
     
     case configType(String)

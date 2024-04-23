@@ -83,8 +83,8 @@ public class Commander: CommandExecuting {
     
     public init(id: String) {
         logger = Log(id: id)
-        serialQueue = DispatchQueue(label: "com.core_architecture.command.executor.\(id).queue", qos: .userInitiated)
-        concurrentQueue = DispatchQueue(label: "com.core_architecture.command.executor.\(id).queue", qos: .background, attributes: .concurrent)
+        serialQueue = DispatchQueue(label: "com.core_architecture.command.executor.\(id).queue", qos: .utility)
+        concurrentQueue = DispatchQueue(label: "com.core_architecture.command.executor.\(id).queue", qos: .utility, attributes: .concurrent)
     }
     private func infoLogType<CI: CommandInput>(_ type: CI.Type) -> Log.LogType { .info(configID: "\(CI.Type.self)") }
     private func warningLogType<CI: CommandInput>(_ type: CI.Type) -> Log.LogType{ .warning(configID: "\(CI.Type.self)") }

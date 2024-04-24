@@ -144,6 +144,7 @@ extension NetworkErrorCode: Erroring {
             return "SSL Server Certificate Unknown"
         }
     }
+    var localizedDescription: String { message }
     
 }
 // MARK: Debugging Error Codes
@@ -175,6 +176,7 @@ extension DebuggerErrorCode: Erroring {
             return "Debugging not supported to Data Type"
         }
     }
+    var localizedDescription: String { message }
 }
 // MARK: Registration Error Codes
 public enum RegistrationErrorCode: Int {
@@ -204,4 +206,5 @@ extension RegistrationErrorCode: Erroring {
             return "Configuration provided is not complete please check for batch registration method"
         }
     }
+    var localizedDescription: String { message }
 }

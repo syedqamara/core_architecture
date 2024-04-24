@@ -18,4 +18,5 @@ public enum Failures: ErrorProvider {
             return networkErrorCode
         }
     }
+    var localizedDescription: String { error.localizedDescription }
 }

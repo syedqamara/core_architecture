@@ -10,6 +10,21 @@ import OSLog
 public protocol LogAction {
     var rawValue: String { get }
 }
+public enum CoreLogType: String {
+    case warning = "core_log_type_warning"
+    case error = "core_log_type_error"
+    case info = "core_log_type_info"
+}
+public enum DefaultCoreLogTypeKey: String {
+    case defaultNetworkLogType
+}
+
+public extension Configuration where A == CoreLogType {
+    init(_ key: DefaultCoreLogTypeKey) {
+        self.init(key.rawValue)
+    }
+}
+
 private let lineBarTextConstant = "\n\n--------------------------------------------\n\n"
 public class Logs<L: LogAction>: Logging {
     public typealias LoggingAction = L
@@ -91,23 +106,23 @@ public class Logs<L: LogAction>: Logging {
 
 extension Logs {
     public func trackLog(type: LogType, data: Data?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: data?.string ?? "", action: action)
+        storeLogs(content: printStructuredInfo(completion: data?.string ?? "", action: action), type: type)
     }
     
     public func trackLog(type: LogType, data: [String: Any]?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: (data ?? [:]).description, action: action)
+        storeLogs(content: printStructuredInfo(completion: (data ?? [:]).description, action: action), type: type)
     }
     
     public func trackLog(type: LogType, data: Any?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: String(describing: data), action: action)
+        storeLogs(content: printStructuredInfo(completion: String(describing: data), action: action), type: type)
     }
     public func trackLog(type: LogType, data: URLRequest?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: String(describing: data), action: action)
+        storeLogs(content: printStructuredInfo(completion: String(describing: data), action: action), type: type)
     }
     public func trackLog(type: LogType, data: URL?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: String(describing: data), action: action)
+        storeLogs(content: printStructuredInfo(completion: String(describing: data), action: action), type: type)
     }
     public func trackLog(type: LogType, data: Error?, action: L) {
-        logs[type.configID] = printStructuredInfo(completion: String(describing: data), action: action)
+        storeLogs(content: printStructuredInfo(completion: String(describing: data), action: action), type: type)
     }
 }

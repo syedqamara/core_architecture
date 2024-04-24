@@ -10,6 +10,7 @@ import Core
 import Dependencies
 import Debugger
 
+
 public class Network: Networking {
     public typealias NetworkConfigType = NetworkConfig
     enum NetworkLogAction {
@@ -34,7 +35,27 @@ public class Network: Networking {
         
     }
     public func send(with data: DataModel?, config: NetworkConfig) async throws -> DataModelProtocol {
-        try await _send(with: data, config: config)
+        defer {
+            @Configuration(.defaultNetworkLogType) var defaultNetworkLogType
+            switch defaultNetworkLogType {
+            case .none:
+                break
+            case .warning:
+                logger.log(log: .warning(configID: config.configID))
+            case .info:
+                logger.log(log: .info(configID: config.configID))
+            case .error:
+                logger.log(log: .error(configID: config.configID))
+            }
+        }
+        do {
+            let result = try await _send(with: data, config: config)
+            return result
+        }
+        catch let error {
+            throw error
+        }
+        
     }
     private func _send(with data: DataModel?, config: NetworkConfig) async throws -> DataModelProtocol {
         guard var url = config.url else {

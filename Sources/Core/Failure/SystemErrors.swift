@@ -59,6 +59,7 @@ extension SystemError: Erroring {
             return error.message
         }
     }
+    var localizedDescription: String { message }
 }
 extension SystemError {
     public func isEqual(to: SystemError) -> Bool {
